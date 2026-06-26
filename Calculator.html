@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>🧮 Advanced Calculator</title>
+    <style>
+        /* ===== RESET ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0a0a0a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .container {
+            background: #111;
+            border: 2px solid #00ff41;
+            border-radius: 20px;
+            padding: 20px 16px 16px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 0 50px rgba(0, 255, 65, 0.04);
+            user-select: none;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .header h1 {
+            color: #00ff41;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+        .header .sub {
+            color: #666;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            margin-top: 2px;
+        }
+        .header .sub span {
+            color: #00ff41;
+        }
+
+        /* ===== DISPLAY ===== */
+        .display-wrap {
+            background: #0d0d0d;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-end;
+            overflow: hidden;
+        }
+        .display-wrap .expression {
+            color: #555;
+            font-size: 14px;
+            min-height: 22px;
+            word-break: break-all;
+            text-align: right;
+            width: 100%;
+            font-family: 'Courier New', monospace;
+        }
+        .display-wrap .result {
+            color: #00ff41;
+            font-size: 32px;
+            font-weight: 700;
+            min-height: 42px;
+            word-break: break-all;
+            text-align: right;
+            width: 100%;
+            font-family: 'Courier New', monospace;
+            transition: color 0.2s;
+        }
+        .display-wrap .result.error {
+            color: #ff4444;
+            font-size: 20px;
+        }
+
+        /* ===== HISTORY ===== */
+        .history-toggle {
+            text-align: right;
+            margin-bottom: 6px;
+        }
+        .history-toggle button {
+            background: transparent;
+            border: none;
+            color: #444;
+            font-size: 11px;
+            cursor: pointer;
+            font-family: inherit;
+            letter-spacing: 0.5px;
+            transition: color 0.2s;
+        }
+        .history-toggle button:hover {
+            color: #00ff41;
+        }
+        .history-box {
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 12px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding: 0 12px;
+        }
+        .history-box.open {
+            max-height: 150px;
+            padding: 8px 12px;
+            overflow-y: auto;
+        }
+        .history-box .item {
+            color: #666;
+            font-size: 12px;
+            padding: 2px 0;
+            border-bottom: 1px solid #111;
+            font-family: 'Courier New', monospace;
+        }
+        .history-box .item .h-result {
+            color: #00ff41;
+        }
+        .history-box::-webkit-scrollbar {
+            width: 3px;
+        }
+        .history-box::-webkit-scrollbar-thumb {
+            background: #222;
+            border-radius: 2px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+        }
+        .btn {
+            padding: 14px 4px;
+            background: #1a1a1a;
+            border: 1px solid #222;
+            border-radius: 10px;
+            color: #aaa;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.12s ease;
+            font-family: inherit;
+            text-align: center;
+            touch-action: manipulation;
+            user-select: none;
+        }
+        .btn:active {
+            transform: scale(0.92);
+            background: #2a2a2a;
+            border-color: #00ff41;
+            color: #00ff41;
+        }
+        /* Special buttons */
+        .btn.func {
+            color: #4a9eff;
+            font-size: 13px;
+        }
+        .btn.func:active {
+            border-color: #4a9eff;
+            color: #4a9eff;
+        }
+        .btn.op {
+            color: #ffd700;
+        }
+        .btn.op:active {
+            border-color: #ffd700;
+            color: #ffd700;
+        }
+        .btn.equals {
+            background: #00ff41;
+            color: #0a0a0a;
+            font-size: 20px;
+            border-color: #00ff41;
+        }
+        .btn.equals:active {
+            background: #00cc33;
+            transform: scale(0.92);
+        }
+        .btn.clear {
+            color: #ff4444;
+        }
+        .btn.clear:active {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+        .btn.span2 {
+            grid-column: span 2;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            color: #222;
+            font-size: 9px;
+            margin-top: 14px;
+            padding-top: 10px;
+            border-top: 1px solid #111;
+            letter-spacing: 0.5px;
+        }
+        .footer span {
+            color: #00ff41;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 420px) {
+            .container { padding: 14px 10px 12px; }
+            .header h1 { font-size: 18px; }
+            .display-wrap { padding: 10px 12px; min-height: 70px; }
+            .display-wrap .result { font-size: 26px; }
+            .display-wrap .expression { font-size: 12px; }
+            .btn { padding: 12px 2px; font-size: 14px; }
+            .btn.func { font-size: 11px; }
+            .btn-grid { gap: 4px; }
+        }
+        @media (max-width: 360px) {
+            .btn { padding: 10px 2px; font-size: 12px; }
+            .btn.func { font-size: 10px; }
+            .display-wrap .result { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🧮 CALCULATOR</h1>
+        <div class="sub">by <span>KnoX</span>  |  Good Luck &lt;3</div>
+    </div>
+
+    <!-- DISPLAY -->
+    <div class="display-wrap">
+        <div class="expression" id="expressionDisplay"></div>
+        <div class="result" id="resultDisplay">0</div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="history-toggle">
+        <button id="historyToggle">📜 History</button>
+    </div>
+    <div class="history-box" id="historyBox"></div>
+
+    <!-- BUTTONS -->
+    <div class="btn-grid">
+        <!-- Row 1 -->
+        <button class="btn func" data-action="sin">sin</button>
+        <button class="btn func" data-action="cos">cos</button>
+        <button class="btn func" data-action="tan">tan</button>
+        <button class="btn func" data-action="log">log</button>
+        <button class="btn func" data-action="ln">ln</button>
+
+        <!-- Row 2 -->
+        <button class="btn func" data-action="sqrt">√</button>
+        <button class="btn func" data-action="square">x²</button>
+        <button class="btn func" data-action="cube">x³</button>
+        <button class="btn func" data-action="factorial">x!</button>
+        <button class="btn func" data-action="inv">1/x</button>
+
+        <!-- Row 3 -->
+        <button class="btn" data-action="7">7</button>
+        <button class="btn" data-action="8">8</button>
+        <button class="btn" data-action="9">9</button>
+        <button class="btn op" data-action="/">÷</button>
+        <button class="btn clear" data-action="clear">AC</button>
+
+        <!-- Row 4 -->
+        <button class="btn" data-action="4">4</button>
+        <button class="btn" data-action="5">5</button>
+        <button class="btn" data-action="6">6</button>
+        <button class="btn op" data-action="*">×</button>
+        <button class="btn clear" data-action="backspace">⌫</button>
+
+        <!-- Row 5 -->
+        <button class="btn" data-action="1">1</button>
+        <button class="btn" data-action="2">2</button>
+        <button class="btn" data-action="3">3</button>
+        <button class="btn op" data-action="-">−</button>
+        <button class="btn func" data-action="(">(</button>
+
+        <!-- Row 6 -->
+        <button class="btn" data-action="0">0</button>
+        <button class="btn" data-action=".">.</button>
+        <button class="btn func" data-action="pi">π</button>
+        <button class="btn op" data-action="+">+</button>
+        <button class="btn func" data-action=")">)</button>
+
+        <!-- Row 7 -->
+        <button class="btn equals span2" data-action="equals">=</button>
+        <button class="btn func" data-action="percent">%</button>
+        <button class="btn func" data-action="exp">EXP</button>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <span>#Dillimore Projects by KnoX</span>  |  Good Luck &lt;3
+    </div>
+
+</div>
+
+<script>
+// ================================================================
+// 🧮 ADVANCED CALCULATOR  –  by KnoX  –  Version 1.0.0
+// ================================================================
+
+// ---------- DOM ----------
+const resultDisplay = document.getElementById('resultDisplay');
+const expressionDisplay = document.getElementById('expressionDisplay');
+const historyBox = document.getElementById('historyBox');
+const historyToggle = document.getElementById('historyToggle');
+
+// ---------- STATE ----------
+let currentInput = '0';
+let previousInput = '';
+let operation = null;
+let shouldResetDisplay = false;
+let history = [];
+let historyOpen = false;
+let lastResult = null;
+
+// ---------- UPDATE DISPLAY ----------
+function updateDisplay() {
+    let display = currentInput;
+    // Format large numbers
+    if (display.length > 15 && !display.includes('e')) {
+        const num = parseFloat(display);
+        if (!isNaN(num)) {
+            display = num.toExponential(6);
+        }
+    }
+    resultDisplay.textContent = display;
+    resultDisplay.classList.remove('error');
+}
+
+function updateExpression(text) {
+    expressionDisplay.textContent = text;
+}
+
+// ---------- HISTORY ----------
+function addHistory(expr, result) {
+    history.push({ expr, result });
+    if (history.length > 50) history.shift();
+    renderHistory();
+}
+
+function renderHistory() {
+    if (history.length === 0) {
+        historyBox.innerHTML = '<div class="item" style="color:#333;">No history yet</div>';
+        return;
+    }
+    historyBox.innerHTML = history.map(h =>
+        `<div class="item">${h.expr} = <span class="h-result">${h.result}</span></div>`
+    ).join('');
+}
+
+historyToggle.addEventListener('click', () => {
+    historyOpen = !historyOpen;
+    historyBox.classList.toggle('open', historyOpen);
+    historyToggle.textContent = historyOpen ? '📜 Hide History' : '📜 History';
+});
+
+// ---------- INPUT ----------
+function inputDigit(digit) {
+    if (shouldResetDisplay) {
+        currentInput = '0';
+        shouldResetDisplay = false;
+    }
+    if (digit === '.' && currentInput.includes('.')) return;
+    if (currentInput === '0' && digit !== '.') {
+        currentInput = digit;
+    } else {
+        currentInput += digit;
+    }
+    updateDisplay();
+}
+
+// ---------- OPERATIONS ----------
+function setOperation(op) {
+    if (operation && !shouldResetDisplay) {
+        calculate();
+    }
+    previousInput = currentInput;
+    operation = op;
+    shouldResetDisplay = true;
+    updateExpression(previousInput + ' ' + getOpSymbol(op));
+}
+
+function getOpSymbol(op) {
+    const map = {
+        '+': '+', '-': '−', '*': '×', '/': '÷', '^': '^', '%': '%'
+    };
+    return map[op] || op;
+}
+
+// ---------- CALCULATE ----------
+function calculate() {
+    if (operation === null || shouldResetDisplay) {
+        if (currentInput === 'Error') {
+            currentInput = '0';
+            updateDisplay();
+        }
+        return;
+    }
+
+    const prev = parseFloat(previousInput);
+    const curr = parseFloat(currentInput);
+    let result;
+
+    if (isNaN(prev) || isNaN(curr)) {
+        currentInput = 'Error';
+        resultDisplay.classList.add('error');
+        updateDisplay();
+        return;
+    }
+
+    switch (operation) {
+        case '+': result = prev + curr; break;
+        case '-': result = prev - curr; break;
+        case '*': result = prev * curr; break;
+        case '/': 
+            if (curr === 0) {
+                currentInput = 'Error';
+                resultDisplay.classList.add('error');
+                updateDisplay();
+                operation = null;
+                previousInput = '';
+                return;
+            }
+            result = prev / curr; 
+            break;
+        case '^': result = Math.pow(prev, curr); break;
+        case '%': result = (prev / 100) * curr; break;
+        default: return;
+    }
+
+    // Handle floating point precision
+    if (typeof result === 'number' && !Number.isInteger(result)) {
+        result = parseFloat(result.toPrecision(12));
+    }
+
+    const expr = previousInput + ' ' + getOpSymbol(operation) + ' ' + currentInput;
+    currentInput = String(result);
+    lastResult = result;
+    updateDisplay();
+    updateExpression(expr + ' =');
+    addHistory(expr, currentInput);
+
+    operation = null;
+    previousInput = '';
+    shouldResetDisplay = true;
+}
+
+// ---------- UNARY FUNCTIONS ----------
+function unaryFunction(func) {
+    const num = parseFloat(currentInput);
+    if (isNaN(num)) {
+        currentInput = 'Error';
+        resultDisplay.classList.add('error');
+        updateDisplay();
+        return;
+    }
+
+    let result;
+    let displayName = func;
+    switch (func) {
+        case 'sin': result = Math.sin(num * Math.PI / 180); displayName = 'sin(' + currentInput + ')'; break;
+        case 'cos': result = Math.cos(num * Math.PI / 180); displayName = 'cos(' + currentInput + ')'; break;
+        case 'tan': result = Math.tan(num * Math.PI / 180); displayName = 'tan(' + currentInput + ')'; break;
+        case 'log': 
+            if (num <= 0) { currentInput = 'Error'; resultDisplay.classList.add('error'); updateDisplay(); return; }
+            result = Math.log10(num); displayName = 'log(' + currentInput + ')'; break;
+        case 'ln': 
+            if (num <= 0) { currentInput = 'Error'; resultDisplay.classList.add('error'); updateDisplay(); return; }
+            result = Math.log(num); displayName = 'ln(' + currentInput + ')'; break;
+        case 'sqrt': 
+            if (num < 0) { currentInput = 'Error'; resultDisplay.classList.add('error'); updateDisplay(); return; }
+            result = Math.sqrt(num); displayName = '√(' + currentInput + ')'; break;
+        case 'square': result = num * num; displayName = '(' + currentInput + ')²'; break;
+        case 'cube': result = num * num * num; displayName = '(' + currentInput + ')³'; break;
+        case 'factorial':
+            if (num < 0 || !Number.isInteger(num)) { currentInput = 'Error'; resultDisplay.classList.add('error'); updateDisplay(); return; }
+            let f = 1;
+            for (let i = 2; i <= num; i++) f *= i;
+            result = f; displayName = currentInput + '!'; break;
+        case 'inv':
+            if (num === 0) { currentInput = 'Error'; resultDisplay.classList.add('error'); updateDisplay(); return; }
+            result = 1 / num; displayName = '1/(' + currentInput + ')'; break;
+        case 'exp': result = Math.exp(num); displayName = 'e^(' + currentInput + ')'; break;
+        case 'percent': result = num / 100; displayName = currentInput + '%'; break;
+        default: return;
+    }
+
+    if (typeof result === 'number' && !Number.isInteger(result)) {
+        result = parseFloat(result.toPrecision(12));
+    }
+
+    const oldInput = currentInput;
+    currentInput = String(result);
+    updateDisplay();
+    updateExpression(displayName + ' =');
+    addHistory(displayName, currentInput);
+    shouldResetDisplay = true;
+    lastResult = result;
+}
+
+// ---------- PI ----------
+function inputPi() {
+    if (shouldResetDisplay) {
+        currentInput = '0';
+        shouldResetDisplay = false;
+    }
+    if (currentInput === '0') {
+        currentInput = String(Math.PI);
+    } else {
+        currentInput += '*π';
+        // Replace π with actual value for calculation
+        const parts = currentInput.split('π');
+        if (parts.length > 1) {
+            currentInput = parts.join('*' + Math.PI);
+            // Clean up
+            currentInput = currentInput.replace(/^\*/g, '');
+            currentInput = currentInput.replace(/\*{2,}/g, '*');
+        }
+    }
+    updateDisplay();
+}
+
+// ---------- BACKSPACE ----------
+function backspace() {
+    if (shouldResetDisplay) return;
+    if (currentInput.length <= 1) {
+        currentInput = '0';
+    } else {
+        currentInput = currentInput.slice(0, -1);
+    }
+    updateDisplay();
+}
+
+// ---------- CLEAR ----------
+function clearAll() {
+    currentInput = '0';
+    previousInput = '';
+    operation = null;
+    shouldResetDisplay = false;
+    updateDisplay();
+    updateExpression('');
+    resultDisplay.classList.remove('error');
+}
+
+// ---------- HANDLE BUTTONS ----------
+document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        const action = this.dataset.action;
+
+        // Handle previous errors
+        if (currentInput === 'Error') {
+            if (action !== 'clear') {
+                currentInput = '0';
+                updateDisplay();
+                resultDisplay.classList.remove('error');
+            }
+        }
+
+        switch (action) {
+            // Numbers
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                inputDigit(action); break;
+            case '.': inputDigit('.'); break;
+            case 'pi': inputPi(); break;
+
+            // Operations
+            case '+': case '-': case '*': case '/':
+                setOperation(action); break;
+            case '^': setOperation('^'); break;
+            case 'percent': unaryFunction('percent'); break;
+            case 'exp': unaryFunction('exp'); break;
+
+            // Equals
+            case 'equals': 
+                if (operation) {
+                    calculate();
+                } else if (lastResult !== null) {
+                    // Repeat last operation
+                    const prev = parseFloat(previousInput);
+                    const curr = parseFloat(currentInput);
+                    if (!isNaN(prev) && !isNaN(curr) && operation) {
+                        calculate();
+                    }
+                }
+                break;
+
+            // Unary functions
+            case 'sin': case 'cos': case 'tan': case 'log': case 'ln':
+            case 'sqrt': case 'square': case 'cube': case 'factorial': case 'inv':
+                unaryFunction(action); break;
+
+            // Special
+            case 'clear': clearAll(); break;
+            case 'backspace': backspace(); break;
+            case '(':
+                if (shouldResetDisplay) {
+                    currentInput = '0';
+                    shouldResetDisplay = false;
+                }
+                currentInput += '(';
+                updateDisplay(); break;
+            case ')':
+                currentInput += ')';
+                updateDisplay(); break;
+
+            default: break;
+        }
+    });
+
+    // Touch for mobile
+    btn.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        this.click();
+    }, { passive: false });
+});
+
+// ---------- KEYBOARD SUPPORT ----------
+document.addEventListener('keydown', function(e) {
+    const key = e.key;
+
+    // Numbers and operators
+    if (key >= '0' && key <= '9') {
+        e.preventDefault();
+        document.querySelector(`[data-action="${key}"]`)?.click();
+        return;
+    }
+
+    switch (key) {
+        case '.': document.querySelector('[data-action="."]')?.click(); e.preventDefault(); break;
+        case '+': document.querySelector('[data-action="+"]')?.click(); e.preventDefault(); break;
+        case '-': document.querySelector('[data-action="-"]')?.click(); e.preventDefault(); break;
+        case '*': document.querySelector('[data-action="*"]')?.click(); e.preventDefault(); break;
+        case '/': document.querySelector('[data-action="/"]')?.click(); e.preventDefault(); break;
+        case 'Enter': case '=': document.querySelector('[data-action="equals"]')?.click(); e.preventDefault(); break;
+        case 'Backspace': document.querySelector('[data-action="backspace"]')?.click(); e.preventDefault(); break;
+        case 'Escape': document.querySelector('[data-action="clear"]')?.click(); e.preventDefault(); break;
+        case '(': document.querySelector('[data-action="("]')?.click(); e.preventDefault(); break;
+        case ')': document.querySelector('[data-action=")"]')?.click(); e.preventDefault(); break;
+        default: break;
+    }
+});
+
+// ---------- INIT ----------
+clearAll();
+renderHistory();
+
+console.log('🧮 Advanced Calculator by KnoX | Good Luck <3');
+</script>
+</body>
+  </html>
