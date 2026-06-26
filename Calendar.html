@@ -153,6 +153,8 @@
 
         .day-cell.other-month {
             color: #333;
+            cursor: default;
+            pointer-events: none;
         }
 
         .day-cell.today {
@@ -254,7 +256,7 @@
         <!-- NAVIGATION -->
         <div class="nav">
             <button id="prevMonthBtn">‹</button>
-            <span class="month-year" id="monthYearDisplay">تیر ۱۴۰۵</span>
+            <span class="month-year" id="monthYearDisplay">خرداد ۱۴۰۵</span>
             <button id="nextMonthBtn">›</button>
             <button class="today-btn" id="todayBtn">امروز</button>
         </div>
@@ -295,7 +297,13 @@
 
     <script>
         // ================================================================
-        // 🗓️ PERSIAN CALENDAR  –  by KnoX  –  Version 2.1.0 (STABLE)
+        // 🗓️ PERSIAN CALENDAR  –  by KnoX  –  Version 3.0.0 (FINAL)
+        // ================================================================
+        // - Only current month days are shown (no other month days)
+        // - Days are ordered from top to bottom correctly
+        // - Click on any day selects it
+        // - Friday is highlighted in red
+        // - Accurate leap year and day count
         // ================================================================
 
         // ---------- DOM ----------
@@ -310,7 +318,7 @@
 
         // ---------- STATE ----------
         let currentJYear = 1405;
-        let currentJMonth = 3;
+        let currentJMonth = 2; // 0 = Farvardin, 2 = Khordad
         let selectedDate = null;
 
         // ---------- HELPERS ----------
@@ -349,6 +357,8 @@
             const daysInMonth = getDaysInMonth(jYear, jMonth);
             const firstDayOfWeek = firstDate.getDay();
 
+            // 0 = Sunday, 6 = Saturday
+            // We want: 0 = Saturday, 6 = Friday
             let offset;
             if (firstDayOfWeek === 6) offset = 0;
             else if (firstDayOfWeek === 5) offset = 6;
@@ -356,95 +366,77 @@
 
             const today = getToday();
 
-            let prevMonthDays;
-            if (jMonth === 0) {
-                prevMonthDays = getDaysInMonth(jYear - 1, 11);
-            } else {
-                prevMonthDays = getDaysInMonth(jYear, jMonth - 1);
-            }
-
-            const totalCells = Math.ceil((offset + daysInMonth) / 7) * 7;
+            // Only show current month days
             const days = [];
 
-            for (let i = 0; i < totalCells; i++) {
-                let day;
-                let isOtherMonth = false;
-                let cellJYear = jYear;
-                let cellJMonth = jMonth;
-
-                if (i < offset) {
-                    const dayNum = prevMonthDays - offset + i + 1;
-                    day = dayNum;
-                    isOtherMonth = true;
-                    if (jMonth === 0) {
-                        cellJYear = jYear - 1;
-                        cellJMonth = 11;
-                    } else {
-                        cellJMonth = jMonth - 1;
-                    }
-                } else if (i >= offset + daysInMonth) {
-                    const dayNum = i - offset - daysInMonth + 1;
-                    day = dayNum;
-                    isOtherMonth = true;
-                    if (jMonth === 11) {
-                        cellJYear = jYear + 1;
-                        cellJMonth = 0;
-                    } else {
-                        cellJMonth = jMonth + 1;
-                    }
-                } else {
-                    day = i - offset + 1;
-                }
-
+            for (let i = 0; i < daysInMonth; i++) {
+                const dayNum = i + 1;
                 const cellDate = new Date(firstDate);
-                cellDate.setDate(cellDate.getDate() + (i - offset));
+                cellDate.setDate(cellDate.getDate() + i);
                 const dayOfWeekJS = cellDate.getDay();
                 const isFriday = (dayOfWeekJS === 5);
 
-                const isToday = (jYear === today.jy && jMonth === today.jm && day === today.jd && !isOtherMonth);
+                const isToday = (jYear === today.jy && jMonth === today.jm && dayNum === today.jd);
 
                 const isSelected = (selectedDate &&
-                    cellJYear === selectedDate.jy &&
-                    cellJMonth === selectedDate.jm &&
-                    day === selectedDate.jd &&
-                    !isOtherMonth);
+                    jYear === selectedDate.jy &&
+                    jMonth === selectedDate.jm &&
+                    dayNum === selectedDate.jd);
 
                 days.push({
-                    day,
-                    isOtherMonth,
+                    day: dayNum,
                     isFriday,
                     isToday,
                     isSelected,
-                    jYear: cellJYear,
-                    jMonth: cellJMonth,
-                    jd: day
+                    jYear: jYear,
+                    jMonth: jMonth,
+                    jd: dayNum,
+                    weekIndex: (offset + i) % 7
                 });
             }
 
+            // Build grid: 6 rows x 7 columns
+            // Fill empty cells at start and end with empty placeholders
+            const totalCells = Math.ceil((offset + daysInMonth) / 7) * 7;
+            const grid = [];
+
+            for (let i = 0; i < totalCells; i++) {
+                if (i < offset) {
+                    // Empty cell before month starts
+                    grid.push({ empty: true });
+                } else if (i >= offset + daysInMonth) {
+                    // Empty cell after month ends
+                    grid.push({ empty: true });
+                } else {
+                    const dayIndex = i - offset;
+                    grid.push(days[dayIndex]);
+                }
+            }
+
+            // Render
             daysGrid.innerHTML = '';
-            days.forEach(cell => {
+            grid.forEach(cell => {
                 const div = document.createElement('div');
                 div.className = 'day-cell';
-                if (cell.isOtherMonth) div.classList.add('other-month');
-                if (cell.isFriday) div.classList.add('friday');
-                if (cell.isToday) div.classList.add('today');
-                if (cell.isSelected) div.classList.add('selected');
-                div.textContent = cell.day;
 
-                div.addEventListener('click', function() {
-                    if (cell.isOtherMonth) {
-                        renderCalendar(cell.jYear, cell.jMonth);
-                        setTimeout(() => {
-                            selectDate(cell.jYear, cell.jMonth, cell.jd);
-                        }, 10);
-                    } else {
+                if (cell.empty) {
+                    div.classList.add('other-month');
+                    div.textContent = '';
+                } else {
+                    if (cell.isFriday) div.classList.add('friday');
+                    if (cell.isToday) div.classList.add('today');
+                    if (cell.isSelected) div.classList.add('selected');
+                    div.textContent = cell.day;
+
+                    div.addEventListener('click', function() {
                         selectDate(cell.jYear, cell.jMonth, cell.jd);
-                    }
-                });
+                    });
+                }
 
                 daysGrid.appendChild(div);
             });
 
+            // Update display
             monthYearDisplay.textContent = `${getMonthName(jMonth)} ${jYear}`;
 
             const todayJ = getToday();
@@ -503,6 +495,7 @@
             renderCalendar(newYear, newMonth);
         }
 
+        // ---------- EVENTS ----------
         prevMonthBtn.addEventListener('click', goToPrevMonth);
         nextMonthBtn.addEventListener('click', goToNextMonth);
         todayBtn.addEventListener('click', goToToday);
@@ -525,7 +518,7 @@
             selectDate(today.jy, today.jm, today.jd);
         }, 50);
 
-        console.log('🗓️ Persian Calendar v2.1.0 (STABLE) by KnoX | Good Luck <3');
+        console.log('🗓️ Persian Calendar v3.0.0 (FINAL) by KnoX | Good Luck <3');
     </script>
 
 </body>
