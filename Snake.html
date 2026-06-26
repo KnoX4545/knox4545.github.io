@@ -19,32 +19,35 @@
             justify-content: center;
             align-items: center;
             padding: 16px;
+            touch-action: none;
         }
         .container {
             background: #111;
             border: 2px solid #00ff41;
             border-radius: 20px;
-            padding: 24px 20px 20px;
-            max-width: 480px;
+            padding: 20px 16px 16px;
+            max-width: 460px;
             width: 100%;
             box-shadow: 0 0 50px rgba(0, 255, 65, 0.04);
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         /* ===== HEADER ===== */
         .header {
             text-align: center;
-            margin-bottom: 14px;
+            margin-bottom: 10px;
         }
         .header h1 {
             color: #00ff41;
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 700;
             letter-spacing: 3px;
         }
         .header .sub {
             color: #666;
-            font-size: 11px;
-            letter-spacing: 2px;
+            font-size: 10px;
+            letter-spacing: 1.5px;
             margin-top: 2px;
         }
         .header .sub span {
@@ -56,37 +59,39 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 4px 12px 4px;
+            padding: 6px 2px 10px 2px;
             border-bottom: 1px solid #1a1a1a;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
         .score-bar .item {
             color: #555;
-            font-size: 13px;
-            letter-spacing: 1px;
+            font-size: 12px;
+            letter-spacing: 0.5px;
         }
         .score-bar .item .num {
             color: #00ff41;
             font-weight: 700;
-            font-size: 18px;
-            margin-left: 4px;
+            font-size: 16px;
+            margin-left: 3px;
         }
         .score-bar .item .num.high {
             color: #ffd700;
         }
         .btn-restart-top {
-            padding: 6px 18px;
+            padding: 4px 14px;
             background: transparent;
             border: 1px solid #333;
             color: #888;
-            border-radius: 20px;
-            font-size: 12px;
+            border-radius: 16px;
+            font-size: 11px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             font-family: inherit;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            touch-action: manipulation;
         }
-        .btn-restart-top:hover {
+        .btn-restart-top:active {
+            transform: scale(0.92);
             border-color: #00ff41;
             color: #00ff41;
         }
@@ -99,6 +104,7 @@
             border: 1px solid #1a1a1a;
             overflow: hidden;
             aspect-ratio: 1 / 1;
+            touch-action: none;
         }
         #gameCanvas {
             display: block;
@@ -116,84 +122,87 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.88);
             display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             border-radius: 12px;
             padding: 20px;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(3px);
         }
         .overlay.show {
             display: flex;
         }
         .overlay .gameover-title {
             color: #ff4444;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
         }
         .overlay .final-score {
             color: #aaa;
-            font-size: 15px;
-            margin-top: 8px;
+            font-size: 14px;
+            margin-top: 6px;
         }
         .overlay .final-score .num {
             color: #00ff41;
             font-weight: 700;
-            font-size: 20px;
+            font-size: 18px;
         }
         .overlay .final-score .num.high {
             color: #ffd700;
         }
         .overlay .btn-restart-overlay {
-            margin-top: 18px;
-            padding: 10px 36px;
+            margin-top: 16px;
+            padding: 8px 32px;
             background: transparent;
             border: 2px solid #00ff41;
             color: #00ff41;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
             border-radius: 30px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 2px;
+            transition: all 0.2s ease;
+            letter-spacing: 1.5px;
             font-family: inherit;
+            touch-action: manipulation;
         }
-        .overlay .btn-restart-overlay:hover {
+        .overlay .btn-restart-overlay:active {
+            transform: scale(0.92);
             background: #00ff41;
             color: #0a0a0a;
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.1);
         }
 
-        /* ===== D-PAD ===== */
+        /* ===== D-PAD (Faster) ===== */
         .dpad {
             display: grid;
-            grid-template-columns: 60px 60px 60px;
-            grid-template-rows: 60px 60px 60px;
-            gap: 6px;
+            grid-template-columns: 56px 56px 56px;
+            grid-template-rows: 56px 56px 56px;
+            gap: 5px;
             justify-content: center;
-            margin: 16px auto 0;
+            margin: 14px auto 0;
             width: fit-content;
+            touch-action: none;
         }
         .dpad-btn {
             background: #1a1a1a;
             border: 1px solid #2a2a2a;
             border-radius: 12px;
-            color: #666;
-            font-size: 24px;
+            color: #888;
+            font-size: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.08s ease;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
+            -webkit-touch-callout: none;
         }
         .dpad-btn:active {
-            transform: scale(0.90);
+            transform: scale(0.88);
             background: #2a2a2a;
             border-color: #00ff41;
             color: #00ff41;
@@ -204,7 +213,7 @@
             grid-column: 2; grid-row: 2; 
             background: #0d0d0d;
             border-color: #1a1a1a;
-            font-size: 12px;
+            font-size: 10px;
             color: #333;
             cursor: default;
             border-radius: 50%;
@@ -216,11 +225,11 @@
         .footer {
             text-align: center;
             color: #222;
-            font-size: 10px;
-            margin-top: 14px;
-            padding-top: 10px;
+            font-size: 9px;
+            margin-top: 12px;
+            padding-top: 8px;
             border-top: 1px solid #111;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
         .footer span {
             color: #00ff41;
@@ -228,28 +237,28 @@
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 480px) {
-            .container { padding: 16px 12px 14px; }
-            .header h1 { font-size: 20px; }
-            .score-bar .item { font-size: 11px; }
-            .score-bar .item .num { font-size: 15px; }
-            .btn-restart-top { font-size: 10px; padding: 4px 14px; }
-            .overlay .gameover-title { font-size: 22px; }
-            .overlay .btn-restart-overlay { padding: 8px 24px; font-size: 13px; }
+            .container { padding: 14px 10px 12px; }
+            .header h1 { font-size: 18px; }
+            .score-bar .item { font-size: 10px; }
+            .score-bar .item .num { font-size: 14px; }
+            .btn-restart-top { font-size: 9px; padding: 3px 12px; }
+            .overlay .gameover-title { font-size: 20px; }
+            .overlay .btn-restart-overlay { padding: 6px 20px; font-size: 12px; }
             .dpad {
-                grid-template-columns: 50px 50px 50px;
-                grid-template-rows: 50px 50px 50px;
-                gap: 5px;
+                grid-template-columns: 48px 48px 48px;
+                grid-template-rows: 48px 48px 48px;
+                gap: 4px;
             }
-            .dpad-btn { font-size: 20px; border-radius: 10px; }
-            .dpad-btn.center { font-size: 10px; }
+            .dpad-btn { font-size: 18px; border-radius: 10px; }
+            .dpad-btn.center { font-size: 8px; }
         }
         @media (max-width: 380px) {
             .dpad {
-                grid-template-columns: 44px 44px 44px;
-                grid-template-rows: 44px 44px 44px;
-                gap: 4px;
+                grid-template-columns: 42px 42px 42px;
+                grid-template-rows: 42px 42px 42px;
+                gap: 3px;
             }
-            .dpad-btn { font-size: 17px; border-radius: 8px; }
+            .dpad-btn { font-size: 15px; border-radius: 8px; }
         }
     </style>
 </head>
@@ -265,15 +274,14 @@
 
     <!-- SCORE BAR -->
     <div class="score-bar">
-        <span class="item">🍎 Score <span class="num" id="scoreDisplay">0</span></span>
-        <span class="item">🏆 Best <span class="num high" id="highScoreDisplay">0</span></span>
+        <span class="item">🍎 <span class="num" id="scoreDisplay">0</span></span>
+        <span class="item">🏆 <span class="num high" id="highScoreDisplay">0</span></span>
         <button class="btn-restart-top" id="restartTopBtn">↻ Restart</button>
     </div>
 
     <!-- CANVAS -->
     <div class="canvas-wrap">
         <canvas id="gameCanvas" width="400" height="400"></canvas>
-        <!-- Game Over Overlay -->
         <div class="overlay" id="gameOverOverlay">
             <div class="gameover-title">💀 GAME OVER</div>
             <div class="final-score">Score: <span class="num" id="finalScore">0</span></div>
@@ -282,7 +290,7 @@
         </div>
     </div>
 
-    <!-- ===== D-PAD ===== -->
+    <!-- D-PAD -->
     <div class="dpad" id="dpad">
         <button class="dpad-btn up"    data-dir="up">▲</button>
         <button class="dpad-btn left"  data-dir="left">◀</button>
@@ -300,7 +308,7 @@
 
 <script>
 // ================================================================
-// 🐍 SNAKE GAME  –  by KnoX  –  Version 1.0.0
+// 🐍 SNAKE GAME  –  by KnoX  –  Version 1.1.0
 // ================================================================
 
 // ---------- DOM ----------
@@ -317,7 +325,7 @@ const restartOverlayBtn = document.getElementById('restartOverlayBtn');
 // ---------- SETTINGS ----------
 const BOARD_SIZE = 20;
 const CELL_SIZE = canvas.width / BOARD_SIZE;
-const TICK_INTERVAL = 150;
+const TICK_INTERVAL = 130; // faster
 
 // ---------- STATE ----------
 let snake = [];
@@ -328,6 +336,7 @@ let score = 0;
 let highScore = 0;
 let gameRunning = false;
 let gameLoop = null;
+let inputQueue = []; // queue for rapid input
 
 // ---------- HIGH SCORE ----------
 function loadHighScore() {
@@ -335,15 +344,12 @@ function loadHighScore() {
         const saved = localStorage.getItem('snake_highscore');
         if (saved) highScore = parseInt(saved, 10) || 0;
     } catch (e) { /* ignore */ }
-    updateHighScoreDisplay();
+    highScoreDisplay.textContent = highScore;
 }
 function saveHighScore() {
     try {
         localStorage.setItem('snake_highscore', String(highScore));
     } catch (e) { /* ignore */ }
-}
-function updateHighScoreDisplay() {
-    highScoreDisplay.textContent = highScore;
 }
 
 // ---------- INIT ----------
@@ -355,6 +361,7 @@ function initGame() {
     ];
     direction = { dx: 1, dy: 0 };
     nextDirection = { dx: 1, dy: 0 };
+    inputQueue = [];
     score = 0;
     scoreDisplay.textContent = '0';
     gameRunning = true;
@@ -390,7 +397,7 @@ function spawnFood() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Grid
+    // Grid (subtle)
     ctx.strokeStyle = '#141414';
     ctx.lineWidth = 0.5;
     for (let i = 0; i <= BOARD_SIZE; i++) {
@@ -420,6 +427,7 @@ function draw() {
     ctx.shadowBlur = 0;
 
     // Snake
+    const len = snake.length;
     snake.forEach((cell, index) => {
         const isHead = index === 0;
         const x = cell.x * CELL_SIZE;
@@ -427,7 +435,7 @@ function draw() {
         const padding = isHead ? 1 : 2;
         const radius = 4;
 
-        const intensity = 0.4 + (0.6 * (1 - index / snake.length));
+        const intensity = 0.4 + (0.6 * (1 - index / len));
         const green = Math.round(200 * intensity);
         ctx.fillStyle = isHead ? '#00ff41' : `rgb(0, ${green}, 60)`;
 
@@ -450,8 +458,8 @@ function draw() {
 
         if (isHead) {
             ctx.shadowColor = '#00ff41';
-            ctx.shadowBlur = 20;
-            ctx.fillStyle = 'rgba(0,255,65,0.10)';
+            ctx.shadowBlur = 18;
+            ctx.fillStyle = 'rgba(0,255,65,0.08)';
             ctx.beginPath();
             ctx.arc(x + CELL_SIZE/2, y + CELL_SIZE/2, CELL_SIZE/2, 0, Math.PI * 2);
             ctx.fill();
@@ -459,7 +467,7 @@ function draw() {
         }
     });
 
-    // Eyes
+    // Eyes (quick)
     const head = snake[0];
     if (head) {
         const hx = head.x * CELL_SIZE + CELL_SIZE / 2;
@@ -487,6 +495,16 @@ function draw() {
 function update() {
     if (!gameRunning) return;
 
+    // Process queued input (rapid)
+    while (inputQueue.length > 0) {
+        const dir = inputQueue.shift();
+        // Check if valid (not opposite)
+        if (direction.dx !== -dir.dx || direction.dy !== -dir.dy) {
+            nextDirection = dir;
+            break;
+        }
+    }
+
     direction = { ...nextDirection };
 
     const head = snake[0];
@@ -495,6 +513,7 @@ function update() {
         y: head.y + direction.dy
     };
 
+    // Wall collision
     if (newHead.x < 0 || newHead.x >= BOARD_SIZE || newHead.y < 0 || newHead.y >= BOARD_SIZE) {
         gameOver();
         return;
@@ -502,7 +521,9 @@ function update() {
 
     const isEating = (newHead.x === food.x && newHead.y === food.y);
 
-    for (let i = 0; i < snake.length - 1; i++) {
+    // Self collision (except tail if eating)
+    const tailIndex = isEating ? snake.length : snake.length - 1;
+    for (let i = 0; i < tailIndex; i++) {
         if (snake[i].x === newHead.x && snake[i].y === newHead.y) {
             gameOver();
             return;
@@ -536,7 +557,7 @@ function gameOver() {
     if (score > highScore) {
         highScore = score;
         saveHighScore();
-        updateHighScoreDisplay();
+        highScoreDisplay.textContent = highScore;
     }
     finalScore.textContent = score;
     finalHighScore.textContent = highScore;
@@ -553,7 +574,7 @@ function gameWin() {
     if (score > highScore) {
         highScore = score;
         saveHighScore();
-        updateHighScoreDisplay();
+        highScoreDisplay.textContent = highScore;
     }
     finalScore.textContent = score + ' 🏆';
     finalHighScore.textContent = highScore;
@@ -572,12 +593,17 @@ function restartGame() {
     gameLoop = setInterval(update, TICK_INTERVAL);
 }
 
-// ---------- DIRECTION CONTROL ----------
+// ---------- DIRECTION (with queue) ----------
 function setDirection(dx, dy) {
     if (!gameRunning) return;
-    // Prevent 180-degree turns
-    if (direction.dx === -dx && direction.dy === -dy) return;
-    nextDirection = { dx, dy };
+    // Don't add if same as last queued
+    if (inputQueue.length > 0) {
+        const last = inputQueue[inputQueue.length - 1];
+        if (last.dx === dx && last.dy === dy) return;
+    }
+    inputQueue.push({ dx, dy });
+    // Limit queue size
+    if (inputQueue.length > 3) inputQueue.shift();
 }
 
 // ---------- KEYBOARD ----------
@@ -601,48 +627,54 @@ function handleKey(e) {
     }
 }
 
-// ---------- DPAD EVENTS (Fixed) ----------
+// ---------- DPAD EVENTS (Fast & Responsive) ----------
 document.querySelectorAll('.dpad-btn[data-dir]').forEach(btn => {
+    const dirMap = {
+        'up': { dx: 0, dy: -1 },
+        'down': { dx: 0, dy: 1 },
+        'left': { dx: -1, dy: 0 },
+        'right': { dx: 1, dy: 0 }
+    };
     const dir = btn.dataset.dir;
-    
+
     // Click for desktop
     btn.addEventListener('click', function(e) {
         e.preventDefault();
-        if (!gameRunning) return;
-        switch (dir) {
-            case 'up':    setDirection(0, -1); break;
-            case 'down':  setDirection(0, 1); break;
-            case 'left':  setDirection(-1, 0); break;
-            case 'right': setDirection(1, 0); break;
-        }
+        const d = dirMap[dir];
+        if (d) setDirection(d.dx, d.dy);
     });
-    
-    // Touch for mobile
+
+    // Touch for mobile (immediate response)
     btn.addEventListener('touchstart', function(e) {
         e.preventDefault();
-        if (!gameRunning) return;
-        switch (dir) {
-            case 'up':    setDirection(0, -1); break;
-            case 'down':  setDirection(0, 1); break;
-            case 'left':  setDirection(-1, 0); break;
-            case 'right': setDirection(1, 0); break;
-        }
+        const d = dirMap[dir];
+        if (d) setDirection(d.dx, d.dy);
     }, { passive: false });
+
+    // Also mousedown for faster response
+    btn.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        const d = dirMap[dir];
+        if (d) setDirection(d.dx, d.dy);
+    });
 });
 
-// ---------- RESTART BUTTONS ----------
+// ---------- RESTART ----------
 restartTopBtn.addEventListener('click', restartGame);
 restartOverlayBtn.addEventListener('click', restartGame);
+
+// ---------- PREVENT SCROLLING ----------
+document.addEventListener('touchmove', function(e) {
+    if (e.target.closest('.container')) e.preventDefault();
+}, { passive: false });
 
 // ---------- INIT ----------
 loadHighScore();
 initGame();
 gameLoop = setInterval(update, TICK_INTERVAL);
-
-// ---------- KEYBOARD ----------
 document.addEventListener('keydown', handleKey);
 
-console.log('🐍 Snake Game by KnoX | Good Luck <3');
+console.log('🐍 Snake Game v1.1.0 by KnoX | Good Luck <3');
 </script>
 </body>
 </html>
