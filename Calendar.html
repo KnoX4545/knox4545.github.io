@@ -7,9 +7,6 @@
     <script src="https://cdn.jsdelivr.net/npm/jalaali-js@1.2.6/dist/jalaali.js">
     </script>
     <style>
-        /* ============================
-                   RESET & BASE
-                ============================ */
         * {
             margin: 0;
             padding: 0;
@@ -38,9 +35,6 @@
             color: #aaa;
         }
 
-        /* ============================
-                   HEADER
-                ============================ */
         .header {
             text-align: center;
             margin-bottom: 18px;
@@ -64,9 +58,6 @@
             color: #00ff41;
         }
 
-        /* ============================
-                   MONTH NAVIGATION
-                ============================ */
         .nav {
             display: flex;
             justify-content: space-between;
@@ -118,9 +109,6 @@
             color: #00ff41;
         }
 
-        /* ============================
-                   WEEKDAY HEADERS
-                ============================ */
         .weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -137,9 +125,6 @@
             color: #ff4444;
         }
 
-        /* ============================
-                   DAYS GRID
-                ============================ */
         .days-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -186,9 +171,6 @@
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.08);
         }
 
-        /* ============================
-                   INFO BOX
-                ============================ */
         .info-box {
             margin-top: 16px;
             padding: 12px 14px;
@@ -214,9 +196,6 @@
             font-family: 'Courier New', monospace;
         }
 
-        /* ============================
-                   SELECTED DATE DISPLAY
-                ============================ */
         .selected-display {
             margin-top: 10px;
             padding: 8px 14px;
@@ -233,9 +212,6 @@
             font-weight: 600;
         }
 
-        /* ============================
-                   FOOTER
-                ============================ */
         .footer {
             text-align: center;
             color: #222;
@@ -250,48 +226,18 @@
             color: #00ff41;
         }
 
-        /* ============================
-                   RESPONSIVE
-                ============================ */
         @media (max-width: 420px) {
-            .container {
-                padding: 16px 12px 14px;
-            }
-
-            .header h1 {
-                font-size: 20px;
-            }
-
-            .nav .month-year {
-                font-size: 15px;
-            }
-
-            .nav button {
-                font-size: 17px;
-                padding: 2px 10px;
-            }
-
-            .day-cell {
-                font-size: 13px;
-                border-radius: 8px;
-            }
-
-            .info-box {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 2px;
-            }
+            .container { padding: 16px 12px 14px; }
+            .header h1 { font-size: 20px; }
+            .nav .month-year { font-size: 15px; }
+            .nav button { font-size: 17px; padding: 2px 10px; }
+            .day-cell { font-size: 13px; border-radius: 8px; }
+            .info-box { flex-direction: column; align-items: flex-start; gap: 2px; }
         }
 
         @media (max-width: 360px) {
-            .day-cell {
-                font-size: 11px;
-                border-radius: 6px;
-            }
-
-            .weekdays {
-                font-size: 10px;
-            }
+            .day-cell { font-size: 11px; border-radius: 6px; }
+            .weekdays { font-size: 10px; }
         }
     </style>
 </head>
@@ -327,12 +273,12 @@
         <!-- DAYS -->
         <div class="days-grid" id="daysGrid"></div>
 
-        <!-- SELECTED DATE DISPLAY -->
-        <div class="selected-display" id="selectedDisplay">
+        <!-- SELECTED DATE -->
+        <div class="selected-display">
             📅 تاریخ انتخاب‌شده: <span class="sel-date" id="selectedDateText">هیچ</span>
         </div>
 
-        <!-- INFO BOX -->
+        <!-- INFO -->
         <div class="info-box">
             <span class="label">📅 تاریخ امروز:</span>
             <span class="value" id="todayDateDisplay">۱۴۰۵/۰۴/۰۶</span>
@@ -349,9 +295,7 @@
 
     <script>
         // ================================================================
-        // 🗓️ PERSIAN CALENDAR  –  by KnoX  –  Version 2.3.0
-        // ================================================================
-        // COMPLETE PERSIAN CALENDAR WITH ACCURATE LEAP YEAR ALGORITHM
+        // 🗓️ PERSIAN CALENDAR  –  by KnoX  –  Version 2.1.0 (STABLE)
         // ================================================================
 
         // ---------- DOM ----------
@@ -369,66 +313,22 @@
         let currentJMonth = 3;
         let selectedDate = null;
 
-        // ---------- PERSIAN CALENDAR CONSTANTS ----------
-        const MONTH_NAMES = [
-            'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
-            'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
-        ];
-
-        const PERSIAN_WEEKDAYS = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'];
-
-        // ---------- PERSIAN CALENDAR ALGORITHM ----------
-        // The Persian calendar is based on a 33-year cycle with 8 leap years.
-        // Leap years occur in years 1, 5, 9, 13, 17, 22, 26, 30 of each 33-year cycle.
-        // The base year 1 corresponds to 622 CE (Hegira).
-
-        function isLeapYear(jy) {
-            // Accurate Persian leap year algorithm
-            // Based on the 33-year cycle used in the official Persian calendar
-            const y = jy + 2346; // Adjust to the cycle base
-            return (y * 8 + 4) % 33 < 8;
-        }
-
-        function getDaysInMonth(jy, jm) {
-            // jm is 0-based (0 = Farvardin, 11 = Esfand)
-            // First 6 months (Farvardin to Shahrivar): 31 days
-            // Next 5 months (Mehr to Bahman): 30 days
-            // Esfand: 29 days normally, 30 in leap years
-            if (jm < 6) {
-                return 31;
-            } else if (jm < 11) {
-                return 30;
-            } else {
-                return isLeapYear(jy) ? 30 : 29;
-            }
-        }
-
-        function getTotalDaysInYear(jy) {
-            // Total days in a Persian year (365 or 366)
-            let total = 0;
-            for (let jm = 0; jm < 12; jm++) {
-                total += getDaysInMonth(jy, jm);
-            }
-            return total;
-        }
-
-        function getFirstDayOfMonth(jy, jm) {
-            // Return the day of week for the first day of the month
-            // 0 = Saturday, 6 = Friday
-            // Using the known reference: 1405/04/01 = Thursday? Let's compute with jalaali-js
-            const g = jalaali.toGregorian(jy, jm + 1, 1);
-            const date = new Date(g.gy, g.gm - 1, g.gd);
-            const dayOfWeek = date.getDay(); // 0=Sunday, 6=Saturday
-            // Map to Persian week: 0=Saturday, 6=Friday
-            return (dayOfWeek + 1) % 7;
+        // ---------- HELPERS ----------
+        function getMonthName(jMonth) {
+            const names = [
+                'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+                'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+            ];
+            return names[jMonth] || '';
         }
 
         function getWeekdayName(jy, jm, jd) {
             const g = jalaali.toGregorian(jy, jm + 1, jd);
             const date = new Date(g.gy, g.gm - 1, g.gd);
             const dayOfWeek = date.getDay();
+            const persianWeek = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'];
             let idx = (dayOfWeek + 1) % 7;
-            return PERSIAN_WEEKDAYS[idx];
+            return persianWeek[idx];
         }
 
         function getToday() {
@@ -437,10 +337,23 @@
             return { jy: j.jy, jm: j.jm - 1, jd: j.jd };
         }
 
-        // ---------- RENDER CALENDAR ----------
+        function getDaysInMonth(jy, jm) {
+            return jalaali.jalaaliMonthLength(jy, jm + 1);
+        }
+
+        // ---------- RENDER ----------
         function renderCalendar(jYear, jMonth) {
+            const firstDayGreg = jalaali.toGregorian(jYear, jMonth + 1, 1);
+            const firstDate = new Date(firstDayGreg.gy, firstDayGreg.gm - 1, firstDayGreg.gd);
+
             const daysInMonth = getDaysInMonth(jYear, jMonth);
-            const firstDayOfWeek = getFirstDayOfMonth(jYear, jMonth);
+            const firstDayOfWeek = firstDate.getDay();
+
+            let offset;
+            if (firstDayOfWeek === 6) offset = 0;
+            else if (firstDayOfWeek === 5) offset = 6;
+            else offset = firstDayOfWeek + 1;
+
             const today = getToday();
 
             let prevMonthDays;
@@ -450,7 +363,6 @@
                 prevMonthDays = getDaysInMonth(jYear, jMonth - 1);
             }
 
-            const offset = firstDayOfWeek;
             const totalCells = Math.ceil((offset + daysInMonth) / 7) * 7;
             const days = [];
 
@@ -484,9 +396,13 @@
                     day = i - offset + 1;
                 }
 
-                const dayOfWeek = (i % 7);
-                const isFriday = (dayOfWeek === 6);
+                const cellDate = new Date(firstDate);
+                cellDate.setDate(cellDate.getDate() + (i - offset));
+                const dayOfWeekJS = cellDate.getDay();
+                const isFriday = (dayOfWeekJS === 5);
+
                 const isToday = (jYear === today.jy && jMonth === today.jm && day === today.jd && !isOtherMonth);
+
                 const isSelected = (selectedDate &&
                     cellJYear === selectedDate.jy &&
                     cellJMonth === selectedDate.jm &&
@@ -505,7 +421,6 @@
                 });
             }
 
-            // Render
             daysGrid.innerHTML = '';
             days.forEach(cell => {
                 const div = document.createElement('div');
@@ -530,14 +445,14 @@
                 daysGrid.appendChild(div);
             });
 
-            // Update displays
             monthYearDisplay.textContent = `${getMonthName(jMonth)} ${jYear}`;
 
             const todayJ = getToday();
             const todayDateStr =
                 `${todayJ.jy}/${String(todayJ.jm + 1).padStart(2, '0')}/${String(todayJ.jd).padStart(2, '0')}`;
             todayDateDisplay.textContent = todayDateStr;
-            weekdayDisplay.textContent = getWeekdayName(todayJ.jy, todayJ.jm, todayJ.jd);
+            const wd = getWeekdayName(todayJ.jy, todayJ.jm, todayJ.jd);
+            weekdayDisplay.textContent = wd;
 
             if (selectedDate) {
                 const selStr =
@@ -552,13 +467,11 @@
             currentJMonth = jMonth;
         }
 
-        // ---------- SELECT DATE ----------
         function selectDate(jy, jm, jd) {
             selectedDate = { jy, jm, jd };
             renderCalendar(currentJYear, currentJMonth);
         }
 
-        // ---------- NAVIGATION ----------
         function goToToday() {
             const today = getToday();
             selectedDate = null;
@@ -590,7 +503,6 @@
             renderCalendar(newYear, newMonth);
         }
 
-        // ---------- EVENT LISTENERS ----------
         prevMonthBtn.addEventListener('click', goToPrevMonth);
         nextMonthBtn.addEventListener('click', goToNextMonth);
         todayBtn.addEventListener('click', goToToday);
@@ -613,11 +525,7 @@
             selectDate(today.jy, today.jm, today.jd);
         }, 50);
 
-        console.log('🗓️ Persian Calendar v2.3.0 (Complete) by KnoX | Good Luck <3');
-        console.log('📅 Today:', today.jy, getMonthName(today.jm), today.jd);
-        console.log('📆 Days in current month:', getDaysInMonth(today.jy, today.jm));
-        console.log('📆 Leap year?', isLeapYear(today.jy) ? 'Yes (366 days)' : 'No (365 days)');
-        console.log('📆 Total days in year:', getTotalDaysInYear(today.jy));
+        console.log('🗓️ Persian Calendar v2.1.0 (STABLE) by KnoX | Good Luck <3');
     </script>
 
 </body>
