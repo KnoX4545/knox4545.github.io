@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقویم شمسی</title>
+
+    <!-- ====== LOAD JALAALI-JS FROM CDN ====== -->
+    <script src="https://cdn.jsdelivr.net/npm/jalaali-js@1.2.6/dist/jalaali.js">
+    </script>
+
+    <style>
+        /* ============================
+                   RESET & BASE
+                ============================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            direction: rtl;
+        }
+
+        .container {
+            background: #111;
+            border: 2px solid #00ff41;
+            border-radius: 24px;
+            padding: 24px 20px 20px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 0 60px rgba(0, 255, 65, 0.04);
+            color: #aaa;
+        }
+
+        /* ============================
+                   HEADER
+                ============================ */
+        .header {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .header h1 {
+            color: #00ff41;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .header .sub {
+            color: #666;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            margin-top: 4px;
+        }
+
+        .header .sub span {
+            color: #00ff41;
+        }
+
+        /* ============================
+                   MONTH NAVIGATION
+                ============================ */
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 4px 12px 4px;
+            border-bottom: 1px solid #1a1a1a;
+            margin-bottom: 16px;
+        }
+
+        .nav .month-year {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .nav button {
+            background: transparent;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            color: #888;
+            font-size: 20px;
+            padding: 4px 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            line-height: 1.6;
+            touch-action: manipulation;
+        }
+
+        .nav button:hover {
+            border-color: #00ff41;
+            color: #00ff41;
+        }
+
+        .nav button:active {
+            transform: scale(0.92);
+        }
+
+        .nav .today-btn {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-color: #333;
+            color: #555;
+        }
+
+        .nav .today-btn:hover {
+            border-color: #00ff41;
+            color: #00ff41;
+        }
+
+        /* ============================
+                   WEEKDAY HEADERS
+                ============================ */
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 8px;
+            text-align: center;
+            color: #555;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .weekdays .holiday {
+            color: #ff4444;
+        }
+
+        /* ============================
+                   DAYS GRID
+                ============================ */
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .day-cell {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #aaa;
+            background: #0d0d0d;
+            border: 1px solid transparent;
+            transition: all 0.15s ease;
+            cursor: default;
+            user-select: none;
+        }
+
+        .day-cell.other-month {
+            color: #333;
+        }
+
+        .day-cell.today {
+            border-color: #00ff41;
+            color: #00ff41;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.04);
+        }
+
+        .day-cell.holiday {
+            color: #ff4444;
+        }
+
+        .day-cell.friday {
+            color: #ff6b6b;
+        }
+
+        /* ============================
+                   INFO BOX
+                ============================ */
+        .info-box {
+            margin-top: 16px;
+            padding: 12px 14px;
+            background: #0d0d0d;
+            border-radius: 12px;
+            border: 1px solid #1a1a1a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .info-box .label {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .info-box .value {
+            color: #00ff41;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .info-box .value.holiday-name {
+            color: #ffd700;
+        }
+
+        /* ============================
+                   FOOTER
+                ============================ */
+        .footer {
+            text-align: center;
+            color: #222;
+            font-size: 9px;
+            margin-top: 18px;
+            padding-top: 12px;
+            border-top: 1px solid #111;
+            letter-spacing: 0.5px;
+        }
+
+        .footer span {
+            color: #00ff41;
+        }
+
+        /* ============================
+                   RESPONSIVE
+                ============================ */
+        @media (max-width: 420px) {
+            .container {
+                padding: 16px 12px 14px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .nav .month-year {
+                font-size: 15px;
+            }
+
+            .nav button {
+                font-size: 17px;
+                padding: 2px 10px;
+            }
+
+            .day-cell {
+                font-size: 13px;
+                border-radius: 8px;
+            }
+
+            .info-box {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .day-cell {
+                font-size: 11px;
+                border-radius: 6px;
+            }
+
+            .weekdays {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🗓️ تقویم شمسی</h1>
+            <div class="sub">by <span>KnoX</span>  |  Good Luck &lt;3</div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="nav">
+            <button id="prevMonthBtn">‹</button>
+            <span class="month-year" id="monthYearDisplay">مهر ۱۴۰۴</span>
+            <button id="nextMonthBtn">›</button>
+            <button class="today-btn" id="todayBtn">امروز</button>
+        </div>
+
+        <!-- WEEKDAYS -->
+        <div class="weekdays">
+            <span class="holiday">ش</span>
+            <span>ی</span>
+            <span>د</span>
+            <span>س</span>
+            <span>چ</span>
+            <span>پ</span>
+            <span class="holiday">ج</span>
+        </div>
+
+        <!-- DAYS -->
+        <div class="days-grid" id="daysGrid"></div>
+
+        <!-- INFO BOX -->
+        <div class="info-box">
+            <span class="label">📅 تاریخ امروز:</span>
+            <span class="value" id="todayDateDisplay">۱۴۰۴/۰۷/۰۱</span>
+            <span class="label">📆 روز هفته:</span>
+            <span class="value" id="weekdayDisplay">یکشنبه</span>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <span>#Dillimore Projects by KnoX</span>  |  Good Luck &lt;3
+        </div>
+
+    </div>
+
+    <script>
+        // ================================================================
+        // 🗓️ PERSIAN CALENDAR  –  by KnoX  –  Version 1.0.0
+        // ================================================================
+
+        // ---------- DOM ----------
+        const monthYearDisplay = document.getElementById('monthYearDisplay');
+        const daysGrid = document.getElementById('daysGrid');
+        const todayDateDisplay = document.getElementById('todayDateDisplay');
+        const weekdayDisplay = document.getElementById('weekdayDisplay');
+        const prevMonthBtn = document.getElementById('prevMonthBtn');
+        const nextMonthBtn = document.getElementById('nextMonthBtn');
+        const todayBtn = document.getElementById('todayBtn');
+
+        // ---------- STATE ----------
+        // Current displayed month (Jalali)
+        let currentJYear = 1404;
+        let currentJMonth = 6; // 0-based (0 = Farvardin, 6 = Mehr)
+
+        // ---------- HELPERS ----------
+        function getMonthName(jMonth) {
+            const names = [
+                'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+                'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+            ];
+            return names[jMonth] || '';
+        }
+
+        function getWeekdayName(jd) {
+            // jd = Julian Day Number
+            // 0 = Monday? We'll map with a known reference.
+            // Known: 2026-09-23 (Gregorian) = 1404-07-01 (Jalali) = Wednesday
+            // Calculate weekday: we use a known reference
+            const refJd = 2460967; // Julian Day for 2026-09-23 (Wednesday)
+            const diff = jd - refJd;
+            const weekdays = ['چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه'];
+            let idx = ((diff % 7) + 7) % 7;
+            return weekdays[idx];
+        }
+
+        // ---------- RENDER CALENDAR ----------
+        function renderCalendar(jYear, jMonth) {
+            // Get first day of month in Gregorian
+            const firstDayGreg = jalaali.toGregorian(jYear, jMonth + 1, 1);
+            const firstDate = new Date(firstDayGreg.gy, firstDayGreg.gm - 1, firstDayGreg.gd);
+
+            // Get number of days in this Jalali month
+            const daysInMonth = jalaali.jalaaliMonthLength(jYear, jMonth + 1);
+
+            // Get the day of week for the first day (0 = Sunday, 1 = Monday, ...)
+            // We want the grid to start with Saturday (Shanbeh)
+            const firstDayOfWeek = firstDate.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+
+            // In Persian calendar, week starts on Saturday (Shanbeh) = 6 in JS
+            const startOffset = (firstDayOfWeek === 6) ? 0 : (firstDayOfWeek + 1) % 7;
+            // Actually simpler: we want column 0 = Saturday, column 6 = Friday
+            // JS: 0=Sun, 1=Mon, ..., 6=Sat
+            // So offset = (dayOfWeek + 1) % 7 ? let's test:
+            // If dayOfWeek=6 (Sat), offset=0. If dayOfWeek=0 (Sun), offset=1.
+            const offset = (firstDayOfWeek + 1) % 7;
+
+            // Get today's Jalali date
+            const today = new Date();
+            const todayJalali = jalaali.toJalaali(today.getFullYear(), today.getMonth() + 1, today.getDate());
+            const isToday = (jYear === todayJalali.jy && jMonth === todayJalali.jm - 1);
+
+            // Build days array
+            const totalCells = Math.ceil((offset + daysInMonth) / 7) * 7;
+            const days = [];
+
+            // Previous month days
+            const prevMonthDays = jalaali.jalaaliMonthLength(jYear, jMonth); // if jMonth=0, prev month is last year
+            let prevMonthDaysCount = prevMonthDays;
+            if (jMonth === 0) {
+                // previous month is Esfand of last year
+                const prevYear = jYear - 1;
+                prevMonthDaysCount = jalaali.jalaaliMonthLength(prevYear, 12);
+            } else {
+                prevMonthDaysCount = jalaali.jalaaliMonthLength(jYear, jMonth);
+            }
+
+            for (let i = 0; i < totalCells; i++) {
+                let day;
+                let isOtherMonth = false;
+                let cellJYear = jYear;
+                let cellJMonth = jMonth;
+
+                if (i < offset) {
+                    // Previous month
+                    const dayNum = prevMonthDaysCount - offset + i + 1;
+                    day = dayNum;
+                    isOtherMonth = true;
+                    if (jMonth === 0) {
+                        cellJYear = jYear - 1;
+                        cellJMonth = 11; // Esfand
+                    } else {
+                        cellJMonth = jMonth - 1;
+                    }
+                } else if (i >= offset + daysInMonth) {
+                    // Next month
+                    const dayNum = i - offset - daysInMonth + 1;
+                    day = dayNum;
+                    isOtherMonth = true;
+                    if (jMonth === 11) {
+                        cellJYear = jYear + 1;
+                        cellJMonth = 0;
+                    } else {
+                        cellJMonth = jMonth + 1;
+                    }
+                } else {
+                    day = i - offset + 1;
+                }
+
+                // Determine if it's a holiday (Friday = Jomeh)
+                const cellDate = new Date(firstDate);
+                cellDate.setDate(cellDate.getDate() + (i - offset));
+                const dayOfWeekJS = cellDate.getDay(); // 0=Sun, 6=Sat
+                const isFriday = (dayOfWeekJS === 5); // Friday in JS is 5
+
+                // Check if this cell is today
+                const isTodayCell = isToday && !isOtherMonth && day === todayJalali.jd;
+
+                days.push({
+                    day,
+                    isOtherMonth,
+                    isFriday,
+                    isToday: isTodayCell,
+                    jYear: cellJYear,
+                    jMonth: cellJMonth,
+                    dayOfWeek: dayOfWeekJS
+                });
+            }
+
+            // Render
+            daysGrid.innerHTML = '';
+            days.forEach(cell => {
+                const div = document.createElement('div');
+                div.className = 'day-cell';
+                if (cell.isOtherMonth) div.classList.add('other-month');
+                if (cell.isFriday) div.classList.add('friday');
+                if (cell.isToday) div.classList.add('today');
+                div.textContent = cell.day;
+                daysGrid.appendChild(div);
+            });
+
+            // Update month/year display
+            monthYearDisplay.textContent = `${getMonthName(jMonth)} ${jYear}`;
+
+            // Update today's info
+            const todayJalali2 = jalaali.toJalaali(today.getFullYear(), today.getMonth() + 1, today.getDate());
+            const todayJd = jalaali.toJd(todayJalali2.jy, todayJalali2.jm, todayJalali2.jd);
+            const weekdayName = getWeekdayName(todayJd);
+            const todayDateStr = `${todayJalali2.jy}/${String(todayJalali2.jm).padStart(2, '0')}/${String(todayJalali2.jd).padStart(2, '0')}`;
+            todayDateDisplay.textContent = todayDateStr;
+            weekdayDisplay.textContent = weekdayName;
+
+            // Store current state for navigation
+            currentJYear = jYear;
+            currentJMonth = jMonth;
+        }
+
+        // ---------- NAVIGATION ----------
+        function goToToday() {
+            const today = new Date();
+            const j = jalaali.toJalaali(today.getFullYear(), today.getMonth() + 1, today.getDate());
+            renderCalendar(j.jy, j.jm - 1);
+        }
+
+        function goToPrevMonth() {
+            let newMonth = currentJMonth - 1;
+            let newYear = currentJYear;
+            if (newMonth < 0) {
+                newMonth = 11;
+                newYear--;
+            }
+            renderCalendar(newYear, newMonth);
+        }
+
+        function goToNextMonth() {
+            let newMonth = currentJMonth + 1;
+            let newYear = currentJYear;
+            if (newMonth > 11) {
+                newMonth = 0;
+                newYear++;
+            }
+            renderCalendar(newYear, newMonth);
+        }
+
+        // ---------- EVENT LISTENERS ----------
+        prevMonthBtn.addEventListener('click', goToPrevMonth);
+        nextMonthBtn.addEventListener('click', goToNextMonth);
+        todayBtn.addEventListener('click', goToToday);
+
+        // ---------- KEYBOARD SUPPORT ----------
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') { goToNextMonth();
+                e.preventDefault(); }
+            if (e.key === 'ArrowLeft') { goToPrevMonth();
+                e.preventDefault(); }
+            if (e.key === 't' || e.key === 'T') { goToToday();
+                e.preventDefault(); }
+        });
+
+        // ---------- INIT ----------
+        goToToday();
+
+        console.log('🗓️ Persian Calendar by KnoX | Good Luck <3');
+    </script>
+
+</body>
+</html>
