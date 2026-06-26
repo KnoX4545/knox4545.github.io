@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تقویم شمسی</title>
-
-    <!-- ====== LOAD JALAALI-JS FROM CDN ====== -->
+    <title>🗓️ تقویم شمسی</title>
     <script src="https://cdn.jsdelivr.net/npm/jalaali-js@1.2.6/dist/jalaali.js">
     </script>
-
     <style>
         /* ============================
                    RESET & BASE
@@ -159,10 +156,14 @@
             font-weight: 500;
             color: #aaa;
             background: #0d0d0d;
-            border: 1px solid transparent;
+            border: 2px solid transparent;
             transition: all 0.15s ease;
-            cursor: default;
+            cursor: pointer;
             user-select: none;
+        }
+
+        .day-cell:hover {
+            border-color: #333;
         }
 
         .day-cell.other-month {
@@ -181,6 +182,12 @@
 
         .day-cell.friday {
             color: #ff6b6b;
+        }
+
+        .day-cell.selected {
+            border-color: #ffd700;
+            color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.08);
         }
 
         /* ============================
@@ -230,6 +237,25 @@
 
         .footer span {
             color: #00ff41;
+        }
+
+        /* ============================
+                   SELECTED DATE DISPLAY
+                ============================ */
+        .selected-display {
+            margin-top: 10px;
+            padding: 8px 14px;
+            background: #0a0a0a;
+            border-radius: 8px;
+            border: 1px solid #1a1a1a;
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .selected-display .sel-date {
+            color: #ffd700;
+            font-weight: 600;
         }
 
         /* ============================
@@ -309,12 +335,17 @@
         <!-- DAYS -->
         <div class="days-grid" id="daysGrid"></div>
 
+        <!-- SELECTED DATE DISPLAY -->
+        <div class="selected-display" id="selectedDisplay">
+            📅 تاریخ انتخاب‌شده: <span class="sel-date" id="selectedDateText">هیچ</span>
+        </div>
+
         <!-- INFO BOX -->
         <div class="info-box">
             <span class="label">📅 تاریخ امروز:</span>
-            <span class="value" id="todayDateDisplay">۱۴۰۴/۰۷/۰۱</span>
+            <span class="value" id="todayDateDisplay">۱۴۰۵/۰۴/۰۶</span>
             <span class="label">📆 روز هفته:</span>
-            <span class="value" id="weekdayDisplay">یکشنبه</span>
+            <span class="value" id="weekdayDisplay">شنبه</span>
         </div>
 
         <!-- FOOTER -->
@@ -326,7 +357,7 @@
 
     <script>
         // ================================================================
-        // 🗓️ PERSIAN CALENDAR  –  by KnoX  –  Version 1.0.0
+        // 🗓️ PERSIAN CALENDAR  –  by KnoX  –  Version 2.0.0
         // ================================================================
 
         // ---------- DOM ----------
@@ -334,14 +365,15 @@
         const daysGrid = document.getElementById('daysGrid');
         const todayDateDisplay = document.getElementById('todayDateDisplay');
         const weekdayDisplay = document.getElementById('weekdayDisplay');
+        const selectedDateText = document.getElementById('selectedDateText');
         const prevMonthBtn = document.getElementById('prevMonthBtn');
         const nextMonthBtn = document.getElementById('nextMonthBtn');
         const todayBtn = document.getElementById('todayBtn');
 
         // ---------- STATE ----------
-        // Current displayed month (Jalali)
-        let currentJYear = 1404;
-        let currentJMonth = 6; // 0-based (0 = Farvardin, 6 = Mehr)
+        let currentJYear = 1405;
+        let currentJMonth = 3; // 0-based (0 = Farvardin, 3 = Tir)
+        let selectedDate = null; // { jy, jm, jd }
 
         // ---------- HELPERS ----------
         function getMonthName(jMonth) {
@@ -352,16 +384,22 @@
             return names[jMonth] || '';
         }
 
-        function getWeekdayName(jd) {
-            // jd = Julian Day Number
-            // 0 = Monday? We'll map with a known reference.
-            // Known: 2026-09-23 (Gregorian) = 1404-07-01 (Jalali) = Wednesday
-            // Calculate weekday: we use a known reference
-            const refJd = 2460967; // Julian Day for 2026-09-23 (Wednesday)
-            const diff = jd - refJd;
-            const weekdays = ['چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه'];
-            let idx = ((diff % 7) + 7) % 7;
-            return weekdays[idx];
+        function getWeekdayName(jd, jy, jm, jd2) {
+            // Convert to Gregorian then get day of week
+            const g = jalaali.toGregorian(jy, jm + 1, jd2);
+            const date = new Date(g.gy, g.gm - 1, g.gd);
+            const dayOfWeek = date.getDay(); // 0=Sunday, 1=Monday, ...
+            // Persian week: 0=Saturday, 1=Sunday, 2=Monday, 3=Tuesday, 4=Wednesday, 5=Thursday, 6=Friday
+            const persianWeek = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'];
+            // Map Sunday(0) -> 1, Monday(1)->2, ..., Friday(5)->6, Saturday(6)->0
+            let idx = (dayOfWeek + 1) % 7;
+            return persianWeek[idx];
+        }
+
+        function getToday() {
+            const now = new Date();
+            const j = jalaali.toJalaali(now.getFullYear(), now.getMonth() + 1, now.getDate());
+            return { jy: j.jy, jm: j.jm - 1, jd: j.jd };
         }
 
         // ---------- RENDER CALENDAR ----------
@@ -370,40 +408,30 @@
             const firstDayGreg = jalaali.toGregorian(jYear, jMonth + 1, 1);
             const firstDate = new Date(firstDayGreg.gy, firstDayGreg.gm - 1, firstDayGreg.gd);
 
-            // Get number of days in this Jalali month
+            // Number of days in this Jalali month
             const daysInMonth = jalaali.jalaaliMonthLength(jYear, jMonth + 1);
 
-            // Get the day of week for the first day (0 = Sunday, 1 = Monday, ...)
-            // We want the grid to start with Saturday (Shanbeh)
-            const firstDayOfWeek = firstDate.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+            // Get day of week for first day (0=Sunday)
+            const firstDayOfWeek = firstDate.getDay();
+            // Offset: column 0 = Saturday (6 in JS), column 6 = Friday (5 in JS)
+            let offset;
+            if (firstDayOfWeek === 6) offset = 0;
+            else if (firstDayOfWeek === 5) offset = 6;
+            else offset = firstDayOfWeek + 1;
 
-            // In Persian calendar, week starts on Saturday (Shanbeh) = 6 in JS
-            const startOffset = (firstDayOfWeek === 6) ? 0 : (firstDayOfWeek + 1) % 7;
-            // Actually simpler: we want column 0 = Saturday, column 6 = Friday
-            // JS: 0=Sun, 1=Mon, ..., 6=Sat
-            // So offset = (dayOfWeek + 1) % 7 ? let's test:
-            // If dayOfWeek=6 (Sat), offset=0. If dayOfWeek=0 (Sun), offset=1.
-            const offset = (firstDayOfWeek + 1) % 7;
+            // Get today
+            const today = getToday();
 
-            // Get today's Jalali date
-            const today = new Date();
-            const todayJalali = jalaali.toJalaali(today.getFullYear(), today.getMonth() + 1, today.getDate());
-            const isToday = (jYear === todayJalali.jy && jMonth === todayJalali.jm - 1);
+            // Previous month days count
+            let prevMonthDays;
+            if (jMonth === 0) {
+                prevMonthDays = jalaali.jalaaliMonthLength(jYear - 1, 12);
+            } else {
+                prevMonthDays = jalaali.jalaaliMonthLength(jYear, jMonth);
+            }
 
-            // Build days array
             const totalCells = Math.ceil((offset + daysInMonth) / 7) * 7;
             const days = [];
-
-            // Previous month days
-            const prevMonthDays = jalaali.jalaaliMonthLength(jYear, jMonth); // if jMonth=0, prev month is last year
-            let prevMonthDaysCount = prevMonthDays;
-            if (jMonth === 0) {
-                // previous month is Esfand of last year
-                const prevYear = jYear - 1;
-                prevMonthDaysCount = jalaali.jalaaliMonthLength(prevYear, 12);
-            } else {
-                prevMonthDaysCount = jalaali.jalaaliMonthLength(jYear, jMonth);
-            }
 
             for (let i = 0; i < totalCells; i++) {
                 let day;
@@ -413,12 +441,12 @@
 
                 if (i < offset) {
                     // Previous month
-                    const dayNum = prevMonthDaysCount - offset + i + 1;
+                    const dayNum = prevMonthDays - offset + i + 1;
                     day = dayNum;
                     isOtherMonth = true;
                     if (jMonth === 0) {
                         cellJYear = jYear - 1;
-                        cellJMonth = 11; // Esfand
+                        cellJMonth = 11;
                     } else {
                         cellJMonth = jMonth - 1;
                     }
@@ -437,23 +465,31 @@
                     day = i - offset + 1;
                 }
 
-                // Determine if it's a holiday (Friday = Jomeh)
+                // Check if Friday (Jomeh)
                 const cellDate = new Date(firstDate);
                 cellDate.setDate(cellDate.getDate() + (i - offset));
-                const dayOfWeekJS = cellDate.getDay(); // 0=Sun, 6=Sat
-                const isFriday = (dayOfWeekJS === 5); // Friday in JS is 5
+                const dayOfWeekJS = cellDate.getDay();
+                const isFriday = (dayOfWeekJS === 5);
 
-                // Check if this cell is today
-                const isTodayCell = isToday && !isOtherMonth && day === todayJalali.jd;
+                // Check if today
+                const isToday = (jYear === today.jy && jMonth === today.jm && day === today.jd && !isOtherMonth);
+
+                // Check if selected
+                const isSelected = (selectedDate &&
+                    cellJYear === selectedDate.jy &&
+                    cellJMonth === selectedDate.jm &&
+                    day === selectedDate.jd &&
+                    !isOtherMonth);
 
                 days.push({
                     day,
                     isOtherMonth,
                     isFriday,
-                    isToday: isTodayCell,
+                    isToday,
+                    isSelected,
                     jYear: cellJYear,
                     jMonth: cellJMonth,
-                    dayOfWeek: dayOfWeekJS
+                    jd: day
                 });
             }
 
@@ -465,7 +501,23 @@
                 if (cell.isOtherMonth) div.classList.add('other-month');
                 if (cell.isFriday) div.classList.add('friday');
                 if (cell.isToday) div.classList.add('today');
+                if (cell.isSelected) div.classList.add('selected');
                 div.textContent = cell.day;
+
+                // Click handler
+                div.addEventListener('click', function() {
+                    if (cell.isOtherMonth) {
+                        // Navigate to that month
+                        renderCalendar(cell.jYear, cell.jMonth);
+                        // Then select the day after render
+                        setTimeout(() => {
+                            selectDate(cell.jYear, cell.jMonth, cell.jd);
+                        }, 10);
+                    } else {
+                        selectDate(cell.jYear, cell.jMonth, cell.jd);
+                    }
+                });
+
                 daysGrid.appendChild(div);
             });
 
@@ -473,23 +525,41 @@
             monthYearDisplay.textContent = `${getMonthName(jMonth)} ${jYear}`;
 
             // Update today's info
-            const todayJalali2 = jalaali.toJalaali(today.getFullYear(), today.getMonth() + 1, today.getDate());
-            const todayJd = jalaali.toJd(todayJalali2.jy, todayJalali2.jm, todayJalali2.jd);
-            const weekdayName = getWeekdayName(todayJd);
-            const todayDateStr = `${todayJalali2.jy}/${String(todayJalali2.jm).padStart(2, '0')}/${String(todayJalali2.jd).padStart(2, '0')}`;
+            const todayJ = getToday();
+            const todayDateStr = `${todayJ.jy}/${String(todayJ.jm + 1).padStart(2, '0')}/${String(todayJ.jd).padStart(2, '0')}`;
             todayDateDisplay.textContent = todayDateStr;
-            weekdayDisplay.textContent = weekdayName;
+            const wd = getWeekdayName(0, todayJ.jy, todayJ.jm, todayJ.jd);
+            weekdayDisplay.textContent = wd;
 
-            // Store current state for navigation
+            // Update selected display
+            if (selectedDate) {
+                const selStr = `${selectedDate.jy}/${String(selectedDate.jm + 1).padStart(2, '0')}/${String(selectedDate.jd).padStart(2, '0')}`;
+                const wdSel = getWeekdayName(0, selectedDate.jy, selectedDate.jm, selectedDate.jd);
+                selectedDateText.textContent = `${selStr} (${wdSel})`;
+            } else {
+                selectedDateText.textContent = 'هیچ';
+            }
+
+            // Store current state
             currentJYear = jYear;
             currentJMonth = jMonth;
         }
 
+        // ---------- SELECT DATE ----------
+        function selectDate(jy, jm, jd) {
+            selectedDate = { jy, jm, jd };
+            renderCalendar(currentJYear, currentJMonth);
+        }
+
         // ---------- NAVIGATION ----------
         function goToToday() {
-            const today = new Date();
-            const j = jalaali.toJalaali(today.getFullYear(), today.getMonth() + 1, today.getDate());
-            renderCalendar(j.jy, j.jm - 1);
+            const today = getToday();
+            selectedDate = null;
+            renderCalendar(today.jy, today.jm);
+            // Auto-select today
+            setTimeout(() => {
+                selectDate(today.jy, today.jm, today.jd);
+            }, 10);
         }
 
         function goToPrevMonth() {
@@ -499,6 +569,7 @@
                 newMonth = 11;
                 newYear--;
             }
+            selectedDate = null;
             renderCalendar(newYear, newMonth);
         }
 
@@ -509,6 +580,7 @@
                 newMonth = 0;
                 newYear++;
             }
+            selectedDate = null;
             renderCalendar(newYear, newMonth);
         }
 
@@ -528,9 +600,17 @@
         });
 
         // ---------- INIT ----------
-        goToToday();
+        // Start with today's date
+        const today = getToday();
+        currentJYear = today.jy;
+        currentJMonth = today.jm;
+        renderCalendar(currentJYear, currentJMonth);
+        // Auto-select today
+        setTimeout(() => {
+            selectDate(today.jy, today.jm, today.jd);
+        }, 50);
 
-        console.log('🗓️ Persian Calendar by KnoX | Good Luck <3');
+        console.log('🗓️ Persian Calendar v2.0.0 by KnoX | Good Luck <3');
     </script>
 
 </body>
