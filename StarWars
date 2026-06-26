@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Star Wars Project by KnoX</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0a0a0a;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        
+        .container {
+            background: #111;
+            max-width: 500px;
+            width: 100%;
+            border-radius: 12px;
+            border: 2px solid #00ff41;
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.1);
+        }
+        
+        /* Welcome Message */
+        .welcome {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 2px solid #00ff41;
+            border-radius: 8px;
+            background: rgba(0, 255, 65, 0.05);
+        }
+        
+        .welcome-title {
+            color: #00ff41;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .welcome-sub {
+            color: #00ff41;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .welcome-by {
+            color: #00ff41;
+            font-size: 13px;
+            margin-top: 3px;
+        }
+        
+        .welcome-goodluck {
+            color: #00ff41;
+            font-size: 13px;
+            margin-top: 3px;
+        }
+        
+        .welcome-help {
+            color: #00d4ff;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        
+        .welcome-energy {
+            color: #00d4ff;
+            font-size: 12px;
+            margin-top: 3px;
+            opacity: 0.8;
+        }
+        
+        /* Stats Display */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            margin: 15px 0;
+            padding: 12px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 6px;
+            background: #111;
+            border-radius: 5px;
+            border: 1px solid #222;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-value {
+            color: #00d4ff;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+        
+        .stat-value.money { color: #ffd700; }
+        .stat-value.troopers { color: #ff6b6b; }
+        .stat-value.energy { color: #00ff41; }
+        .stat-value.level { color: #ff9f43; }
+        
+        /* Quick Buttons */
+        .quick-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 5px;
+            margin: 10px 0;
+        }
+        
+        .quick-btn {
+            padding: 10px 5px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: #aaa;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .quick-btn:hover {
+            background: #222;
+            border-color: #00ff41;
+            color: #fff;
+        }
+        
+        .quick-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .quick-btn.attack { border-color: #ff444455; }
+        .quick-btn.attack:hover { border-color: #ff4444; background: #ff444411; }
+        
+        .quick-btn.stats { border-color: #4a9eff55; }
+        .quick-btn.stats:hover { border-color: #4a9eff; background: #4a9eff11; }
+        
+        .quick-btn.shop { border-color: #ffd70055; }
+        .quick-btn.shop:hover { border-color: #ffd700; background: #ffd70011; }
+        
+        .quick-btn.energy { border-color: #00ff4155; }
+        .quick-btn.energy:hover { border-color: #00ff41; background: #00ff4111; }
+        
+        .quick-btn.daily { border-color: #ff6b6b55; }
+        .quick-btn.daily:hover { border-color: #ff6b6b; background: #ff6b6b11; }
+        
+        .quick-btn.sword { border-color: #a29bfe55; }
+        .quick-btn.sword:hover { border-color: #a29bfe; background: #a29bfe11; }
+        
+        /* More Buttons */
+        .more-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 5px;
+            margin: 10px 0;
+        }
+        
+        .more-btn {
+            padding: 8px 5px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: #888;
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .more-btn:hover {
+            background: #222;
+            border-color: #555;
+            color: #fff;
+        }
+        
+        .more-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* Command Input */
+        .cmd-section {
+            margin: 10px 0;
+            padding: 10px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        
+        .cmd-label {
+            color: #ffd700;
+            font-size: 12px;
+            display: block;
+            margin-bottom: 6px;
+        }
+        
+        .cmd-input-group {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .cmd-input {
+            flex: 1;
+            padding: 8px 10px;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .cmd-input:focus {
+            border-color: #00ff41;
+        }
+        
+        .cmd-input::placeholder {
+            color: #555;
+        }
+        
+        .cmd-btn {
+            padding: 8px 16px;
+            background: #00ff41;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+        
+        .cmd-btn:hover {
+            background: #00cc33;
+        }
+        
+        .cmd-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* Admin Section */
+        .admin-section {
+            margin: 10px 0;
+            padding: 10px;
+            background: #1a0a0a;
+            border-radius: 8px;
+            border: 1px solid #ff000033;
+            display: none;
+        }
+        
+        .admin-section.active {
+            display: block;
+        }
+        
+        .admin-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            margin-top: 8px;
+        }
+        
+        .admin-btn {
+            padding: 6px;
+            background: #2a0a0a;
+            border: 1px solid #ff444433;
+            border-radius: 5px;
+            color: #ff6666;
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .admin-btn:hover {
+            background: #3a0a0a;
+            border-color: #ff4444;
+        }
+        
+        /* Output */
+        .output {
+            margin: 10px 0;
+            padding: 12px;
+            background: #0a0a0a;
+            border-radius: 8px;
+            border: 1px solid #333;
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #aaa;
+        }
+        
+        .output::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .output::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        
+        .output::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 2px;
+        }
+        
+        .output-line {
+            padding: 1px 0;
+            border-bottom: 1px solid #0d0d0d;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        
+        /* Colors */
+        .color-green { color: #00ff41; }
+        .color-bright-green { color: #00ff41; font-weight: bold; }
+        .color-red { color: #ff4444; }
+        .color-bright-red { color: #ff4444; font-weight: bold; }
+        .color-cyan { color: #00d4ff; }
+        .color-bright-cyan { color: #00d4ff; font-weight: bold; }
+        .color-blue { color: #4a9eff; }
+        .color-bright-blue { color: #4a9eff; font-weight: bold; }
+        .color-yellow { color: #ffd700; }
+        .color-bright-yellow { color: #ffd700; font-weight: bold; }
+        .color-orange { color: #ff8c00; }
+        .color-gold { color: #ffd700; }
+        .color-magenta { color: #ff00ff; }
+        .color-bright-magenta { color: #ff00ff; font-weight: bold; }
+        .color-white { color: #ffffff; }
+        .color-purple { color: #9b59b6; }
+        
+        /* Copyright */
+        .copyright {
+            text-align: center;
+            color: #333;
+            font-size: 10px;
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px solid #1a1a1a;
+        }
+        
+        .copyright span {
+            color: #00ff41;
+        }
+        
+        /* Responsive */
+        @media (max-width: 450px) {
+            .container { padding: 12px; }
+            .stats-grid { grid-template-columns: 1fr 1fr 1fr; padding: 8px; }
+            .quick-buttons { grid-template-columns: 1fr 1fr; }
+            .more-buttons { grid-template-columns: 1fr 1fr; }
+            .welcome-title { font-size: 15px; }
+            .quick-btn { font-size: 10px; padding: 8px 4px; }
+            .admin-buttons { grid-template-columns: 1fr; }
+        }
+        
+        @media (max-width: 350px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+    
+    <!-- Welcome Message -->
+    <div class="welcome">
+        <div class="welcome-title">+=============================+</div>
+        <div class="welcome-title">|     STAR WARS PROJECT ⭐    |</div>
+        <div class="welcome-sub">|        by KnoX              |</div>
+        <div class="welcome-goodluck">|     Good Luck & Have Fun    |</div>
+        <div class="welcome-title">+=============================+</div>
+        <div class="welcome-help">Type 'help' to see all commands.</div>
+        <div class="welcome-energy">⚡ Energy auto-regenerates every 30 seconds (even when offline).</div>
+    </div>
+    
+    <!-- Stats -->
+    <div class="stats-grid" id="statsDisplay">
+        <div class="stat-item">
+            <div class="stat-label">💰 Money</div>
+            <div class="stat-value money" id="statMoney">0</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">👥 Troopers</div>
+            <div class="stat-value troopers" id="statTroopers">0</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">⚡ Energy</div>
+            <div class="stat-value energy" id="statEnergy">150/150</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">🏅 Level</div>
+            <div class="stat-value level" id="statLevel">1</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">🗡️ Sword</div>
+            <div class="stat-value" id="statSword" style="color:#a29bfe;">None</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">⭐ Rank</div>
+            <div class="stat-value" id="statRank" style="color:#fd79a8;">Bronze</div>
+        </div>
+    </div>
+    
+    <!-- Quick Buttons -->
+    <div class="quick-buttons">
+        <button class="quick-btn attack" onclick="quickCommand('attack')">⚔️ Attack</button>
+        <button class="quick-btn stats" onclick="quickCommand('stats')">📊 Stats</button>
+        <button class="quick-btn shop" onclick="quickCommand('shop')">🏪 Shop</button>
+        <button class="quick-btn energy" onclick="quickCommand('myenergy')">⚡ Energy</button>
+    </div>
+    
+    <!-- More Buttons -->
+    <div class="more-buttons">
+        <button class="more-btn" onclick="quickCommand('dailyreward')">🎁 Daily</button>
+        <button class="more-btn" onclick="quickCommand('mysword')">🗡️ My Sword</button>
+        <button class="more-btn" onclick="quickCommand('myrank')">⭐ My Rank</button>
+        <button class="more-btn" onclick="quickCommand('rankhelp')">📖 Rank Help</button>
+        <button class="more-btn" onclick="quickCommand('prices')">💰 Prices</button>
+        <button class="more-btn" onclick="quickCommand('upgradeenergy')">⬆️ Upgrade Energy</button>
+        <button class="more-btn" onclick="quickCommand('buyenergy')">🧪 Buy Energy</button>
+        <button class="more-btn" onclick="quickCommand('buysword')">🛒 Buy Sword</button>
+        <button class="more-btn" onclick="quickCommand('repairsword')">🔧 Repair Sword</button>
+        <button class="more-btn" onclick="quickCommand('upgradesword')">⬆️ Upgrade Sword</button>
+        <button class="more-btn" onclick="quickCommand('help')">❓ Help</button>
+        <button class="more-btn" style="border-color:#ff444455;color:#ff6666;" onclick="quickCommand('imadmin')">🔐 Admin</button>
+    </div>
+    
+    <!-- Command Input -->
+    <div class="cmd-section">
+        <label class="cmd-label">Enter command:</label>
+        <div class="cmd-input-group">
+            <input type="text" class="cmd-input" id="cmdInput" placeholder="Type a command..." onkeydown="if(event.key==='Enter') sendCommand()">
+            <button class="cmd-btn" onclick="sendCommand()">▶</button>
+        </div>
+    </div>
+    
+    <!-- Admin Section -->
+    <div class="admin-section" id="adminSection">
+        <div class="cmd-label" style="color:#ff4444;">🔐 Admin Mode Active</div>
+        <div class="admin-buttons">
+            <button class="admin-btn" onclick="quickCommand('givemoney')">💰 Give Money</button>
+            <button class="admin-btn" onclick="quickCommand('givetroopers')">👥 Give Troopers</button>
+            <button class="admin-btn" onclick="quickCommand('setmoney')">💰 Set Money</button>
+            <button class="admin-btn" onclick="quickCommand('settroopers')">👥 Set Troopers</button>
+        </div>
+    </div>
+    
+    <!-- Output -->
+    <div class="output" id="output">
+        <div class="output-line color-bright-green">+=============================+</div>
+        <div class="output-line color-bright-green">|     STAR WARS PROJECT ⭐    |</div>
+        <div class="output-line color-bright-green">|        by KnoX              |</div>
+        <div class="output-line color-bright-green">|     Good Luck & Have Fun    |</div>
+        <div class="output-line color-bright-green">+=============================+</div>
+        <div class="output-line color-bright-cyan">Type 'help' to see all commands.</div>
+        <div class="output-line color-cyan">⚡ Energy auto-regenerates every 30 seconds (even when offline).</div>
+        <div class="output-line" style="color:#555;">---</div>
+        <div class="output-line color-cyan">Welcome to Star Wars Project! Type 'help' to get started.</div>
+    </div>
+    
+    <!-- Copyright -->
+    <div class="copyright">
+        <span>#StarWars Project by KnoX</span> | Good Luck &lt;3
+    </div>
+</div>
+
+<script>
+// ============================================================
+// STAR WARS PROJECT by KnoX - Full Game
+// ============================================================
+
+// ---------- Variables ----------
+let Admin = false;
+let Trooper = 0;
+let Money = 0;
+let Energy = 150;
+let MaxEnergy = 150;
+let LastDaily = "";
+let EnergyLevel = 1;
+let HasSword = false;
+let SwordDurability = 0;
+let SwordLevel = 1;
+let SwordMaxDurability = 10;
+let Level = 1;
+let XP = 0;
+let LastCloseTime = "";
+const SAVE_FILE = "starwars_save.json";
+let waitingForInput = false;
+let waitingCallback = null;
+
+// ---------- DOM References ----------
+const output = document.getElementById('output');
+const cmdInput = document.getElementById('cmdInput');
+
+// ---------- Utility Functions ----------
+function getRank() {
+    if (Level <= 5) return 'Bronze';
+    else if (Level <= 8) return 'Silver';
+    else if (Level <= 14) return 'Gold';
+    else if (Level <= 18) return 'Platinum';
+    else if (Level <= 22) return 'Epic';
+    else if (Level <= 25) return 'Legend';
+    else return 'God of War';
+}
+
+function getXpNeeded() {
+    if (Level < 5) return 4 + (Level - 1) * 2;
+    else if (Level < 8) return 12 + (Level - 5) * 2;
+    else if (Level < 14) return 18 + (Level - 8) * 2;
+    else if (Level < 18) return 30 + (Level - 14) * 2;
+    else if (Level < 22) return 38 + (Level - 18) * 2;
+    else if (Level < 25) return 46 + (Level - 22) * 2;
+    else return 52 + (Level - 25) * 2;
+}
+
+function getAttackStats() {
+    let rank = getRank();
+    
+    if (rank == 'Bronze') {
+        return {win: 35, lose: 35, draw: 30, power_bonus: 1.0, money_bonus: 1.0, energy_cost: 18};
+    } else if (rank == 'Silver') {
+        return {win: 38, lose: 32, draw: 30, power_bonus: 1.05, money_bonus: 1.05, energy_cost: 17};
+    } else if (rank == 'Gold') {
+        return {win: 41, lose: 29, draw: 30, power_bonus: 1.1, money_bonus: 1.1, energy_cost: 16};
+    } else if (rank == 'Platinum') {
+        return {win: 44, lose: 26, draw: 30, power_bonus: 1.15, money_bonus: 1.15, energy_cost: 15};
+    } else if (rank == 'Epic') {
+        return {win: 47, lose: 23, draw: 30, power_bonus: 1.2, money_bonus: 1.2, energy_cost: 14};
+    } else if (rank == 'Legend') {
+        return {win: 50, lose: 20, draw: 30, power_bonus: 1.25, money_bonus: 1.25, energy_cost: 13};
+    } else {
+        return {win: 53, lose: 17, draw: 30, power_bonus: 1.3, money_bonus: 1.3, energy_cost: 12};
+    }
+}
+
+function updateMaxEnergy() {
+    MaxEnergy = 80 + (EnergyLevel * 20);
+}
+
+// ---------- Print Function ----------
+function printLine(className, text) {
+    let div = document.createElement('div');
+    div.className = 'output-line ' + className;
+    div.textContent = text;
+    output.appendChild(div);
+    output.scrollTop = output.scrollHeight;
+}
+
+// ---------- Update UI ----------
+function updateUI() {
+    document.getElementById('statMoney').textContent = Money;
+    document.getElementById('statTroopers').textContent = Trooper;
+    document.getElementById('statEnergy').textContent = Energy + '/' + MaxEnergy;
+    document.getElementById('statLevel').textContent = Level + ' (XP:' + XP + '/' + getXpNeeded() + ')';
+    
+    if (HasSword) {
+        document.getElementById('statSword').textContent = 'Lv' + SwordLevel + ' (' + SwordDurability + '/' + SwordMaxDurability + ')';
+    } else {
+        document.getElementById('statSword').textContent = 'None';
+    }
+    document.getElementById('statRank').textContent = getRank();
+    
+    document.getElementById('adminSection').className = 'admin-section' + (Admin ? ' active' : '');
+}
+
+// ---------- Save/Load ----------
+function saveGame() {
+    let data = {
+        "Trooper": Trooper,
+        "Money": Money,
+        "Admin": Admin,
+        "Energy": Energy,
+        "LastDaily": LastDaily,
+        "EnergyLevel": EnergyLevel,
+        "HasSword": HasSword,
+        "SwordDurability": SwordDurability,
+        "SwordLevel": SwordLevel,
+        "SwordMaxDurability": SwordMaxDurability,
+        "Level": Level,
+        "XP": XP,
+        "LastCloseTime": LastCloseTime
+    };
+    try {
+        localStorage.setItem(SAVE_FILE, JSON.stringify(data));
+    } catch(e) {}
+}
+
+function loadGame() {
+    try {
+        let raw = localStorage.getItem(SAVE_FILE);
+        if (raw) {
+            let data = JSON.parse(raw);
+            Trooper = data.Trooper || 0;
+            Money = data.Money || 0;
+            Admin = data.Admin || false;
+            Energy = data.Energy || 100;
+            LastDaily = data.LastDaily || "";
+            EnergyLevel = data.EnergyLevel || 1;
+            HasSword = data.HasSword || false;
+            SwordDurability = data.SwordDurability || 0;
+            SwordLevel = data.SwordLevel || 1;
+            SwordMaxDurability = data.SwordMaxDurability || 10;
+            Level = data.Level || 1;
+            XP = data.XP || 0;
+            LastCloseTime = data.LastCloseTime || "";
+            
+            updateMaxEnergy();
+            
+            if (Energy > MaxEnergy) Energy = MaxEnergy;
+            if (Energy < 0) Energy = 0;
+            
+            calculateOfflineEnergy();
+        }
+    } catch(e) {}
+}
+
+function calculateOfflineEnergy() {
+    if (LastCloseTime != "") {
+        try {
+            let last_time = parseFloat(LastCloseTime);
+            let current_time = Date.now() / 1000;
+            let time_passed = current_time - last_time;
+            let energy_gained = Math.floor(time_passed / 30);
+            if (energy_gained > 0) {
+                let old_energy = Energy;
+                Energy = Math.min(MaxEnergy, Energy + energy_gained);
+                let gained = Energy - old_energy;
+                if (gained > 0) {
+                    printLine('color-cyan', '⚡ While you were away, you gained ' + gained + ' energy.');
+                }
+                saveGame();
+            }
+        } catch(e) {}
+    }
+    LastCloseTime = "";
+    saveGame();
+}
+
+// ---------- Quick Command ----------
+function quickCommand(cmd) {
+    if (waitingForInput) {
+        // اگر در حال انتظار برای ورودی هستیم، مقدار رو به callback بفرست
+        if (waitingCallback) {
+            waitingCallback(cmd);
+            waitingForInput = false;
+            waitingCallback = null;
+        }
+        return;
+    }
+    // اجرای دستور
+    processCommand(cmd);
+}
+
+// ---------- Send Command from Input ----------
+function sendCommand() {
+    let cmd = cmdInput.value.trim().toLowerCase();
+    cmdInput.value = '';
+    if (cmd) {
+        processCommand(cmd);
+    }
+}
+
+// ---------- Main Command Processor ----------
+function processCommand(cmd) {
+    
+    // ---- Admin ----
+    if (cmd == 'imadmin') {
+        let pas = prompt('Enter password:');
+        if (pas === null) return;
+        if (pas == '9061') {
+            Admin = true;
+            saveGame();
+            printLine('color-green', 'You are now admin.');
+            updateUI();
+        } else {
+            printLine('color-red', 'Error: Wrong password.');
+        }
+        return;
+    }
+    
+    // ---- Player Commands ----
+    if (cmd == 'mysword') {
+        if (HasSword) {
+            printLine('color-cyan', 'Sword Level ' + SwordLevel + ' - ' + SwordDurability + '/' + SwordMaxDurability + ' uses left.');
+            if (SwordDurability <= 3) {
+                printLine('color-yellow', '⚠️ Warning: Your Sword is almost broken, Use \'repairsword\' to fix it.');
+            }
+        } else {
+            printLine('color-red', "Error: You don't have a Sword Use 'buysword' to buy one.");
+        }
+        updateUI();
+        return;
+    }
+    
+    if (cmd == 'buysword') {
+        if (HasSword) {
+            printLine('color-red', "Error: You already have a Sword, Use 'upgradesword' to upgrade it.");
+        } else if (Money >= 9) {
+            Money -= 9;
+            HasSword = true;
+            SwordLevel = 1;
+            SwordMaxDurability = 10;
+            SwordDurability = 10;
+            saveGame();
+            printLine('color-green', 'You bought a Level 1 Sword, It has 10 uses remaining.');
+            printLine('color-cyan', "Use 'upgradesword' to increase capacity, 'repairsword' to fix it.");
+        } else {
+            printLine('color-red', 'Error: Need $9 to buy a Sword, You have $' + Money + '.');
+        }
+        updateUI();
+        return;
+    }
+    
+    if (cmd == 'repairsword') {
+        if (!HasSword) {
+            printLine('color-red', "Error: You don't have a Sword Use 'buysword' to buy one.");
+        } else if (SwordDurability >= SwordMaxDurability) {
+            printLine('color-cyan', 'Your Sword is already fully repaired (' + SwordDurability + '/' + SwordMaxDurability + ').');
+        } else {
+            let repair_cost = 5 + (SwordLevel - 1) * 3;
+            if (Money >= repair_cost) {
+                Money -= repair_cost;
+                SwordDurability = SwordMaxDurability;
+                saveGame();
+                printLine('color-green', 'Sword repaired, It now has ' + SwordMaxDurability + ' uses remaining (Cost: $' + repair_cost + ').');
+            } else {
+                printLine('color-red', 'Error: Need $' + repair_cost + ' to repair, You have $' + Money + '.');
+            }
+        }
+        updateUI();
+        return;
+    }
+    
+    if (cmd == 'upgradesword') {
+        if (!HasSword) {
+            printLine('color-red', "Error: You don't have a Sword, Use 'buysword' first.");
+            updateUI();
+            return;
+        }
+        
+        if (SwordLevel >= 5) {
+            printLine('color-red', 'Error: Your Sword is already at max level (Level 5 - 50 uses).');
+            updateUI();
+            return;
+        }
+        
+        let upgrade_costs = {1: 50, 2: 100, 3: 200, 4: 400};
+        let next_capacity = {1: 15, 2: 20, 3: 30, 4: 50};
+        
+        let upgrade_cost = upgrade_costs[SwordLevel];
+        let next_max = next_capacity[SwordLevel];
+        
+        printLine('color-cyan', 'Current Sword Level: ' + SwordLevel + ' (Max ' + SwordMaxDurability + ' uses).');
+        printLine('color-yellow', 'Next Level: ' + (SwordLevel + 1) + ' (Max ' + next_max + ' uses).');
+        printLine('color-yellow', 'Upgrade Cost: $' + upgrade_cost + '.');
+        
+        if (Money >= upgrade_cost) {
+            let confirm = prompt('Upgrade your Sword? (yes/no):');
+            if (confirm && (confirm.toLowerCase() == 'yes' || confirm.toLowerCase() == 'y')) {
+                Money -= upgrade_cost;
+                SwordLevel += 1;
+                SwordMaxDurability = next_max;
+                SwordDurability = SwordMaxDurability;
+                saveGame();
+                printLine('color-green', 'Sword upgraded to Level ' + SwordLevel + '.');
+                printLine('color-green', 'Max durability is now ' + SwordMaxDurability + ' uses.');
+            } else {
+                printLine('color-yellow', 'Upgrade cancelled.');
+            }
+        } else {
+            printLine('color-red', 'Error: Need $' + upgrade_cost + ' to upgrade You have $' + Money + '.');
+        }
+        updateUI();
+        return;
+    }
+    
+    if (cmd == 'dailyreward') {
+        let current_time = Date.now() / 1000;
+        
+        if (LastDaily == "") {
+            LastDaily = String(current_time);
+            Trooper += 30;
+            Money += 10;
+            saveGame();
+            printLine('color-cyan', 'Daily reward claimed +30 Troopers and +$10.');
+            printLine('color-cyan', 'Next reward available in 24 hours.');
+        } else {
+            try {
+                let last_time = parseFloat(LastDaily);
+                let time_passed = current_time - last_time;
+                let hours_passed = time_passed / 3600;
+                
+                if (hours_passed >= 24) {
+                    LastDaily = String(current_time);
+                    Trooper += 30;
+                    Money += 10;
+                    saveGame();
+                    printLine('color-cyan', 'Daily reward claimed +30 Troopers and +$10.');
+                    printLine('color-cyan', 'Next reward available in 24 hours.');
+                } else {
+                    let remaining_seconds = (24 * 3600) - time_passed;
+                    let remaining_hours = Math.floor(remaining_seconds / 3600);
+                    let remaining_minutes = Math.floor((remaining_seconds % 3600) / 60);
+                    let remaining_secs = Math.floor(remaining_seconds % 60);
+                    
+                    printLine('color-red', 'Error: You already claimed today\'s reward.');
+                    printLine('color-yellow', 'Time remaining: ' + remaining_hours + 'h ' + remaining_minutes + 'm ' + remaining_secs + 's.');
+                }
+            } catch(e) {
+                LastDaily = String(current_time);
+                Trooper += 30;
+                Money += 10;
+                saveGame();
+                printLine('color-cyan', 'Daily reward claimed +30 Troopers and +$10.');
+                printLine('color-cyan', 'Next reward available in 24 hours.');
+            }
+        }
+        updateUI();
+        return;
+    }
+    
+    if (cmd == 'stats') {
+        let stats = getAttackStats();
+        let xp_needed = getXpNeeded();
+        printLine('color-blue', 'Your Money = $' + Money);
+        printLine('color-blue', 'Your Troopers = ' + Trooper);
+        if (HasSword) {
+            printLine('color-blue', 'Your Sword = Level ' + SwordLevel + ' (' + SwordDurability + '/' + SwordMaxDurability + ' uses)');
+        } else {
+            printLine('color-blue', 'Your Sword = None (use buysword)');
+        }
+        printLine('color-blue', 'Your Level = ' + Level + ' (XP: ' + XP + '/' + xp_needed + ')');
+        printLine('color-blue', 'Your Rank = ' + getRank());
+        printLine('color-blue', 'Your Energy = ' + Energy + '/' + MaxEnergy);
+        printLine('color-blue', 'Rank Bonus: +' + Math.floor((stats.power_bonus-1)*100) + '% Troopers, +' + Math.floor((stats.money_bonus-1)*100) + '% Money');
+        printLine('color-blue', 'Energy Cost: ' + stats.energy_cost + ' per attack');
+        updateUI();
+        return;
+    }
+    
+    if (cmd == 'help') {
+        printLine('color-bright-blue', 'Player commands:');
+        printLine('color-bright-blue', 'stats, dailyreward, attack,');
+        printLine('color-bright-blue', 'myrank, rankhelp, myenergy, upgradeenergy,');
+        printLine('color-bright-blue', 'shop, prices, mysword, buysword, repairsword,');
+        printLine('color-bright-blue', 'upgradesword, buyenergy');
+        if (Admin == true) {
+            printLine('color-bright-green', '=================');
+            printLine('color-bright-blue', 'Admin commands:');
+            printLine('color-bright-blue', 'givemoney, givetroopers,');
+            printLine('color-bright-blue', 'settroopers, setmoney');
+        }
+        return;
+    }
+    
+    if (cmd == 'attack') {
+        // Check sword
+        if (!HasSword) {
+            printLine('color-red', "Error: You don't have a Sword, Use 'buysword' to buy one.");
+            updateUI();
+            return;
+        }
+        
+        if (SwordDurability <= 0) {
+            printLine('color-red', "Error: Your Sword is broken, Use 'buysword' to buy a new one.");
+            HasSword = false;
+            saveGame();
+            updateUI();
+            return;
+        }
+        
+        if (SwordDurability == 1) {
+            printLine('color-yellow', '⚠️ WARNING: Your Sword will break after this attack.');
+            let confirm = prompt('Are you sure you want to attack? (yes/no):');
+            if (!confirm || confirm.toLowerCase() != 'yes') {
+                printLine('color-cyan', "Attack cancelled. Use 'repairsword' to fix it.");
+                updateUI();
+                return;
+            }
+        }
+        
+        let attack_stats = getAttackStats();
+        let energy_cost = attack_stats.energy_cost;
+        
+        if (Energy < energy_cost) {
+            printLine('color-red', 'Error: Not enough energy You need ' + energy_cost + ' energy (Current: ' + Energy + '/' + MaxEnergy + ').');
+            updateUI();
+            return;
+        }
+        
+        // Get number of troopers
+        let maxTroopers = Trooper;
+        let defaultVal = Math.min(10, maxTroopers);
+        let Attackers = prompt('How many Troopers do you want to attack with (Max: ' + maxTroopers + '):', defaultVal);
+        if (Attackers === null) return;
+        Attackers = parseFloat(Attackers);
+        if (isNaN(Attackers) || !Number.isInteger(Attackers)) {
+            printLine('color-red', 'Error: Please enter a whole number (integer).');
+            updateUI();
+            return;
+        }
+        Attackers = parseInt(Attackers);
+        
+        if (Attackers <= 0) {
+            printLine('color-red', 'Error: You cannot attack with 0 or negative Troopers.');
+        } else if (Attackers > Trooper) {
+            printLine('color-red', "Error: You don't have that many Troopers.");
+        } else {
+            Energy -= energy_cost;
+            if (Energy < 0) Energy = 0;
+            
+            SwordDurability -= 1;
+            if (SwordDurability <= 0) {
+                HasSword = false;
+                printLine('color-red', 'Your Sword broke during the attack.');
+            }
+            
+            let result_num = Math.floor(Math.random() * 100) + 1;
+            let win_chance = attack_stats.win;
+            let lose_chance = attack_stats.lose;
+            
+            let result;
+            if (result_num <= win_chance) {
+                result = 'win';
+            } else if (result_num <= win_chance + lose_chance) {
+                result = 'lose';
+            } else {
+                result = 'draw';
+            }
+            
+            if (result == 'lose') {
+                Trooper = Math.max(0, Trooper - Attackers);
+                printLine('color-red', 'Attack failed You lost all ' + Attackers + ' Troopers Energy left: ' + Energy + '/' + MaxEnergy + '.');
+            } else if (result == 'win') {
+                let gain_trooper = Math.floor(Attackers * (0.25 + Math.random() * 0.35));
+                if (gain_trooper < 1) gain_trooper = 1;
+                let gain_money = Math.floor(Attackers * (1.0 + Math.random() * 1.0));
+                if (gain_money < 1) gain_money = 1;
+                
+                gain_trooper = Math.floor(gain_trooper * attack_stats.power_bonus);
+                gain_money = Math.floor(gain_money * attack_stats.money_bonus);
+                
+                let critical = Math.floor(Math.random() * 100) + 1;
+                if (critical <= 15) {
+                    gain_trooper = Math.floor(gain_trooper * 1.5);
+                    gain_money = Math.floor(gain_money * 1.5);
+                    printLine('color-bright-yellow', '🔥 CRITICAL HIT +50% more! 🔥');
+                }
+                
+                Trooper = Trooper + gain_trooper;
+                Money = Money + gain_money;
+                printLine('color-green', 'Attack successful You gained ' + gain_trooper + ' Troopers and $' + gain_money + ' Energy left: ' + Energy + '/' + MaxEnergy + '.');
+                
+                XP += 1;
+                let xp_needed = getXpNeeded();
+                printLine('color-cyan', 'You gained 1 XP (' + XP + '/' + xp_needed + ').');
+                
+                if (XP >= xp_needed) {
+                    XP = XP - xp_needed;
+                    Level += 1;
+                    printLine('color-bright-green', '🎉 LEVEL UP You are now Level ' + Level + '! 🎉');
+                    printLine('color-green', 'Your rank is now ' + getRank() + '.');
+                    saveGame();
+                }
+            } else {
+                printLine('color-cyan', 'Attack finished Your ' + Attackers + ' Troopers returned safely Energy left: ' + Energy + '/' + MaxEnergy + '.');
+            }
+            saveGame();
+        }
+        updateUI();
+        return;
+    }
+    
+    if (cmd == 'shop') {
+        printLine('color-orange', 'Use Prices to see shop prices.');
+        printLine('color-orange', '1.Buy Troopers with Money.');
+        printLine('color-orange', '2.Buy Money with Troopers.');
+        
+        let Choice = prompt('Enter your choice (1 or 2):');
+        if (Choice === null) return;
+        Choice = parseInt(Choice);
+        if (isNaN(Choice) || (Choice != 1 && Choice != 2)) {
+            printLine('color-red', 'Error: Please enter 1 or 2.');
+            updateUI();
+            return;
+        }
+        
+        if (Choice == 1) {
+            let Buytrooper = prompt('How many Troopers do you want to buy:');
+            if (Buytrooper === null) return;
+            Buytrooper = parseFloat(Buytrooper);
+            if (isNaN(Buytrooper) || !Number.isInteger(Buytrooper)) {
+                printLine('color-red', 'Error: Please enter a whole number.');
+                updateUI();
+                return;
+            }
+            Buytrooper = parseInt(Buytrooper);
+            
+            let price = Buytrooper * 3;
+            
+            if (Buytrooper <= 0) {
+                printLine('color-red', 'Error: You cannot buy 0 or negative Troopers.');
+            } else if (Money >= price) {
+                Money = Money - price;
+                Trooper = Trooper + Buytrooper;
+                saveGame();
+                printLine('color-cyan', 'You bought ' + Buytrooper + ' Troopers with $' + price + ' Money.');
+            } else {
+                printLine('color-red', "Error: You don't have enough Money.");
+            }
+        } else if (Choice == 2) {
+            let Buymoney = prompt('How much Money do you want to buy:');
+            if (Buymoney === null) return;
+            Buymoney = parseFloat(Buymoney);
+            if (isNaN(Buymoney) || !Number.isInteger(Buymoney)) {
+                printLine('color-red', 'Error: Please enter a whole number.');
+                updateUI();
+                return;
+            }
+            Buymoney = parseInt(Buymoney);
+            
+            let price2 = Buymoney * 3;
+            
+            if (Buymoney <= 0) {
+                printLine('color-red', 'Error: You cannot buy 0 or negative Money.');
+            } else if (Trooper >= price2) {
+                Trooper = Trooper - price2;
+                Money = Money + Buymoney;
+                saveGame();
+                printLine('color-cyan', 'You bought $' + Buymoney + ' Money with ' + price2 + ' Troopers.');
+            } else {
+                printLine('color-red', "Error: You don't have enough Troopers.");
+            }
+        }
+        updateUI();
+        return;
+    }
+    
+    if (cmd == 'prices') {
+        printLine('color-gold', '========= Shop Prices =========');
+        printLine('color-cyan', 'Buy Troopers: $3 Money = 1 Trooper');
+        printLine('color-cyan', 'Buy Money: 3 Troopers = $1 Money');
+        printLine('color-gold', '===============================');
+        return;
+    }
+    
+    if (cmd == 'myrank') {
+        printLine('color-gold', 'Your rank is: ' + getRank());
+        return;
+    }
+    
+    if (cmd == 'rankhelp') {
+        printLine('color-bright-cyan', 'Level 1-5: Bronze');
+        printLine('color-bright-cyan', 'Level 6-8: Silver');
+        printLine('color-bright-cyan', 'Level 9-14: Gold');
+        printLine('color-bright-cyan', 'Level 15-18: Platinum');
+        printLine('color-bright-cyan', 'Level 19-22: Epic');
+        printLine('color-bright-cyan', 'Level 23-25: Legend');
+        printLine('color-bright-cyan', 'Level +26: God of War');
+        printLine('color-bright-cyan', '');
+        printLine('color-bright-cyan', 'XP needed for next level increases by 2 each level');
+        printLine('color-bright-cyan', 'Win an attack to gain 1 XP.');
+        return;
+    }
+    
+    if (cmd == 'myenergy') {
+        printLine('color-cyan', 'Energy: ' + Energy + '/' + MaxEnergy);
+        printLine('color-bright-blue', 'Energy regenerates 1 point every 30 seconds (even offline).');
+        printLine('color-bright-blue', 'Each attack costs energy based on your rank.');
+        return;
+    }
+    
+    if (cmd == 'upgradeenergy') {
+        if (EnergyLevel >= 10) {
+            printLine('color-red', 'Error: Energy already at max level (Level 10 = 280 max energy).');
+        } else {
+            let upgrade_cost = EnergyLevel * 110;
+            
+            printLine('color-cyan', 'Current Energy Level: ' + EnergyLevel + '.');
+            printLine('color-cyan', 'Current Max Energy: ' + MaxEnergy + '.');
+            printLine('color-yellow', 'Next Level: ' + (EnergyLevel + 1) + ' (+20 max energy).');
+            printLine('color-yellow', 'Upgrade Cost: $' + upgrade_cost + '.');
+            
+            if (Money >= upgrade_cost) {
+                let confirm = prompt('Do you want to upgrade? (yes/no):');
+                if (confirm && (confirm.toLowerCase() == 'yes' || confirm.toLowerCase() == 'y')) {
+                    Money -= upgrade_cost;
+                    EnergyLevel += 1;
+                    updateMaxEnergy();
+                    Energy = MaxEnergy;
+                    saveGame();
+                    printLine('color-green', 'Energy upgraded to Level ' + EnergyLevel + '.');
+                    printLine('color-green', 'Max Energy is now ' + MaxEnergy + '.');
+                } else {
+                    printLine('color-yellow', 'Upgrade cancelled.');
+                }
+            } else {
+                printLine('color-red', 'Error: You need $' + upgrade_cost + ' to upgrade You have $' + Money + '.');
+            }
+        }
+        updateUI();
+        return;
+    }
+    
+    if (cmd == 'buyenergy') {
+        printLine('color-gold', '========= Energy Elixirs =========');
+        printLine('color-cyan', '1. Small Elixir (+25 Energy) - $95');
+        printLine('color-cyan', '2. Medium Elixir (+60 Energy) - $225');
+        printLine('color-cyan', '3. Large Elixir (+120 Energy) - $450');
+        printLine('color-cyan', '4. Massive Elixir (+200 Energy) - $750');
+        printLine('color-gold', '==================================');
+        
+        let elixir_choice = prompt('Choose elixir (1-4):');
+        if (elixir_choice === null) return;
+        elixir_choice = parseInt(elixir_choice);
+        if (isNaN(elixir_choice) || elixir_choice < 1 || elixir_choice > 4) {
+            printLine('color-red', 'Error: Invalid choice, Please enter 1-4.');
+            updateUI();
+            return;
+        }
+        
+        let price, energy_gain, name;
+        if (elixir_choice == 1) { price = 95; energy_gain = 25; name = 'Small Elixir'; }
+        else if (elixir_choice == 2) { price = 225; energy_gain = 60; name = 'Medium Elixir'; }
+        else if (elixir_choice == 3) { price = 450; energy_gain = 120; name = 'Large Elixir'; }
+        else if (elixir_choice == 4) { price = 750; energy_gain = 200; name = 'Massive Elixir'; }
+        
+        if (Money < price) {
+            printLine('color-red', 'Error: Need $' + price + ' You have $' + Money + '.');
+            updateUI();
+            return;
+        }
+        
+        if (Energy >= MaxEnergy) {
+            printLine('color-red', 'Error: Your energy is already full (' + Energy + '/' + MaxEnergy + ').');
+            updateUI();
+            return;
+        }
+        
+        let space_left = MaxEnergy - Energy;
+        let actual_gain;
+        if (energy_gain > space_left) {
+            actual_gain = space_left;
+            printLine('color-yellow', 'Warning: You only have ' + space_left + ' energy space left.');
+            let confirm = prompt('Buy ' + name + ' for $' + price + ' to gain ' + actual_gain + ' energy? (yes/no):');
+            if (!confirm || confirm.toLowerCase() != 'yes') {
+                printLine('color-cyan', 'Purchase cancelled.');
+                updateUI();
+                return;
+            }
+        } else {
+            actual_gain = energy_gain;
+            let confirm = prompt('Buy ' + name + ' for $' + price + ' to gain ' + actual_gain + ' energy? (yes/no):');
+            if (!confirm || confirm.toLowerCase() != 'yes') {
+                printLine('color-cyan', 'Purchase cancelled.');
+                updateUI();
+                return;
+            }
+        }
+        
+        Money -= price;
+        Energy = Math.min(MaxEnergy, Energy + actual_gain);
+        saveGame();
+        printLine('color-green', 'You bought ' + name + ' and gained ' + actual_gain + ' energy.');
+        printLine('color-cyan', 'Energy: ' + Energy + '/' + MaxEnergy);
+        updateUI();
+        return;
+    }
+    
+    // ---- Admin Commands ----
+    if (cmd == 'givemoney') {
+        if (Admin == true) {
+            let Givemoney = prompt('How much money do you want to give:');
+            if (Givemoney === null) return;
+            Givemoney = parseFloat(Givemoney);
+            if (isNaN(Givemoney) || !Number.isInteger(Givemoney)) {
+                printLine('color-red', 'Error: Please enter a whole number.');
+                updateUI();
+                return;
+            }
+            Givemoney = parseInt(Givemoney);
+            if (Givemoney >= 0) {
+                Money += Givemoney;
+                saveGame();
+                printLine('color-cyan', 'You successfully give ' + Givemoney + ' dollars to yourself.');
+            } else {
+                printLine('color-red', 'Error: Cannot give negative money.');
+            }
+        } else {
+            printLine('color-red', 'Error: You are not admin!');
+        }
+        updateUI();
+        return;
+    }
+    
+    if (cmd == 'givetroopers') {
+        if (Admin == true) {
+            let Givetrooper = prompt('How many Troopers do you want to give:');
+            if (Givetrooper === null) return;
+            Givetrooper = parseFloat(Givetrooper);
+            if (isNaN(Givetrooper) || !Number.isInteger(Givetrooper)) {
+                printLine('color-red', 'Error: Please enter a whole number.');
+                updateUI();
+                return;
+            }
+            Givetrooper = parseInt(Givetrooper);
+            if (Givetrooper >= 0) {
+                Trooper += Givetrooper;
+                saveGame();
+                printLine('color-cyan', 'You successfully give ' + Givetrooper + ' Troopers to yourself.');
+            } else {
+                printLine('color-red', 'Error: Cannot give negative Troopers.');
+            }
+        } else {
+            printLine('color-red', 'Error: You are not admin!');
+        }
+        updateUI();
+        return;
+    }
+    
+    if (cmd == 'setmoney') {
+        if (Admin == true) {
+            let Setmoney = prompt('How much money do you want to set:');
+            if (Setmoney === null) return;
+            Setmoney = parseFloat(Setmoney);
+            if (isNaN(Setmoney) || !Number.isInteger(Setmoney)) {
+                printLine('color-red', 'Error: Please enter a whole number.');
+                updateUI();
+                return;
+            }
+            Setmoney = parseInt(Setmoney);
+            if (Setmoney >= 0) {
+                Money = Setmoney;
+                saveGame();
+                printLine('color-cyan', 'You successfully set ' + Setmoney + ' dollars to yourself.');
+            } else {
+                printLine('color-red', 'Error: Cannot set negative money.');
+            }
+        } else {
+            printLine('color-red', 'Error: You are not admin!');
+        }
+        updateUI();
+        return;
+    }
+    
+    if (cmd == 'settroopers') {
+        if (Admin == true) {
+            let Settrooper = prompt('How many Troopers do you want to set:');
+            if (Settrooper === null) return;
+            Settrooper = parseFloat(Settrooper);
+            if (isNaN(Settrooper) || !Number.isInteger(Settrooper)) {
+                printLine('color-red', 'Error: Please enter a whole number.');
+                updateUI();
+                return;
+            }
+            Settrooper = parseInt(Settrooper);
+            if (Settrooper >= 0) {
+                Trooper = Settrooper;
+                saveGame();
+                printLine('color-cyan', 'You successfully set ' + Settrooper + ' Troopers to yourself.');
+            } else {
+                printLine('color-red', 'Error: Cannot set negative Troopers.');
+            }
+        } else {
+            printLine('color-red', 'Error: You are not admin!');
+        }
+        updateUI();
+        return;
+    }
+    
+    // ---- Exit ----
+    if (cmd == 'exit' || cmd == 'quit') {
+        LastCloseTime = String(Date.now() / 1000);
+        saveGame();
+        printLine('color-magenta', 'Goodbye.');
+        return;
+    }
+    
+    // ---- Unknown ----
+    printLine('color-red', 'Error: Unknown command.');
+}
+
+// ---------- Auto Energy Regen ----------
+function autoRegenEnergy() {
+    if (Energy < MaxEnergy) {
+        Energy = Math.min(MaxEnergy, Energy + 1);
+        saveGame();
+        updateUI();
+    }
+}
+
+// ---------- Init ----------
+loadGame();
+updateUI();
+
+// Auto regen every 30 seconds
+setInterval(autoRegenEnergy, 30000);
+
+// Save on page close
+window.addEventListener('beforeunload', function() {
+    LastCloseTime = String(Date.now() / 1000);
+    saveGame();
+});
+
+// Focus input
+cmdInput.focus();
+
+// Click anywhere to focus input
+document.addEventListener('click', function() {
+    cmdInput.focus();
+});
+
+console.log('Star Wars Project by KnoX | Good Luck <3');
+</script>
+
+</body>
+</html>
