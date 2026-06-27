@@ -13,10 +13,10 @@ const urlsToCache = [
   '/404.html',
   '/manifest.json',
   '/sw.js',
-  'https://uploadkon.ir/uploads/0bd526_26InShot-20250821-043319341.png',
-  'https://uploadkon.ir/uploads/d5c326_26download.png',
-  'https://uploadkon.ir/uploads/292a26_26calculator-icon-free-vector.jpg',
-  'https://uploadkon.ir/uploads/bf2b26_26download.png',
+  'https://uploadkon.ir/uploads/d44327_26dillimore-icon.png',
+  'https://uploadkon.ir/uploads/0daa27_26snake-icon.png',
+  'https://uploadkon.ir/uploads/aad227_26calculator-icon.png',
+  'https://uploadkon.ir/uploads/e38e27_26calendar-icon.png',
   'https://uploadkon.ir/uploads/2ad227_26download.png',
   'https://uploadkon.ir/uploads/966926_264155897.png'
 ];
