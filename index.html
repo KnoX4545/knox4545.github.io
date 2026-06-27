@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dillimore Projects</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#0a0a0a">
+
+    <!-- Apple touch icon (for iOS) -->
+    <link rel="apple-touch-icon" href="https://uploadkon.ir/uploads/0bd526_26InShot-20250821-043319341.png">
+    
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://uploadkon.ir/uploads/0bd526_26InShot-20250821-043319341.png">
     <style>
@@ -396,5 +406,14 @@
         </div>
 
     </div>
+    
+<!-- Service Worker Registration -->
+<script>
+    if ('serviceWorker' in navigator) {
+       navigator.serviceWorker.register('/sw.js')
+         .then(reg => console.log('✅ Service Worker registered!'))
+         .catch(err => console.log('❌ Service Worker registration failed:', err));
+  }
+</script>
 </body>
 </html>
