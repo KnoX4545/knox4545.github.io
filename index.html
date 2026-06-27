@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dillimore Projects</title>
-    
+
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
 
@@ -13,7 +13,7 @@
 
     <!-- Apple touch icon (for iOS) -->
     <link rel="apple-touch-icon" href="https://uploadkon.ir/uploads/0bd526_26InShot-20250821-043319341.png">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://uploadkon.ir/uploads/0bd526_26InShot-20250821-043319341.png">
     <style>
@@ -151,6 +151,7 @@
         .card.snake .icon-wrap { color: #00ff41; }
         .card.calculator .icon-wrap { color: #4a9eff; }
         .card.calendar .icon-wrap { color: #ff6b6b; }
+        .card.tictactoe .icon-wrap { color: #a29bfe; }
 
         /* Card glow ring */
         .card .icon-wrap .ring {
@@ -386,11 +387,23 @@
                 <div class="badge">▶ View Now</div>
             </a>
 
+            <!-- Tic-Tac-Toe -->
+            <a href="https://knox4545.github.io/TicTacToe.html" class="card tictactoe">
+                <span class="number">#05</span>
+                <div class="icon-wrap">
+                    <span>🎮</span>
+                    <span class="ring"></span>
+                </div>
+                <div class="name">Tic-Tac-Toe</div>
+                <div class="desc">Classic game vs Bot or 2 Players</div>
+                <div class="badge">▶ Play Now</div>
+            </a>
+
         </div>
 
         <!-- ===== STATUS BAR ===== -->
         <div class="status">
-            <span class="status-item">📦 <span class="num">4</span> Projects</span>
+            <span class="status-item">📦 <span class="num">5</span> Projects</span>
             <span class="status-item">⚡ <span class="num">100%</span> Free</span>
             <span class="status-item">🌐 <span class="num">Online</span> 24/7</span>
         </div>
@@ -398,7 +411,7 @@
         <!-- ===== FOOTER ===== -->
         <div class="footer">
             <span>#Dillimore Projects by KnoX</span>  |  Good Luck &lt;3
-            <div class="version">Version 1.1.0</div>
+            <div class="version">Version 1.2.0</div>
             <div class="social">
                 <a href="https://github.com/KnoX4545">GitHub</a>
                 <a href="https://knox4545.github.io">Home</a>
@@ -406,14 +419,14 @@
         </div>
 
     </div>
-    
-<!-- Service Worker Registration -->
-<script>
-    if ('serviceWorker' in navigator) {
-       navigator.serviceWorker.register('/sw.js')
-         .then(reg => console.log('✅ Service Worker registered!'))
-         .catch(err => console.log('❌ Service Worker registration failed:', err));
-  }
-</script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('✅ Service Worker registered!'))
+                .catch(err => console.log('❌ Service Worker registration failed:', err));
+        }
+    </script>
 </body>
 </html>
