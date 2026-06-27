@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>📝 Dillimore Editor</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        /* ============================================================
+                   CSS VARIABLES
+                ============================================================ */
+        :root {
+            --bg-body: #0f0e17;
+            --bg-container: #1a1932;
+            --bg-card: #222145;
+            --bg-card-hover: #2a2955;
+            --bg-card-border: #2a2a4a;
+            --bg-editor: #0d0c1a;
+            --text-primary: #fffffe;
+            --text-secondary: #a7a9be;
+            --text-muted: #6c6e8a;
+            --accent-1: #ff8906;
+            --accent-2: #e53170;
+            --accent-3: #6246d4;
+            --accent-glow: rgba(255, 137, 6, 0.08);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --border-color: #2a2a4a;
+            --radius: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+        }
+
+        /* ============================================================
+                   RESET & BASE
+                ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-body);
+            font-family: var(--font);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .container {
+            background: var(--bg-container);
+            border: 1px solid var(--bg-card-border);
+            border-radius: var(--radius);
+            padding: 24px 20px 20px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            max-height: 98vh;
+        }
+
+        /* ============================================================
+                   HEADER
+                ============================================================ */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .header .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header .badge {
+            display: inline-block;
+            background: var(--accent-glow);
+            color: var(--accent-1);
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            padding: 2px 14px;
+            border-radius: 100px;
+            border: 1px solid var(--accent-glow);
+            text-transform: uppercase;
+        }
+
+        .header h1 {
+            color: var(--text-primary);
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .header h1 .highlight {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .doc-info {
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .header .doc-info span {
+            color: var(--accent-1);
+        }
+
+        /* ============================================================
+                   TOOLBAR
+                ============================================================ */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+            align-items: center;
+        }
+
+        .toolbar .group {
+            display: flex;
+            gap: 2px;
+            padding: 0 4px;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .toolbar .group:last-child {
+            border-right: none;
+        }
+
+        .toolbar .group .label {
+            color: var(--text-muted);
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 4px 4px 4px 8px;
+            display: flex;
+            align-items: center;
+            opacity: 0.5;
+        }
+
+        .toolbar button {
+            padding: 6px 10px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: var(--font);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .toolbar button:hover {
+            background: var(--bg-card);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .toolbar button:active {
+            transform: scale(0.92);
+        }
+
+        .toolbar button.active {
+            background: var(--accent-glow);
+            border-color: var(--accent-1);
+            color: var(--accent-1);
+        }
+
+        .toolbar button .icon {
+            font-size: 14px;
+        }
+
+        .toolbar button .shortcut {
+            font-size: 8px;
+            color: var(--text-muted);
+            opacity: 0.5;
+            font-weight: 400;
+        }
+
+        /* Color picker */
+        .toolbar .color-picker-wrap {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .toolbar .color-picker-wrap input[type="color"] {
+            width: 28px;
+            height: 28px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            padding: 2px;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .toolbar .color-picker-wrap input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        .toolbar .color-picker-wrap input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 4px;
+        }
+
+        /* ============================================================
+                   EDITOR
+                ============================================================ */
+        .editor-wrap {
+            flex: 1;
+            margin: 8px 0;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            background: var(--bg-editor);
+            min-height: 300px;
+            position: relative;
+        }
+
+        .editor-wrap:focus-within {
+            border-color: var(--accent-1);
+        }
+
+        #editor {
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+            max-height: 55vh;
+            padding: 16px 20px;
+            background: transparent;
+            color: var(--text-primary);
+            font-family: var(--font);
+            font-size: 15px;
+            line-height: 1.8;
+            outline: none;
+            border: none;
+            resize: none;
+            overflow-y: auto;
+        }
+
+        #editor:empty::before {
+            content: 'Write something amazing... ✨';
+            color: var(--text-muted);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* ============================================================
+                   STATUS BAR
+                ============================================================ */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 4px 0 4px;
+            border-top: 1px solid var(--border-color);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .status-bar .info {
+            display: flex;
+            gap: 20px;
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .status-bar .info .item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-bar .info .item .num {
+            color: var(--accent-1);
+            font-weight: 600;
+        }
+
+        .status-bar .actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .status-bar .actions button {
+            padding: 6px 14px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: var(--font);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-bar .actions button:hover {
+            border-color: var(--accent-1);
+            color: var(--accent-1);
+            background: var(--accent-glow);
+        }
+
+        .status-bar .actions button:active {
+            transform: scale(0.95);
+        }
+
+        .status-bar .actions button.primary {
+            background: var(--accent-1);
+            border-color: var(--accent-1);
+            color: var(--bg-body);
+        }
+
+        .status-bar .actions button.primary:hover {
+            background: #e07c00;
+            border-color: #e07c00;
+        }
+
+        /* ============================================================
+                   FOOTER
+                ============================================================ */
+        .footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 9px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+            letter-spacing: 0.3px;
+            opacity: 0.5;
+            flex-shrink: 0;
+        }
+
+        .footer .brand {
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+
+        /* ============================================================
+                   TOAST NOTIFICATION
+                ============================================================ */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 12px 24px;
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast .toast-icon {
+            font-size: 18px;
+        }
+
+        .toast.success .toast-icon { color: var(--accent-1); }
+        .toast.error .toast-icon { color: var(--accent-2); }
+        .toast.info .toast-icon { color: var(--accent-3); }
+
+        /* ============================================================
+                   RESPONSIVE
+                ============================================================ */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px 14px 14px;
+                max-height: 100vh;
+            }
+
+            .header h1 {
+                font-size: 17px;
+            }
+
+            .toolbar {
+                gap: 3px;
+                padding: 6px 0;
+            }
+
+            .toolbar button {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
+
+            .toolbar button .shortcut {
+                display: none;
+            }
+
+            .toolbar .group .label {
+                display: none;
+            }
+
+            #editor {
+                font-size: 14px;
+                padding: 12px 14px;
+                min-height: 200px;
+            }
+
+            .status-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+
+            .status-bar .info {
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: center;
+            }
+
+            .status-bar .actions {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .status-bar .actions button {
+                font-size: 10px;
+                padding: 5px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 12px 10px 10px;
+                border-radius: 12px;
+            }
+
+            .header .badge {
+                font-size: 7px;
+                padding: 1px 10px;
+            }
+
+            .header h1 {
+                font-size: 15px;
+            }
+
+            .header .doc-info {
+                font-size: 9px;
+            }
+
+            .toolbar {
+                gap: 2px;
+            }
+
+            .toolbar button {
+                padding: 3px 6px;
+                font-size: 10px;
+                border-radius: 4px;
+            }
+
+            .toolbar button .icon {
+                font-size: 12px;
+            }
+
+            #editor {
+                font-size: 13px;
+                padding: 10px 12px;
+                min-height: 150px;
+            }
+
+            .status-bar .info {
+                font-size: 10px;
+                gap: 8px;
+            }
+
+            .status-bar .actions button {
+                font-size: 9px;
+                padding: 4px 10px;
+            }
+
+            .toast {
+                font-size: 11px;
+                padding: 10px 18px;
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <div class="left">
+                <span class="badge">✦ Editor</span>
+                <h1>📝 <span class="highlight">Dillimore</span> Editor</h1>
+            </div>
+            <div class="doc-info">
+                📄 <span id="docIdDisplay">Untitled</span>
+            </div>
+        </div>
+
+        <!-- TOOLBAR -->
+        <div class="toolbar" id="toolbar">
+            <!-- Text Style -->
+            <div class="group">
+                <button onclick="formatText('bold')" title="Bold (Ctrl+B)"><span class="icon"><b>B</b></span> <span class="shortcut">Ctrl+B</span></button>
+                <button onclick="formatText('italic')" title="Italic (Ctrl+I)"><span class="icon"><i>I</i></span> <span class="shortcut">Ctrl+I</span></button>
+                <button onclick="formatText('underline')" title="Underline (Ctrl+U)"><span class="icon"><u>U</u></span> <span class="shortcut">Ctrl+U</span></button>
+                <button onclick="formatText('strikeThrough')" title="Strikethrough"><span class="icon"><s>S</s></span></button>
+            </div>
+
+            <!-- Headings -->
+            <div class="group">
+                <button onclick="formatText('formatBlock', 'H1')">H1</button>
+                <button onclick="formatText('formatBlock', 'H2')">H2</button>
+                <button onclick="formatText('formatBlock', 'H3')">H3</button>
+                <button onclick="formatText('formatBlock', 'BLOCKQUOTE')" title="Quote">“</button>
+            </div>
+
+            <!-- Lists -->
+            <div class="group">
+                <button onclick="formatText('insertUnorderedList')" title="Bullet List">•</button>
+                <button onclick="formatText('insertOrderedList')" title="Numbered List">1.</button>
+            </div>
+
+            <!-- Alignment -->
+            <div class="group">
+                <button onclick="formatText('justifyLeft')" title="Align Left">≡</button>
+                <button onclick="formatText('justifyCenter')" title="Center">☰</button>
+                <button onclick="formatText('justifyRight')" title="Align Right">≡</button>
+            </div>
+
+            <!-- Color -->
+            <div class="group">
+                <div class="color-picker-wrap">
+                    <input type="color" id="colorPicker" value="#ff8906" onchange="formatText('foreColor', this.value)" title="Text Color">
+                    <input type="color" id="bgColorPicker" value="#1a1932" onchange="formatText('hiliteColor', this.value)" title="Background Color">
+                </div>
+            </div>
+
+            <!-- Insert -->
+            <div class="group">
+                <button onclick="insertLink()" title="Insert Link (Ctrl+K)"><span class="icon">🔗</span> <span class="shortcut">Ctrl+K</span></button>
+                <button onclick="insertImage()" title="Insert Image"><span class="icon">🖼️</span></button>
+            </div>
+
+            <!-- Clear -->
+            <div class="group">
+                <button onclick="formatText('removeFormat')" title="Clear Formatting">✕</button>
+                <button onclick="clearAll()" title="Clear All" style="color:var(--accent-2);">🗑️</button>
+            </div>
+        </div>
+
+        <!-- EDITOR -->
+        <div class="editor-wrap">
+            <div id="editor" contenteditable="true"></div>
+        </div>
+
+        <!-- STATUS BAR -->
+        <div class="status-bar">
+            <div class="info">
+                <span class="item">📝 <span class="num" id="wordCount">0</span> words</span>
+                <span class="item">📏 <span class="num" id="charCount">0</span> characters</span>
+                <span class="item">💾 <span class="num" id="saveStatus">Auto-saved</span></span>
+            </div>
+            <div class="actions">
+                <button onclick="openFile()">📂 Open File</button>
+                <button onclick="downloadFile()">📥 Download</button>
+                <button onclick="copyLink()" id="copyLinkBtn">🔗 Copy Link</button>
+                <button class="primary" onclick="saveDocument()">💾 Save</button>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <span class="brand">Dillimore</span> — Built with ❤️ by <span class="brand">KnoX</span>
+            <br>© 2024-2026 Dillimore Team. All rights reserved.
+        </div>
+
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">
+        <span class="toast-icon">✅</span>
+        <span id="toastMessage">Saved!</span>
+    </div>
+
+    <script>
+        // ================================================================
+        // 📝 DILLIMORE EDITOR  –  by KnoX  –  Version 1.0.0
+        // ================================================================
+
+        // ---------- DOM ----------
+        const editor = document.getElementById('editor');
+        const wordCount = document.getElementById('wordCount');
+        const charCount = document.getElementById('charCount');
+        const saveStatus = document.getElementById('saveStatus');
+        const docIdDisplay = document.getElementById('docIdDisplay');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+
+        // ---------- STATE ----------
+        let docId = null;
+        let saveTimeout = null;
+        let autoSaveInterval = null;
+
+        // ---------- INIT ----------
+        function init() {
+            // Check URL for document ID
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+
+            if (id) {
+                docId = id;
+                loadDocument(id);
+            } else {
+                // Check if there's a draft in localStorage
+                const saved = localStorage.getItem('editor_draft');
+                if (saved) {
+                    editor.innerHTML = saved;
+                    updateStats();
+                }
+                docIdDisplay.textContent = 'Untitled';
+            }
+
+            // Auto-save every 5 seconds
+            autoSaveInterval = setInterval(autoSave, 5000);
+
+            // Update stats on input
+            editor.addEventListener('input', () => {
+                updateStats();
+                updateSaveStatus('Unsaved...');
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(autoSave, 1000);
+            });
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', handleKeyboardShortcuts);
+
+            // Focus editor
+            editor.focus();
+        }
+
+        // ---------- TEXT FORMATTING ----------
+        function formatText(command, value = null) {
+            document.execCommand(command, false, value);
+            editor.focus();
+            updateStats();
+            updateSaveStatus('Unsaved...');
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(autoSave, 1000);
+        }
+
+        // ---------- INSERT LINK ----------
+        function insertLink() {
+            const url = prompt('Enter URL:', 'https://');
+            if (url) {
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    if (!range.collapsed) {
+                        document.execCommand('createLink', false, url);
+                    } else {
+                        const text = prompt('Link text:');
+                        if (text) {
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.textContent = text;
+                            range.insertNode(link);
+                        }
+                    }
+                } else {
+                    const text = prompt('Link text:');
+                    if (text) {
+                        document.execCommand('insertHTML', false, `<a href="${url}">${text}</a>`);
+                    }
+                }
+                editor.focus();
+                updateSaveStatus('Unsaved...');
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(autoSave, 1000);
+            }
+        }
+
+        // ---------- INSERT IMAGE ----------
+        function insertImage() {
+            const url = prompt('Enter image URL:', 'https://');
+            if (url) {
+                document.execCommand('insertImage', false, url);
+                editor.focus();
+                updateSaveStatus('Unsaved...');
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(autoSave, 1000);
+            }
+        }
+
+        // ---------- CLEAR ALL ----------
+        function clearAll() {
+            if (confirm('Are you sure you want to clear everything?')) {
+                editor.innerHTML = '';
+                updateStats();
+                updateSaveStatus('Cleared');
+                autoSave();
+            }
+        }
+
+        // ---------- STATS ----------
+        function updateStats() {
+            const text = editor.innerText || '';
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            const chars = text.length;
+            wordCount.textContent = words;
+            charCount.textContent = chars;
+        }
+
+        function updateSaveStatus(status) {
+            saveStatus.textContent = status;
+        }
+
+        // ---------- AUTO SAVE ----------
+        function autoSave() {
+            const content = editor.innerHTML;
+            if (content.trim() === '') return;
+
+            if (docId) {
+                // Save to localStorage with docId
+                localStorage.setItem('editor_' + docId, content);
+            } else {
+                // Save as draft
+                localStorage.setItem('editor_draft', content);
+            }
+            updateSaveStatus('Auto-saved ✓');
+        }
+
+        // ---------- SAVE DOCUMENT ----------
+        function saveDocument() {
+            const content = editor.innerHTML;
+            if (content.trim() === '') {
+                showToast('⚠️ Nothing to save!', 'error');
+                return;
+            }
+
+            // If no docId, generate one
+            if (!docId) {
+                docId = generateId();
+                docIdDisplay.textContent = docId;
+                // Update URL without reloading
+                const url = new URL(window.location);
+                url.searchParams.set('id', docId);
+                window.history.replaceState({}, '', url);
+            }
+
+            localStorage.setItem('editor_' + docId, content);
+            updateSaveStatus('Saved ✓');
+            showToast('✅ Document saved! ID: ' + docId, 'success');
+        }
+
+        // ---------- LOAD DOCUMENT ----------
+        function loadDocument(id) {
+            const content = localStorage.getItem('editor_' + id);
+            if (content) {
+                editor.innerHTML = content;
+                docIdDisplay.textContent = id;
+                updateStats();
+                updateSaveStatus('Loaded ✓');
+                showToast('📄 Document loaded: ' + id, 'info');
+            } else {
+                docIdDisplay.textContent = id + ' (not found)';
+                showToast('⚠️ Document not found!', 'error');
+            }
+        }
+
+        // ---------- COPY LINK ----------
+        function copyLink() {
+            // If no docId, save first
+            if (!docId) {
+                saveDocument();
+            }
+
+            const url = new URL(window.location);
+            url.searchParams.set('id', docId);
+            navigator.clipboard.writeText(url.toString()).then(() => {
+                showToast('🔗 Link copied to clipboard!', 'success');
+            }).catch(() => {
+                // Fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = url.toString();
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('🔗 Link copied!', 'success');
+            });
+        }
+
+        // ---------- OPEN FILE ----------
+        function openFile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.txt,.md,.html,.css,.js,.json,.xml,.csv,.log';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const content = event.target.result;
+                    // Try to detect if it's plain text
+                    try {
+                        // If it's HTML, we'll just insert as text
+                        editor.innerHTML = content;
+                    } catch (err) {
+                        editor.textContent = content;
+                    }
+                    updateStats();
+                    updateSaveStatus('File loaded: ' + file.name);
+                    showToast('📂 File loaded: ' + file.name, 'success');
+                    autoSave();
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // ---------- DOWNLOAD FILE ----------
+        function downloadFile() {
+            const content = editor.innerHTML;
+            if (content.trim() === '') {
+                showToast('⚠️ Nothing to download!', 'error');
+                return;
+            }
+
+            const blob = new Blob([content], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const name = docId ? 'document-' + docId : 'untitled';
+            a.download = name + '.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('📥 File downloaded!', 'success');
+        }
+
+        // ---------- KEYBOARD SHORTCUTS ----------
+        function handleKeyboardShortcuts(e) {
+            const ctrl = e.ctrlKey || e.metaKey;
+
+            if (ctrl) {
+                switch (e.key.toLowerCase()) {
+                    case 'b':
+                        e.preventDefault();
+                        formatText('bold');
+                        break;
+                    case 'i':
+                        e.preventDefault();
+                        formatText('italic');
+                        break;
+                    case 'u':
+                        e.preventDefault();
+                        formatText('underline');
+                        break;
+                    case 'k':
+                        e.preventDefault();
+                        insertLink();
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        saveDocument();
+                        break;
+                }
+            }
+        }
+
+        // ---------- HELPERS ----------
+        function generateId() {
+            return 'doc_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+        }
+
+        // ---------- TOAST ----------
+        function showToast(message, type = 'success') {
+            toastMessage.textContent = message;
+            toast.className = 'toast ' + type;
+            // Force reflow
+            void toast.offsetWidth;
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ---------- INIT ----------
+        init();
+
+        console.log('📝 Dillimore Editor v1.0.0 by KnoX | Good Luck <3');
+    </script>
+
+</body>
+</html>
