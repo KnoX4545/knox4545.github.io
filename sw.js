@@ -2,7 +2,7 @@
 // Service Worker – Dillimore Projects
 // ================================================================
 
-const CACHE_NAME = 'dillimore-v2';
+const CACHE_NAME = 'dillimore-v4';
 const urlsToCache = [
   '/',
   '/StarWars.html',
