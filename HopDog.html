@@ -455,12 +455,12 @@
     </div>
 
     <div class="chat" id="chat">
-        <div class="date-divider">امروز</div>
+        <div class="date-divider">Today</div>
     </div>
 
     <div class="input-area">
-        <input type="text" id="cmdInput" placeholder="پیام خود را بنویسید..." onkeydown="if(event.key==='Enter') sendCmd()" autofocus />
-        <button class="send-btn" onclick="sendCmd()">ارسال</button>
+        <input type="text" id="cmdInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendCmd()" autofocus />
+        <button class="send-btn" onclick="sendCmd()">Send</button>
     </div>
 
     <div class="footer">
@@ -672,7 +672,6 @@ function getCooldownForLevel(level) {
 // ================================================================
 function showHopUI() {
     const required = getRequiredForLevel(Level);
-    const cooldown = getCooldownForLevel(Level);
     
     let msg = '';
     msg += '📊 <span class="bold">وضعیت هاپویی شما</span><br/>';
@@ -685,22 +684,7 @@ function showHopUI() {
         msg += '🐾 هاپ شمار : <span class="gold">' + HopCount + '</span> (سطح نهایی) 🏆<br/>';
     }
     
-    msg += S.coin + ' هاپ پوینت : <span class="gold">' + HopPoint + '</span> 🪙<br/>';
-    
-    if (lastHopTime > 0) {
-        const now = Date.now();
-        const elapsed = (now - lastHopTime) / 1000;
-        const remaining = cooldown - elapsed;
-        if (remaining > 0) {
-            const minutes = Math.floor(remaining / 60);
-            const seconds = Math.floor(remaining % 60);
-            msg += S.clock + ' تا هاپ بعدی : ' + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-        } else {
-            msg += '✅ آماده‌ای میتونی <span class="hop-text">هاپ هاپ</span> کنی';
-        }
-    } else {
-        msg += '✅ آماده‌ای میتونی <span class="hop-text">هاپ هاپ</span> کنی';
-    }
+    msg += S.coin + ' هاپ پوینت هات : <span class="gold">' + HopPoint + '</span>';
     
     addBot(msg);
 }
@@ -781,16 +765,18 @@ function doHop() {
 }
 
 // ================================================================
-// WELCOME (first time with name prompt)
+// WELCOME (first time)
 // ================================================================
 function showWelcome() {
     addSystem(S.welcome + ' به هاپ داگ خوش اومدی');
     addBot(
         S.game + ' ربات سرگرمی هاپ داگ' + '<br/>' +
         S.dog + ' یه هاپوی بامزه' + '<br/>' +
-        'کافیه <span class="hop-text">هاپ هاپ</span> کنی تا هاپ پوینت بگیری' + '<br/>' +
-        'اسمت چیه'
+        'کافیه <span class="hop-text">هاپ هاپ</span> کنی تا هاپ پوینت بگیری'
     );
+    
+    // پیام جداگانه برای اسم
+    addBot(S.paw + ' اسمت چیه (یک اسم برایه خودت انتخاب کن)؟');
     waitingForName = true;
 }
 
@@ -825,7 +811,7 @@ function processCommand(cmd) {
         return;
     }
     
-    addBot(S.error + ' دستور اشتباه هست');
+    addBot(S.error + ' دستور اشتباه است');
 }
 
 // ================================================================
