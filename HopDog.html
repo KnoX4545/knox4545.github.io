@@ -484,7 +484,6 @@
 
 let HopPoint = 0;
 let lastHopTime = 0;
-let hasVisited = false;
 const HOP_COOLDOWN = 5 * 60 * 1000;
 
 const chat = document.getElementById('chat');
@@ -575,12 +574,15 @@ const SAVE_KEY = 'hopdog_data';
 
 function saveGame() {
     try {
-        localStorage.setItem(SAVE_KEY, JSON.stringify({
+        const data = {
             HopPoint: HopPoint,
             lastHopTime: lastHopTime,
             hasVisited: true
-        }));
-    } catch(e) {}
+        };
+        localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+    } catch(e) {
+        console.log('Save error:', e);
+    }
 }
 
 function loadGame() {
@@ -590,15 +592,29 @@ function loadGame() {
             const data = JSON.parse(raw);
             HopPoint = data.HopPoint || 0;
             lastHopTime = data.lastHopTime || 0;
-            hasVisited = true;
             return true;
         }
-    } catch(e) {}
+    } catch(e) {
+        console.log('Load error:', e);
+    }
     return false;
 }
 
 // ================================================================
-// WELCOME
+// CHECK COOLDOWN ON LOAD
+// ================================================================
+function checkCooldownOnLoad() {
+    if (lastHopTime > 0) {
+        const now = Date.now();
+        const elapsed = now - lastHopTime;
+        if (elapsed >= HOP_COOLDOWN) {
+            addSystem('⏳ آماده‌ای! میتونی <span class="hop-text">هاپ هاپ</span> کنی');
+        }
+    }
+}
+
+// ================================================================
+// WELCOME (only first time)
 // ================================================================
 function showWelcome() {
     addSystem(S.welcome + ' به هاپ داگ خوش اومدی');
@@ -677,17 +693,20 @@ function sendCmd() {
 // ================================================================
 // INIT
 // ================================================================
-localStorage.removeItem(SAVE_KEY);
+const hasSavedData = loadGame();
 
-HopPoint = 0;
-lastHopTime = 0;
-hasVisited = false;
-
-showWelcome();
-saveGame();
+if (!hasSavedData) {
+    // First time - show welcome
+    showWelcome();
+    saveGame();
+} else {
+    // Not first time - just check cooldown
+    checkCooldownOnLoad();
+}
 
 cmdInput.focus();
 
+// Auto-save every 3 seconds
 setInterval(saveGame, 3000);
 window.addEventListener('beforeunload', saveGame);
 </script>
