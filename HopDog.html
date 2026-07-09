@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>HopDog</title>
-    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐕</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cellipse cx='50' cy='62' rx='22' ry='20' fill='%23fbbf24' stroke='%23d97706' stroke-width='1.5'/%3E%3Cellipse cx='30' cy='38' rx='13' ry='14' fill='%23fbbf24' stroke='%23d97706' stroke-width='1.5' transform='rotate(-25, 30, 38)'/%3E%3Cellipse cx='50' cy='32' rx='13' ry='14' fill='%23fbbf24' stroke='%23d97706' stroke-width='1.5'/%3E%3Cellipse cx='70' cy='38' rx='13' ry='14' fill='%23fbbf24' stroke='%23d97706' stroke-width='1.5' transform='rotate(25, 70, 38)'/%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -519,13 +519,12 @@ let Level = 1;
 let HopCount = 0;
 let PlayerName = '';
 let waitingForName = false;
-const HOP_COOLDOWN = 300;
 
 const chat = document.getElementById('chat');
 const cmdInput = document.getElementById('cmdInput');
 
 // ================================================================
-// CUSTOM STICKERS (SVG)
+// CUSTOM STICKERS (SVG) — NO EMOJI
 // ================================================================
 const S = {
     paw: `<svg width="22" height="22" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
@@ -583,13 +582,6 @@ const S = {
     star: `<svg width="20" height="20" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
         <polygon points="50,5 63,38 98,38 70,58 82,92 50,73 18,92 30,58 2,38 37,38" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
     </svg>`,
-    trophy: `<svg width="20" height="20" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
-        <rect x="30" y="15" width="40" height="35" rx="5" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
-        <rect x="20" y="50" width="60" height="10" rx="3" fill="#d97706"/>
-        <rect x="42" y="60" width="16" height="25" rx="3" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
-        <circle cx="50" cy="35" r="10" fill="#fcd34d"/>
-        <text x="50" y="40" font-size="18" text-anchor="middle" fill="#b45309" font-weight="bold">★</text>
-    </svg>`,
     crown: `<svg width="20" height="20" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
         <polygon points="10,30 25,10 40,30 50,15 60,30 75,10 90,30 85,85 15,85" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
         <circle cx="25" cy="20" r="6" fill="#fcd34d"/>
@@ -636,8 +628,7 @@ function saveGame() {
             Level: Level,
             HopCount: HopCount,
             PlayerName: PlayerName,
-            hasVisited: true,
-            waitingForName: false
+            hasVisited: true
         };
         localStorage.setItem(SAVE_KEY, JSON.stringify(data));
     } catch(e) {}
@@ -681,11 +672,10 @@ function getCooldownForLevel(level) {
 // ================================================================
 function showHopUI() {
     const required = getRequiredForLevel(Level);
-    const nextLevel = Level < MAX_LEVEL ? Level + 1 : MAX_LEVEL;
     const cooldown = getCooldownForLevel(Level);
     
     let msg = '';
-    msg += '📊 <span class="bold">وضعیت هاپ داگ</span><br/>';
+    msg += '📊 <span class="bold">وضعیت هاپویی شما</span><br/>';
     msg += '👤 کاربر: <span class="gold">' + (PlayerName || 'ناشناس') + '</span><br/>';
     msg += S.star + ' سطح : <span class="gold">' + Level + '</span><br/>';
     
@@ -706,10 +696,10 @@ function showHopUI() {
             const seconds = Math.floor(remaining % 60);
             msg += S.clock + ' تا هاپ بعدی : ' + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
         } else {
-            msg += '✅ آماده‌ای! میتونی <span class="hop-text">هاپ هاپ</span> کنی';
+            msg += '✅ آماده‌ای میتونی <span class="hop-text">هاپ هاپ</span> کنی';
         }
     } else {
-        msg += '✅ آماده‌ای! میتونی <span class="hop-text">هاپ هاپ</span> کنی';
+        msg += '✅ آماده‌ای میتونی <span class="hop-text">هاپ هاپ</span> کنی';
     }
     
     addBot(msg);
@@ -723,7 +713,7 @@ function doLevelUp() {
     HopPoint += reward;
     
     let msg = '';
-    msg += S.levelup + ' <span class="gold">تبریک! سطح شما به ' + Level + ' ارتقا یافت</span> ' + S.crown + '<br/>';
+    msg += S.levelup + ' <span class="gold">تبریک سطح شما به ' + Level + ' ارتقا یافت</span> ' + S.crown + '<br/>';
     msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
     msg += '🔓 قابلیت های باز شده ⬇️<br/>';
     msg += '(فعلاً خالی)<br/>';
@@ -794,11 +784,12 @@ function doHop() {
 // WELCOME (first time with name prompt)
 // ================================================================
 function showWelcome() {
-    addSystem(S.welcome + ' به هاپ داگ خوش اومدی!');
+    addSystem(S.welcome + ' به هاپ داگ خوش اومدی');
     addBot(
         S.game + ' ربات سرگرمی هاپ داگ' + '<br/>' +
         S.dog + ' یه هاپوی بامزه' + '<br/>' +
-        'اسمت چیه؟ (یک اسم برا خودت انتخاب کن)'
+        'کافیه <span class="hop-text">هاپ هاپ</span> کنی تا هاپ پوینت بگیری' + '<br/>' +
+        'اسمت چیه'
     );
     waitingForName = true;
 }
@@ -815,21 +806,21 @@ function processCommand(cmd) {
         PlayerName = t;
         waitingForName = false;
         saveGame();
-        addBot('🎮 ربات سرگرمی هاپ داگ' + '<br/>' + S.dog + ' یه هاپوی بامزه' + '<br/>' + 'کافیه <span class="hop-text">هاپ هاپ</span> کنی تا هاپ پوینت بگیری');
+        addBot('اسم شما ثبت شد ' + S.paw + ' <span class="gold">' + PlayerName + '</span>');
         return;
     }
     
     const lower = t.toLowerCase();
     
     // HOPUI command
-    if (lower === 'هاپوی' || lower === 'hapui' || lower === 'وضعیت' || lower === 'status') {
+    if (lower === 'هاپویی' || lower === 'hapui' || lower === 'وضعیت' || lower === 'status') {
         showHopUI();
         return;
     }
     
     // HOP commands
-    const hopWords = ['هاپ', 'هاپ هاپ', 'هاپ هوپ', 'هوپ', 'hop', 'hop hop', 'hap'];
-    if (hopWords.includes(lower) || hopWords.some(w => lower.includes(w))) {
+    const hopCommands = ['هاپ', 'هاپ هاپ', 'هاپ هوپ', 'هوپ', 'hop', 'hop hop', 'hap'];
+    if (hopCommands.includes(lower)) {
         doHop();
         return;
     }
@@ -855,12 +846,6 @@ const hasSavedData = loadGame();
 
 if (!hasSavedData || !PlayerName) {
     showWelcome();
-} else {
-    // Check cooldown on load (silent)
-    const cooldown = getCooldownForLevel(Level);
-    if (lastHopTime > 0 && (Date.now() - lastHopTime) / 1000 >= cooldown) {
-        // Ready to hop, but no message needed
-    }
 }
 
 cmdInput.focus();
