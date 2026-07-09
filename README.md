@@ -17,7 +17,7 @@
 | 🧮 **Calculator** | Advanced calculator with functions | [Use](https://knox4545.github.io/Calculator.html) |
 | 🗓️ **Calendar** | Accurate Persian calendar | [View](https://knox4545.github.io/Calendar.html) |
 | 🎮 **Tic-Tac-Toe** | Classic game vs Bot or 2 Players | [Play](https://knox4545.github.io/TicTacToe.html) |
-| 🏠 **Hub** | Main page with all projects | [Visit](https://knox4545.github.io) |
+| 🏠 **Hub** | Main page with all projects | [Visit](https://knox4545.github.io/2) |
 
 ---
 
@@ -105,7 +105,7 @@ The classic Tic-Tac-Toe game with smart AI opponent.
 
 Visit our main page to see all projects in one place.
 
-[▶ Visit Hub](https://knox4545.github.io)
+[▶ Visit Hub](https://knox4545.github.io/2)
 
 ---
 
@@ -124,7 +124,7 @@ Visit our main page to see all projects in one place.
 **Team Dillimore**
 - Leader: **KnoX**
 - GitHub: [@KnoX4545](https://github.com/KnoX4545)
-- Website: [knox4545.github.io](https://knox4545.github.io)
+- Website: [knox4545.github.io](https://knox4545.github.io/2)
 
 ---
 
