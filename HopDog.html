@@ -597,19 +597,6 @@ function loadGame() {
 }
 
 // ================================================================
-// CHECK COOLDOWN ON LOAD
-// ================================================================
-function checkCooldownOnLoad() {
-    if (lastHopTime > 0) {
-        const now = Date.now();
-        const elapsed = now - lastHopTime;
-        if (elapsed >= HOP_COOLDOWN) {
-            addSystem('⏳ آماده‌ای! میتونی <span class="hop-text">هاپ هاپ</span> کنی');
-        }
-    }
-}
-
-// ================================================================
 // WELCOME (only first time)
 // ================================================================
 function showWelcome() {
@@ -668,7 +655,6 @@ function processCommand(cmd) {
     addUser(cmd);
     const t = cmd.trim().toLowerCase();
     
-    // ============ NEW COMMAND LIST ============
     const hopWords = [
         'هاپ', 
         'هاپ هاپ', 
@@ -705,8 +691,6 @@ const hasSavedData = loadGame();
 if (!hasSavedData) {
     showWelcome();
     saveGame();
-} else {
-    checkCooldownOnLoad();
 }
 
 cmdInput.focus();
