@@ -580,9 +580,7 @@ function saveGame() {
             hasVisited: true
         };
         localStorage.setItem(SAVE_KEY, JSON.stringify(data));
-    } catch(e) {
-        console.log('Save error:', e);
-    }
+    } catch(e) {}
 }
 
 function loadGame() {
@@ -594,9 +592,7 @@ function loadGame() {
             lastHopTime = data.lastHopTime || 0;
             return true;
         }
-    } catch(e) {
-        console.log('Load error:', e);
-    }
+    } catch(e) {}
     return false;
 }
 
@@ -671,7 +667,18 @@ function doHop() {
 function processCommand(cmd) {
     addUser(cmd);
     const t = cmd.trim().toLowerCase();
-    const hopWords = ['هاپ', 'هاپ هاپ', 'hop', 'hop hop', 'هاعپ', 'هاپ‌هاپ', 'هوپ', 'هوپ هوپ'];
+    
+    // ============ NEW COMMAND LIST ============
+    const hopWords = [
+        'هاپ', 
+        'هاپ هاپ', 
+        'هاپ هوپ',
+        'هوپ', 
+        'hop', 
+        'hop hop',
+        'hap'
+    ];
+    
     if (hopWords.includes(t) || hopWords.some(w => t.includes(w))) {
         doHop();
         return;
@@ -696,17 +703,14 @@ function sendCmd() {
 const hasSavedData = loadGame();
 
 if (!hasSavedData) {
-    // First time - show welcome
     showWelcome();
     saveGame();
 } else {
-    // Not first time - just check cooldown
     checkCooldownOnLoad();
 }
 
 cmdInput.focus();
 
-// Auto-save every 3 seconds
 setInterval(saveGame, 3000);
 window.addEventListener('beforeunload', saveGame);
 </script>
