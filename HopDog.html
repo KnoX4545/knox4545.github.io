@@ -383,14 +383,12 @@
             transition: color var(--tg-transition);
         }
 
-        /* ================================================================
-           GLASS BUTTONS (شیشه‌ای)
-        ================================================================ */
         .glass-buttons {
             display: flex;
             gap: 10px;
             justify-content: center;
             margin-top: 8px;
+            flex-wrap: wrap;
         }
 
         .glass-btn {
@@ -400,7 +398,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 30px;
             padding: 6px 18px;
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -441,8 +439,24 @@
             background: rgba(248, 113, 113, 0.25);
         }
 
+        .glass-btn.sell {
+            background: rgba(251, 191, 36, 0.12);
+            border-color: rgba(251, 191, 36, 0.25);
+            color: #fbbf24;
+        }
+
+        .glass-btn.sell:hover {
+            background: rgba(251, 191, 36, 0.2);
+        }
+
         .glass-btn .icon {
+            font-size: 18px;
+        }
+
+        .hunt-dots {
+            display: inline-block;
             font-size: 20px;
+            letter-spacing: 4px;
         }
 
         @media (max-width: 520px) {
@@ -463,13 +477,13 @@
             .header-avatar svg { width: 24px; height: 24px; }
             .footer .main-line { font-size: 10px; }
             .footer .sub-line { font-size: 8px; }
-            .glass-btn { font-size: 15px; padding: 4px 14px; }
+            .glass-btn { font-size: 13px; padding: 4px 12px; }
         }
 
         @media (max-width: 380px) {
             .msg { font-size: 12px; max-width: 95%; }
             .footer .main-line { font-size: 9px; }
-            .glass-btn { font-size: 13px; padding: 3px 10px; }
+            .glass-btn { font-size: 11px; padding: 3px 10px; }
         }
     </style>
 </head>
@@ -536,14 +550,14 @@
         <div class="sub-line">
             Built with <span style="color:#f87171;">❤</span> by <span class="brand">KnoX</span> &amp; <span class="ai">AI</span>
         </div>
-        <div class="version">Version 1.1.0</div>
+        <div class="version">Version 1.3.0</div>
     </div>
 
 </div>
 
 <script>
 // ================================================================
-// HOPDOG — Version 1.1.0
+// HOPDOG — Version 1.3.0
 // ================================================================
 
 // ================================================================
@@ -575,6 +589,96 @@ const LEVEL_DATA = {
 const MAX_LEVEL = 20;
 
 // ================================================================
+// CLAW SYSTEM (پنجه)
+// ================================================================
+const CLAW_DATA = {
+    1: { cost: 500, cooldown: 60, common: 95, uncommon: 5, epic: 0, legendary: 0 },
+    2: { cost: 5000, cooldown: 55, common: 80, uncommon: 15, epic: 5, legendary: 0 },
+    3: { cost: 25000, cooldown: 50, common: 60, uncommon: 25, epic: 10, legendary: 5 },
+    4: { cost: 75000, cooldown: 45, common: 40, uncommon: 30, epic: 20, legendary: 10 },
+    5: { cost: 250000, cooldown: 40, common: 20, uncommon: 35, epic: 30, legendary: 15 },
+    6: { cost: 1000000, cooldown: 35, common: 10, uncommon: 30, epic: 40, legendary: 20 },
+    7: { cost: 3250000, cooldown: 30, common: 5, uncommon: 25, epic: 45, legendary: 25 },
+};
+
+const MAX_CLAW_LEVEL = 7;
+
+// ================================================================
+// HUNTING SYSTEM (با قیمت‌های بالای 40)
+// ================================================================
+const ANIMALS = {
+    common: [
+        { name: 'خرگوش', emoji: '🐇', weightMin: 0.25, weightMax: 0.50, multiplier: 80, nutrition: 1 },
+        { name: 'سنجاب', emoji: '🐿️', weightMin: 0.50, weightMax: 0.99, multiplier: 60, nutrition: 1 },
+        { name: 'جوجه‌تیغی', emoji: '🦔', weightMin: 0.10, weightMax: 0.20, multiplier: 300, nutrition: 1 },
+        { name: 'اردک', emoji: '🦆', weightMin: 0.75, weightMax: 1.45, multiplier: 50, nutrition: 1 },
+    ],
+    uncommon: [
+        { name: 'روباه', emoji: '🦊', weightMin: 1.00, weightMax: 1.99, multiplier: 50, nutrition: 2 },
+        { name: 'آهو', emoji: '🦌', weightMin: 1.50, weightMax: 2.50, multiplier: 40, nutrition: 2 },
+        { name: 'گراز', emoji: '🐗', weightMin: 2.00, weightMax: 2.99, multiplier: 35, nutrition: 2 },
+    ],
+    epic: [
+        { name: 'گرگ', emoji: '🐺', weightMin: 3.00, weightMax: 4.99, multiplier: 30, nutrition: 3 },
+        { name: 'خرس', emoji: '🐻', weightMin: 5.00, weightMax: 7.99, multiplier: 20, nutrition: 3 },
+        { name: 'پلنگ', emoji: '🐆', weightMin: 8.00, weightMax: 11.99, multiplier: 20, nutrition: 3 },
+    ],
+    legendary: [
+        { name: 'اژدها', emoji: '🐉', weightMin: 12.00, weightMax: 17.99, multiplier: 15, nutrition: 5 },
+        { name: 'یونیکورن', emoji: '🦄', weightMin: 5.00, weightMax: 7.99, multiplier: 20, nutrition: 5 },
+        { name: 'فنیکس', emoji: '🔥', weightMin: 10.00, weightMax: 20.00, multiplier: 10, nutrition: 5 },
+        { name: 'نهنگ بزرگ', emoji: '🐋', weightMin: 15.00, weightMax: 25.00, multiplier: 10, nutrition: 5 },
+    ]
+};
+
+const RARITY_NAMES = {
+    common: 'معمولی',
+    uncommon: 'کمیاب',
+    epic: 'حماسی',
+    legendary: 'افسانه‌ای'
+};
+
+const RARITY_ICONS = {
+    common: `<svg width="18" height="18" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <circle cx="50" cy="50" r="40" fill="#6a6a6a" stroke="#888" stroke-width="2"/>
+        <text x="50" y="65" font-size="45" text-anchor="middle" fill="#aaa" font-weight="bold">C</text>
+    </svg>`,
+    uncommon: `<svg width="18" height="18" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <circle cx="50" cy="50" r="40" fill="#3b82f6" stroke="#60a5fa" stroke-width="2"/>
+        <text x="50" y="65" font-size="45" text-anchor="middle" fill="#93c5fd" font-weight="bold">U</text>
+    </svg>`,
+    epic: `<svg width="18" height="18" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <circle cx="50" cy="50" r="40" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2"/>
+        <text x="50" y="65" font-size="45" text-anchor="middle" fill="#c4b5fd" font-weight="bold">E</text>
+    </svg>`,
+    legendary: `<svg width="18" height="18" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <circle cx="50" cy="50" r="40" fill="#fbbf24" stroke="#fcd34d" stroke-width="2"/>
+        <text x="50" y="65" font-size="45" text-anchor="middle" fill="#fde68a" font-weight="bold">L</text>
+    </svg>`
+};
+
+const RARITY_COLORS = {
+    common: 'text-secondary',
+    uncommon: 'text-blue',
+    epic: 'text-purple',
+    legendary: 'text-gold'
+};
+
+const ICONS = {
+    check: `<svg width="24" height="24" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;">
+        <circle cx="50" cy="50" r="45" fill="#22c55e" opacity="0.15"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#22c55e" stroke-width="4"/>
+        <polyline points="28,50 45,68 72,38" fill="none" stroke="#22c55e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`,
+    cross: `<svg width="24" height="24" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;">
+        <circle cx="50" cy="50" r="45" fill="#f87171" opacity="0.15"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#f87171" stroke-width="4"/>
+        <line x1="32" y1="32" x2="68" y2="68" stroke="#f87171" stroke-width="6" stroke-linecap="round"/>
+        <line x1="68" y1="32" x2="32" y2="68" stroke="#f87171" stroke-width="6" stroke-linecap="round"/>
+    </svg>`
+};
+
+// ================================================================
 // VARIABLES
 // ================================================================
 let HopPoint = 0;
@@ -588,11 +692,17 @@ let changeNamePending = false;
 let isAdmin = false;
 let waitingForAdminPassword = false;
 
+// Claw variables
+let clawLevel = 0;
+let lastHuntTime = 0;
+let huntActive = false;
+let huntTimerId = null;
+
 const chat = document.getElementById('chat');
 const cmdInput = document.getElementById('cmdInput');
 
 // ================================================================
-// CUSTOM STICKERS (SVG) — NO EMOJI
+// CUSTOM STICKERS (SVG — NO EMOJI)
 // ================================================================
 const S = {
     paw: `<svg width="22" height="22" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
@@ -601,10 +711,10 @@ const S = {
         <ellipse cx="50" cy="34" rx="11" ry="12" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
         <ellipse cx="68" cy="40" rx="11" ry="12" fill="#fbbf24" stroke="#d97706" stroke-width="1.5" transform="rotate(25, 68, 40)"/>
     </svg>`,
-    coin: `<svg width="18" height="18" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+    hopoCoin: `<svg width="18" height="18" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
         <circle cx="50" cy="50" r="45" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
         <circle cx="50" cy="50" r="35" fill="#fcd34d"/>
-        <text x="50" y="58" font-size="40" text-anchor="middle" fill="#b45309" font-weight="bold">$</text>
+        <text x="50" y="60" font-size="45" text-anchor="middle" fill="#b45309" font-weight="bold">H</text>
     </svg>`,
     sparkle: `<svg width="16" height="16" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
         <text x="50" y="82" font-size="70" text-anchor="middle" fill="#fbbf24">✦</text>
@@ -666,11 +776,17 @@ const S = {
     </svg>`,
     admin: `<svg width="24" height="24" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
         <text x="50" y="78" font-size="70" text-anchor="middle" fill="#fbbf24">🛡️</text>
+    </svg>`,
+    hunt: `<svg width="28" height="28" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <text x="50" y="78" font-size="70" text-anchor="middle" fill="#fbbf24">🏹</text>
+    </svg>`,
+    claw: `<svg width="28" height="28" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <text x="50" y="78" font-size="70" text-anchor="middle" fill="#fbbf24">🐾</text>
     </svg>`
 };
 
 // ================================================================
-// CHAT
+// CHAT FUNCTIONS
 // ================================================================
 function addMessage(type, html) {
     const div = document.createElement('div');
@@ -699,7 +815,7 @@ function addBotWithGlassButtons(html, confirmCallback, cancelCallback) {
     
     const confirmBtn = document.createElement('button');
     confirmBtn.className = 'glass-btn confirm';
-    confirmBtn.innerHTML = '<span class="icon">✅</span> تأیید';
+    confirmBtn.innerHTML = ICONS.check + ' بله';
     confirmBtn.onclick = function(e) {
         e.stopPropagation();
         confirmCallback();
@@ -708,7 +824,7 @@ function addBotWithGlassButtons(html, confirmCallback, cancelCallback) {
     
     const cancelBtn = document.createElement('button');
     cancelBtn.className = 'glass-btn cancel';
-    cancelBtn.innerHTML = '<span class="icon">❌</span> لغو';
+    cancelBtn.innerHTML = ICONS.cross + ' نه';
     cancelBtn.onclick = function(e) {
         e.stopPropagation();
         cancelCallback();
@@ -735,6 +851,25 @@ function addBot(text) {
     return div;
 }
 
+function addBotAndReturn(text) {
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    div.innerHTML = text + '<span class="msg-time">' + time + '</span>';
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+    return div;
+}
+
+function editMessage(div, newHtml) {
+    const timeSpan = div.querySelector('.msg-time');
+    if (timeSpan) {
+        div.innerHTML = newHtml + '<span class="msg-time">' + timeSpan.textContent + '</span>';
+    } else {
+        div.innerHTML = newHtml;
+    }
+}
+
 // ================================================================
 // SAVE / LOAD
 // ================================================================
@@ -749,7 +884,9 @@ function saveGame() {
             HopCount: HopCount,
             PlayerName: PlayerName,
             hasVisited: true,
-            isAdmin: isAdmin
+            isAdmin: isAdmin,
+            clawLevel: clawLevel,
+            lastHuntTime: lastHuntTime
         };
         localStorage.setItem(SAVE_KEY, JSON.stringify(data));
     } catch(e) {}
@@ -766,6 +903,8 @@ function loadGame() {
             HopCount = data.HopCount || 0;
             PlayerName = data.PlayerName || '';
             isAdmin = data.isAdmin || false;
+            clawLevel = data.clawLevel || 0;
+            lastHuntTime = data.lastHuntTime || 0;
             return true;
         }
     } catch(e) {}
@@ -790,7 +929,297 @@ function getCooldownForLevel(level) {
 }
 
 // ================================================================
-// HOPUI — STATUS COMMAND
+// CLAW HELPERS
+// ================================================================
+function getClawData(level) {
+    if (level > MAX_CLAW_LEVEL) return CLAW_DATA[MAX_CLAW_LEVEL];
+    return CLAW_DATA[level] || null;
+}
+
+function getClawCost(level) {
+    const data = getClawData(level);
+    if (!data) return Infinity;
+    return data.cost;
+}
+
+function getClawCooldown(level) {
+    const data = getClawData(level);
+    if (!data) return Infinity;
+    return data.cooldown;
+}
+
+function getClawChances(level) {
+    const data = getClawData(level);
+    if (!data) return { common: 0, uncommon: 0, epic: 0, legendary: 0 };
+    return {
+        common: data.common,
+        uncommon: data.uncommon,
+        epic: data.epic,
+        legendary: data.legendary
+    };
+}
+
+function getRarityIcon(rarity) {
+    return RARITY_ICONS[rarity] || '';
+}
+
+// ================================================================
+// CLAW COMMAND
+// ================================================================
+function showClawMenu() {
+    if (Level < 2) {
+        addBot(S.error + ' قابلیت پنجه از سطح 2 باز میشود');
+        return;
+    }
+    
+    if (clawLevel === 0) {
+        const cost = getClawCost(1);
+        const msg = 
+            S.claw + ' <span class="gold">شما پنجه ندارید</span><br/>' +
+            'برای شروع شکار باید پنجه بخرید<br/>' +
+            '💰 هزینه خرید سطح 1 : <span class="gold">' + cost + '</span> ' + S.hopoCoin + '<br/>' +
+            '⏳ زمان استراحت : 60:00<br/>' +
+            '🍀 شانس شکار :<br/>' +
+            '  ' + getRarityIcon('common') + ' معمولی : 95%<br/>' +
+            '  ' + getRarityIcon('uncommon') + ' کمیاب : 5%';
+        
+        addBotWithGlassButtons(
+            msg,
+            function() {
+                buyClawAction();
+            },
+            function() {
+                addBot('❌ خرید پنجه لغو شد');
+            }
+        );
+        return;
+    }
+    
+    const data = getClawData(clawLevel);
+    const nextLevel = clawLevel + 1;
+    const nextData = getClawData(nextLevel);
+    
+    let msg = '';
+    msg += S.claw + ' <span class="gold">پنجه شما</span><br/>';
+    msg += '⭐ سطح : <span class="gold">' + clawLevel + '</span><br/>';
+    msg += '⏳ زمان استراحت : ' + String(data.cooldown).padStart(2, '0') + ':00<br/>';
+    msg += '🍀 شانس شکار :<br/>';
+    msg += '  ' + getRarityIcon('common') + ' معمولی : ' + data.common + '%<br/>';
+    msg += '  ' + getRarityIcon('uncommon') + ' کمیاب : ' + data.uncommon + '%<br/>';
+    if (data.epic > 0) msg += '  ' + getRarityIcon('epic') + ' حماسی : ' + data.epic + '%<br/>';
+    if (data.legendary > 0) msg += '  ' + getRarityIcon('legendary') + ' افسانه‌ای : ' + data.legendary + '%<br/>';
+    
+    if (nextData) {
+        msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
+        msg += '⬆️ ارتقا به سطح ' + nextLevel + '<br/>';
+        msg += '💰 هزینه : <span class="gold">' + nextData.cost + '</span> ' + S.hopoCoin;
+        
+        addBotWithGlassButtons(
+            msg,
+            function() {
+                upgradeClawAction(nextLevel, nextData.cost);
+            },
+            function() {
+                addBot('❌ ارتقا پنجه لغو شد');
+            }
+        );
+    } else {
+        msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
+        msg += '🏆 سطح نهایی';
+        addBot(msg);
+    }
+}
+
+function buyClawAction() {
+    const cost = getClawCost(1);
+    if (HopPoint < cost) {
+        addBot(S.error + ' هاپو پوینت کافی نیست (نیاز به ' + cost + ' ' + S.hopoCoin + ')');
+        return;
+    }
+    HopPoint -= cost;
+    clawLevel = 1;
+    saveGame();
+    addBot('✅ <span class="gold">پنجه خریداری شد</span> ' + S.claw + '<br/>' +
+           'اکنون میتونی با زدن <span class="gold">شکار</span> به شکار بری<br/>' +
+           'برای ارتقا پنجه، دوباره <span class="gold">پنجه</span> بزن');
+}
+
+function upgradeClawAction(nextLevel, cost) {
+    if (HopPoint < cost) {
+        addBot(S.error + ' هاپو پوینت کافی نیست (نیاز به ' + cost + ' ' + S.hopoCoin + ')');
+        return;
+    }
+    HopPoint -= cost;
+    clawLevel = nextLevel;
+    saveGame();
+    addBot('✅ <span class="gold">پنجه به سطح ' + clawLevel + ' ارتقا یافت</span> ' + S.sparkle);
+}
+
+// ================================================================
+// HUNTING (با قیمت‌های بالای 40)
+// ================================================================
+function getRandomAnimal() {
+    if (clawLevel === 0) {
+        return null;
+    }
+    
+    const chances = getClawChances(clawLevel);
+    const rand = Math.random() * 100;
+    let rarity;
+    if (rand < chances.common) rarity = 'common';
+    else if (rand < chances.common + chances.uncommon) rarity = 'uncommon';
+    else if (rand < chances.common + chances.uncommon + chances.epic) rarity = 'epic';
+    else rarity = 'legendary';
+    
+    const animals = ANIMALS[rarity];
+    const animal = animals[Math.floor(Math.random() * animals.length)];
+    const weight = Math.round((animal.weightMin + Math.random() * (animal.weightMax - animal.weightMin)) * 10) / 10;
+    const value = Math.round(weight * animal.multiplier);
+    
+    return {
+        ...animal,
+        rarity: rarity,
+        rarityName: RARITY_NAMES[rarity],
+        rarityIcon: getRarityIcon(rarity),
+        weight: weight,
+        value: Math.round(value),
+        name: animal.name
+    };
+}
+
+function doHunt() {
+    if (Level < 2) {
+        addBot(S.error + ' قابلیت شکار از سطح 2 باز میشود');
+        return;
+    }
+    
+    if (clawLevel === 0) {
+        addBot(
+            S.claw + ' <span class="gold">شما پنجه ندارید</span><br/>' +
+            'برای شکار باید پنجه بخرید<br/>' +
+            '💰 هزینه خرید سطح 1 : <span class="gold">' + getClawCost(1) + '</span> ' + S.hopoCoin + '<br/>' +
+            'با زدن <span class="gold">پنجه</span> اطلاعات بیشتری ببین'
+        );
+        return;
+    }
+    
+    if (huntActive) {
+        addBot('⏳ در حال شکار هستی صبر کن');
+        return;
+    }
+    
+    const cooldown = getClawCooldown(clawLevel) * 60 * 1000;
+    const now = Date.now();
+    
+    if (lastHuntTime > 0 && (now - lastHuntTime) < cooldown) {
+        const remaining = cooldown - (now - lastHuntTime);
+        const minutes = Math.floor(remaining / 60000);
+        const seconds = Math.floor((remaining % 60000) / 1000);
+        const timeStr = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+        addBot('🕐 تا شکار بعدی ' + timeStr + ' مونده');
+        return;
+    }
+    
+    huntActive = true;
+    lastHuntTime = now;
+    
+    const animMsg = addBotAndReturn(
+        S.hunt + ' <span class="gold">در حال شکار</span> <span class="hunt-dots">...</span>'
+    );
+    
+    setTimeout(() => {
+        const animal = getRandomAnimal();
+        if (!animal) {
+            editMessage(animMsg, S.error + ' خطا در شکار');
+            huntActive = false;
+            return;
+        }
+        
+        const rarityColor = RARITY_COLORS[animal.rarity] || 'gold';
+        const animalEmoji = animal.emoji || '🐾';
+        
+        const resultHtml = 
+            S.hunt + ' <span class="gold">شما موفق به شکار شدید</span><br/>' +
+            animalEmoji + ' <span class="gold">' + animal.name + '</span><br/>' +
+            '⭐ سطح : <span class="' + rarityColor + '">' + animal.rarityName + ' ' + animal.rarityIcon + '</span><br/>' +
+            '⚖️ وزن : <span class="gold">' + animal.weight + '</span> کیلو<br/>' +
+            '💰 ارزش : <span class="gold">' + animal.value + '</span> ' + S.hopoCoin + '<br/>' +
+            '🥩 ارزش غذایی : <span class="gold">' + animal.nutrition + '</span> کالری<br/>' +
+            '🕐 60 ثانیه فرصت انتخاب دارید';
+        
+        editMessage(animMsg, resultHtml);
+        
+        const btnContainer = document.createElement('div');
+        btnContainer.className = 'glass-buttons';
+        
+        const sellBtn = document.createElement('button');
+        sellBtn.className = 'glass-btn sell';
+        sellBtn.innerHTML = '💰 فروش';
+        sellBtn.onclick = function(e) {
+            e.stopPropagation();
+            if (huntTimerId) {
+                clearTimeout(huntTimerId);
+                huntTimerId = null;
+            }
+            
+            const confirmDiv = addBotAndReturn(
+                '💰 آیا مطمئنی میخوای <span class="gold">' + animal.name + '</span> رو به قیمت <span class="gold">' + animal.value + '</span> ' + S.hopoCoin + ' بفروشی؟'
+            );
+            
+            const confirmContainer = document.createElement('div');
+            confirmContainer.className = 'glass-buttons';
+            
+            const confirmBtn = document.createElement('button');
+            confirmBtn.className = 'glass-btn confirm';
+            confirmBtn.innerHTML = ICONS.check + ' بله';
+            confirmBtn.onclick = function(e) {
+                e.stopPropagation();
+                HopPoint = Math.round((HopPoint + animal.value) * 100) / 100;
+                const soldName = animal.name;
+                const soldValue = animal.value;
+                saveGame();
+                editMessage(confirmDiv, '✅ <span class="gold">' + soldName + '</span> فروخته شد 💰 <span class="gold">' + soldValue + '</span> ' + S.hopoCoin);
+                addBot('💰 هاپو پوینت هات : <span class="gold">' + Math.round(HopPoint) + '</span> ' + S.hopoCoin);
+                btnContainer.remove();
+                huntActive = false;
+            };
+            
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'glass-btn cancel';
+            cancelBtn.innerHTML = ICONS.cross + ' نه';
+            cancelBtn.onclick = function(e) {
+                e.stopPropagation();
+                editMessage(confirmDiv, '❌ فروش لغو شد');
+                btnContainer.remove();
+                huntActive = false;
+            };
+            
+            confirmContainer.appendChild(confirmBtn);
+            confirmContainer.appendChild(cancelBtn);
+            confirmDiv.appendChild(confirmContainer);
+            btnContainer.remove();
+        };
+        
+        btnContainer.appendChild(sellBtn);
+        animMsg.appendChild(btnContainer);
+        
+        huntTimerId = setTimeout(() => {
+            if (huntActive) {
+                editMessage(animMsg, '🐾 <span class="red">حیوان فرار کرد</span>');
+                const btns = animMsg.querySelector('.glass-buttons');
+                if (btns) btns.remove();
+                huntActive = false;
+                huntTimerId = null;
+            }
+        }, 60000);
+        
+        saveGame();
+        
+    }, 2000);
+}
+
+// ================================================================
+// HOPUI (با استیکرهای جدید)
 // ================================================================
 function showHopUI() {
     const required = getRequiredForLevel(Level);
@@ -808,59 +1237,19 @@ function showHopUI() {
         msg += '🐾 هاپ شمار : <span class="gold">' + HopCount + '</span> (سطح نهایی) 🏆<br/>';
     }
     
-    msg += S.coin + ' هاپ پوینت هات : <span class="gold">' + HopPoint + '</span>';
+    msg += S.hopoCoin + ' هاپو پوینت هات : <span class="gold">' + Math.round(HopPoint) + '</span><br/>';
+    
+    if (clawLevel > 0) {
+        msg += S.claw + ' پنجه : سطح <span class="gold">' + clawLevel + '</span>';
+    } else {
+        msg += S.claw + ' پنجه : <span class="red">ندارید</span>';
+    }
     
     addBot(msg);
 }
 
 // ================================================================
-// ADMIN COMMANDS
-// ================================================================
-function adminSetLevel() {
-    if (!isAdmin) {
-        addBot(S.error + ' شما ادمین نیستید');
-        return;
-    }
-    addBot('سطح جدید را وارد کن (۱ تا ۲۰):');
-    waitingForAdminCommand = true;
-    adminCommandType = 'setlevel';
-}
-
-function adminSetPoint() {
-    if (!isAdmin) {
-        addBot(S.error + ' شما ادمین نیستید');
-        return;
-    }
-    addBot('هاپ پوینت جدید را وارد کن:');
-    waitingForAdminCommand = true;
-    adminCommandType = 'setpoint';
-}
-
-let waitingForAdminCommand = false;
-let adminCommandType = '';
-
-// ================================================================
-// LEVEL UP
-// ================================================================
-function doLevelUp() {
-    const reward = getLevelData(Level).reward;
-    HopPoint += reward;
-    
-    let msg = '';
-    msg += S.levelup + ' <span class="gold">تبریک سطح شما به ' + Level + ' ارتقا یافت</span> ' + S.crown + '<br/>';
-    msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
-    msg += '🔓 قابلیت های باز شده ⬇️<br/>';
-    msg += '(فعلاً خالی)<br/>';
-    msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
-    msg += S.coin + ' جایزه ارتقا سطح : <span class="gold">' + reward + '</span> 🪙<br/>';
-    msg += S.coin + ' هاپ پوینت هات : <span class="gold">' + HopPoint + '</span> 🪙';
-    
-    addBot(msg);
-    saveGame();
-}
-
-// ================================================================
-// HOP
+// HOP (با ساعت جدید)
 // ================================================================
 function doHop() {
     const now = Date.now();
@@ -898,12 +1287,11 @@ function doHop() {
     const c1 = colors[Math.floor(Math.random() * colors.length)];
 
     addBot(
-        S.paw + ' <span class="' + c1 + '">' + earned + '</span> هاپ پوینت گرفتی' + ' ' + S.sparkle + '<br/>' +
-        S.coin + ' هاپ پوینت هات : ' + '<span class="' + c1 + '">' + HopPoint + '</span>' + '<br/>' +
+        S.paw + ' <span class="' + c1 + '">' + earned + '</span> هاپو پوینت گرفتی' + ' ' + S.sparkle + '<br/>' +
+        S.hopoCoin + ' هاپو پوینت هات : ' + '<span class="' + c1 + '">' + Math.round(HopPoint) + '</span>' + '<br/>' +
         'بعد از ' + Math.floor(cooldown/60) + ':00 میتونی دوباره <span class="hop-text">هاپ هاپ</span> کنی'
     );
 
-    // Check level up
     const required = getRequiredForLevel(Level);
     if (Level < MAX_LEVEL && HopCount >= required) {
         HopCount = 0;
@@ -915,14 +1303,63 @@ function doHop() {
 }
 
 // ================================================================
-// WELCOME (first time)
+// LEVEL UP
+// ================================================================
+function doLevelUp() {
+    const reward = getLevelData(Level).reward;
+    HopPoint += reward;
+    
+    let msg = '';
+    msg += S.levelup + ' <span class="gold">تبریک سطح شما به ' + Level + ' ارتقا یافت</span> ' + S.crown + '<br/>';
+    msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
+    msg += '🔓 قابلیت های باز شده ⬇️<br/>';
+    if (Level === 2) {
+        msg += '🏹 شکار (نیاز به خرید پنجه)<br/>';
+        msg += '🐾 پنجه (برای خرید و ارتقا)';
+    }
+    msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
+    msg += S.hopoCoin + ' جایزه ارتقا سطح : <span class="gold">' + reward + '</span> ' + S.hopoCoin + '<br/>';
+    msg += S.hopoCoin + ' هاپو پوینت هات : <span class="gold">' + Math.round(HopPoint) + '</span> ' + S.hopoCoin;
+    
+    addBot(msg);
+    saveGame();
+}
+
+// ================================================================
+// ADMIN COMMANDS
+// ================================================================
+function adminSetLevel() {
+    if (!isAdmin) {
+        addBot(S.error + ' شما ادمین نیستید');
+        return;
+    }
+    addBot('سطح جدید را وارد کن (1 تا 20):');
+    waitingForAdminCommand = true;
+    adminCommandType = 'setlevel';
+}
+
+function adminSetPoint() {
+    if (!isAdmin) {
+        addBot(S.error + ' شما ادمین نیستید');
+        return;
+    }
+    addBot('هاپو پوینت جدید را وارد کن:');
+    waitingForAdminCommand = true;
+    adminCommandType = 'setpoint';
+}
+
+let waitingForAdminCommand = false;
+let adminCommandType = '';
+
+// ================================================================
+// WELCOME
 // ================================================================
 function showWelcome() {
     addSystem(S.welcome + ' به هاپ داگ خوش اومدی');
     addBot(
         S.game + ' ربات سرگرمی هاپ داگ' + '<br/>' +
         S.dog + ' یه هاپوی بامزه' + '<br/>' +
-        'کافیه <span class="hop-text">هاپ هاپ</span> کنی تا هاپ پوینت بگیری'
+        'کافیه <span class="hop-text">هاپ هاپ</span> کنی تا هاپو پوینت بگیری'
     );
     
     addBot(S.paw + ' اسمت چیه (یک اسم برایه خودت انتخاب کن)؟');
@@ -930,22 +1367,22 @@ function showWelcome() {
 }
 
 // ================================================================
-// CHANGE NAME FUNCTIONS
+// CHANGE NAME
 // ================================================================
 function startChangeName() {
     if (HopPoint < 750) {
-        addBot(S.error + ' هاپ پوینت کافی نیست برای تغییر اسم (نیاز به ۷۵۰)');
+        addBot(S.error + ' هاپو پوینت کافی نیست برای تغییر اسم (نیاز به 750 ' + S.hopoCoin + ')');
         return;
     }
     
     changeNamePending = true;
     addBotWithGlassButtons(
         S.namechange + ' <span class="gold">تغییر اسم</span><br/>' +
-        'هزینه : <span class="gold">۷۵۰</span> هاپ پوینت<br/>' +
+        'هزینه : <span class="gold">750</span> ' + S.hopoCoin + '<br/>' +
         'آیا مطمئنی میخوای اسمت رو عوض کنی؟',
         function() {
             if (HopPoint < 750) {
-                addBot(S.error + ' هاپ پوینت کافی نیست (نیاز به ۷۵۰)');
+                addBot(S.error + ' هاپو پوینت کافی نیست (نیاز به 750 ' + S.hopoCoin + ')');
                 changeNamePending = false;
                 return;
             }
@@ -971,13 +1408,12 @@ function startAdminLogin() {
 }
 
 // ================================================================
-// PROCESS COMMAND
+// PROCESS
 // ================================================================
 function processCommand(cmd) {
     addUser(cmd);
     const t = cmd.trim();
     
-    // If waiting for name (first time)
     if (waitingForName) {
         PlayerName = t;
         waitingForName = false;
@@ -986,7 +1422,6 @@ function processCommand(cmd) {
         return;
     }
     
-    // If waiting for new name (change name)
     if (waitingForNewName) {
         if (t.length > 0) {
             const oldName = PlayerName;
@@ -1000,7 +1435,6 @@ function processCommand(cmd) {
         return;
     }
     
-    // If waiting for admin password
     if (waitingForAdminPassword) {
         if (t === '9061') {
             isAdmin = true;
@@ -1013,7 +1447,6 @@ function processCommand(cmd) {
         return;
     }
     
-    // If waiting for admin command
     if (waitingForAdminCommand) {
         const val = parseInt(t);
         if (isNaN(val) || val < 0) {
@@ -1029,12 +1462,12 @@ function processCommand(cmd) {
                 saveGame();
                 addBot('✅ سطح شما به <span class="gold">' + Level + '</span> تغییر یافت');
             } else {
-                addBot(S.error + ' سطح باید بین ۱ تا ' + MAX_LEVEL + ' باشد');
+                addBot(S.error + ' سطح باید بین 1 تا ' + MAX_LEVEL + ' باشد');
             }
         } else if (adminCommandType === 'setpoint') {
             HopPoint = val;
             saveGame();
-            addBot('✅ هاپ پوینت شما به <span class="gold">' + HopPoint + '</span> تغییر یافت');
+            addBot('✅ هاپو پوینت شما به <span class="gold">' + HopPoint + '</span> تغییر یافت');
         }
         
         waitingForAdminCommand = false;
@@ -1044,7 +1477,19 @@ function processCommand(cmd) {
     
     const lower = t.toLowerCase();
     
-    // ============ ADMIN COMMANDS ============
+    // CLAW COMMAND
+    if (lower === 'پنجه' || lower === 'claw') {
+        showClawMenu();
+        return;
+    }
+    
+    // HUNTING
+    if (lower === 'شکار' || lower === 'hunt') {
+        doHunt();
+        return;
+    }
+    
+    // ADMIN
     if (lower === 'setlevel' || lower === 'تعیین سطح') {
         adminSetLevel();
         return;
@@ -1055,25 +1500,24 @@ function processCommand(cmd) {
         return;
     }
     
-    // ============ ADMIN LOGIN ============
     if (lower === 'kknoxx1') {
         startAdminLogin();
         return;
     }
     
-    // ============ HOPUI COMMAND ============
+    // HOPUI
     if (lower === 'هاپویی' || lower === 'hapui' || lower === 'وضعیت' || lower === 'status' || lower === 'stats') {
         showHopUI();
         return;
     }
     
-    // ============ CHANGE NAME ============
+    // CHANGE NAME
     if (lower === 'اسم هاپویی' || lower === 'change name' || lower === 'changename') {
         startChangeName();
         return;
     }
     
-    // ============ HOP COMMANDS ============
+    // HOP
     const hopCommands = ['هاپ', 'هاپ هاپ', 'هاپ هوپ', 'هوپ', 'hop', 'hop hop', 'hap'];
     if (hopCommands.includes(lower)) {
         doHop();
