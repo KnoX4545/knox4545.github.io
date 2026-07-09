@@ -11,40 +11,42 @@
 
     <style>
         :root {
-            --tg-bg: #0f0f0f;
-            --tg-header: #1a1a1a;
-            --tg-chat-bg: #0a0a0a;
+            --tg-bg: #0a0a0f;
+            --tg-header: #12121a;
+            --tg-chat-bg: #0d0d14;
             --tg-bubble-user: #1a7a3a;
-            --tg-bubble-bot: #1c1c1c;
-            --tg-bubble-system: #121212;
-            --tg-text-primary: #e8e8e8;
-            --tg-text-secondary: #a8a8a8;
-            --tg-text-muted: #6a6a6a;
+            --tg-bubble-bot: #1a1a24;
+            --tg-bubble-system: #14141e;
+            --tg-text-primary: #f0eede;
+            --tg-text-secondary: #b8b5a8;
+            --tg-text-muted: #6a6858;
             --tg-accent: #1a7a3a;
             --tg-accent-hover: #228a44;
-            --tg-border: #2a2a2a;
-            --tg-input-bg: #1a1a1a;
-            --tg-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            --tg-border: #2a2838;
+            --tg-input-bg: #12121a;
+            --tg-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
             --tg-radius: 12px;
             --tg-radius-bubble: 16px;
-            --tg-transition: 0.2s ease;
+            --tg-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             --tg-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --gold-grad: linear-gradient(135deg, #fcd34d, #f59e0b, #d97706);
+            --gold-glow: 0 0 40px rgba(251, 191, 36, 0.15);
         }
 
         @media (prefers-color-scheme: light) {
             :root {
-                --tg-bg: #ece8e4;
-                --tg-header: #e0dcd8;
-                --tg-chat-bg: #d5d1cd;
+                --tg-bg: #f0ece6;
+                --tg-header: #e8e4de;
+                --tg-chat-bg: #e0dcd6;
                 --tg-bubble-user: #1a7a3a;
                 --tg-bubble-bot: #ffffff;
-                --tg-bubble-system: #cac6c2;
-                --tg-text-primary: #1a1a1a;
-                --tg-text-secondary: #4a4a4a;
-                --tg-text-muted: #8a8a8a;
-                --tg-border: #c0bcb8;
+                --tg-bubble-system: #d5d1cb;
+                --tg-text-primary: #1a1a16;
+                --tg-text-secondary: #4a4842;
+                --tg-text-muted: #8a887a;
+                --tg-border: #d0ccc6;
                 --tg-input-bg: #ffffff;
-                --tg-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+                --tg-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
             }
         }
 
@@ -61,6 +63,7 @@
             color: var(--tg-text-secondary);
             line-height: 1.6;
             transition: background var(--tg-transition), color var(--tg-transition);
+            overflow: hidden;
         }
 
         .container {
@@ -101,22 +104,21 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
+            background: var(--gold-grad);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            animation: avatarPulse 4s ease-in-out infinite;
+            box-shadow: var(--gold-glow);
         }
 
-        .header-avatar svg {
-            width: 28px;
-            height: 28px;
+        @keyframes avatarPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.1); }
+            50% { box-shadow: 0 0 50px rgba(251, 191, 36, 0.25); }
         }
 
-        .header-info {
-            display: flex;
-            flex-direction: column;
-        }
+        .header-avatar svg { width: 28px; height: 28px; }
 
         .header-info .name {
             color: var(--tg-text-primary);
@@ -132,9 +134,7 @@
             font-weight: 400;
         }
 
-        .header-info .status .online {
-            color: var(--tg-accent);
-        }
+        .header-info .status .online { color: var(--tg-accent); }
 
         .paw-header-svg {
             width: 36px;
@@ -146,8 +146,8 @@
         }
 
         @keyframes pawFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-4px); }
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(-3deg); }
         }
 
         .chat {
@@ -159,18 +159,12 @@
             flex-direction: column;
             gap: 4px;
             transition: background var(--tg-transition);
+            scroll-behavior: smooth;
         }
 
-        .chat::-webkit-scrollbar {
-            width: 4px;
-        }
-        .chat::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .chat::-webkit-scrollbar-thumb {
-            background: var(--tg-border);
-            border-radius: 4px;
-        }
+        .chat::-webkit-scrollbar { width: 4px; }
+        .chat::-webkit-scrollbar-track { background: transparent; }
+        .chat::-webkit-scrollbar-thumb { background: var(--tg-border); border-radius: 4px; }
 
         .msg {
             max-width: 88%;
@@ -178,9 +172,15 @@
             border-radius: var(--tg-radius-bubble);
             font-size: 14px;
             line-height: 1.7;
-            animation: fadeIn 0.15s ease;
+            animation: msgIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
             word-wrap: break-word;
             position: relative;
+            opacity: 0;
+            transform: translateY(16px) scale(0.96);
+        }
+
+        @keyframes msgIn {
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .msg.system {
@@ -193,6 +193,7 @@
             padding: 6px 16px;
             align-self: center;
             margin: 2px 0;
+            border: 1px solid rgba(255, 255, 255, 0.02);
             transition: background var(--tg-transition), color var(--tg-transition);
         }
 
@@ -201,6 +202,7 @@
             color: var(--tg-text-primary);
             align-self: flex-end;
             border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 12px rgba(26, 122, 58, 0.2);
         }
 
         .msg.bot {
@@ -208,6 +210,7 @@
             color: var(--tg-text-secondary);
             align-self: flex-start;
             border-bottom-right-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
             transition: background var(--tg-transition), color var(--tg-transition);
         }
 
@@ -222,7 +225,7 @@
 
         .msg .hop-text {
             display: inline-block;
-            background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+            background: var(--gold-grad);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -237,24 +240,10 @@
             margin-top: 4px;
             display: block;
             text-align: left;
-            opacity: 0.5;
+            opacity: 0.4;
         }
 
-        .msg.user .msg-time {
-            text-align: right;
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        @media (prefers-color-scheme: light) {
-            .msg.user .msg-time {
-                color: rgba(255, 255, 255, 0.5);
-            }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
+        .msg.user .msg-time { text-align: right; }
 
         .date-divider {
             text-align: center;
@@ -267,13 +256,6 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.03);
             transition: color var(--tg-transition), border-color var(--tg-transition);
-        }
-
-        @media (prefers-color-scheme: light) {
-            .date-divider {
-                background: rgba(0, 0, 0, 0.02);
-                border: 1px solid rgba(0, 0, 0, 0.05);
-            }
         }
 
         .input-area {
@@ -302,12 +284,10 @@
 
         .input-area input:focus {
             border-color: var(--tg-accent);
+            box-shadow: 0 0 0 3px rgba(26, 122, 58, 0.12);
         }
 
-        .input-area input::placeholder {
-            color: var(--tg-text-muted);
-            font-size: 13px;
-        }
+        .input-area input::placeholder { color: var(--tg-text-muted); font-size: 13px; }
 
         .input-area .send-btn {
             padding: 10px 20px;
@@ -325,10 +305,7 @@
             letter-spacing: 0.5px;
         }
 
-        .input-area .send-btn:hover {
-            background: var(--tg-accent-hover);
-            transform: scale(0.97);
-        }
+        .input-area .send-btn:hover { background: var(--tg-accent-hover); transform: scale(0.97); }
 
         .footer {
             text-align: center;
@@ -348,7 +325,7 @@
         }
 
         .footer .main-line .brand {
-            background: linear-gradient(90deg, #f59e0b, #d97706);
+            background: var(--gold-grad);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -369,10 +346,7 @@
             transition: color var(--tg-transition);
         }
 
-        .footer .sub-line .ai {
-            color: #60a5fa;
-            opacity: 0.7;
-        }
+        .footer .sub-line .ai { color: #60a5fa; opacity: 0.7; }
 
         .footer .version {
             font-size: 8px;
@@ -392,65 +366,80 @@
         }
 
         .glass-btn {
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 30px;
-            padding: 6px 18px;
+            padding: 7px 20px;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             color: var(--tg-text-primary);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+            pointer-events: none;
         }
 
         .glass-btn:hover {
-            transform: scale(1.04);
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05) translateY(-2px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
         }
 
-        .glass-btn:active {
-            transform: scale(0.95);
-        }
+        .glass-btn:active { transform: scale(0.95); }
 
         .glass-btn.confirm {
-            background: rgba(34, 197, 94, 0.15);
-            border-color: rgba(34, 197, 94, 0.3);
+            background: rgba(34, 197, 94, 0.12);
+            border-color: rgba(34, 197, 94, 0.2);
             color: #4ade80;
         }
-
         .glass-btn.confirm:hover {
-            background: rgba(34, 197, 94, 0.25);
+            background: rgba(34, 197, 94, 0.2);
+            border-color: rgba(34, 197, 94, 0.35);
         }
 
         .glass-btn.cancel {
-            background: rgba(248, 113, 113, 0.15);
-            border-color: rgba(248, 113, 113, 0.3);
+            background: rgba(248, 113, 113, 0.12);
+            border-color: rgba(248, 113, 113, 0.2);
             color: #f87171;
         }
-
         .glass-btn.cancel:hover {
-            background: rgba(248, 113, 113, 0.25);
+            background: rgba(248, 113, 113, 0.2);
+            border-color: rgba(248, 113, 113, 0.35);
         }
 
         .glass-btn.sell {
-            background: rgba(251, 191, 36, 0.12);
-            border-color: rgba(251, 191, 36, 0.25);
+            background: rgba(251, 191, 36, 0.1);
+            border-color: rgba(251, 191, 36, 0.2);
             color: #fbbf24;
         }
-
         .glass-btn.sell:hover {
-            background: rgba(251, 191, 36, 0.2);
+            background: rgba(251, 191, 36, 0.18);
+            border-color: rgba(251, 191, 36, 0.35);
         }
 
-        .glass-btn .icon {
-            font-size: 18px;
+        .hapo-btn {
+            background: rgba(251, 191, 36, 0.06) !important;
+            border-color: rgba(251, 191, 36, 0.15) !important;
+            color: #fbbf24 !important;
+        }
+        .hapo-btn:hover {
+            background: rgba(251, 191, 36, 0.12) !important;
+            border-color: rgba(251, 191, 36, 0.3) !important;
         }
 
         .hunt-dots {
@@ -459,22 +448,128 @@
             letter-spacing: 4px;
         }
 
-        .hapo-btn {
-            background: rgba(251, 191, 36, 0.08) !important;
-            border-color: rgba(251, 191, 36, 0.2) !important;
-            color: #fbbf24 !important;
+        .levelup-flash {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.15), transparent 70%);
+            pointer-events: none;
+            z-index: 998;
+            animation: flashOut 1.2s ease forwards;
         }
-        .hapo-btn:hover {
-            background: rgba(251, 191, 36, 0.15) !important;
-            border-color: rgba(251, 191, 36, 0.35) !important;
+
+        @keyframes flashOut {
+            0% { opacity: 1; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+
+        .confetti-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-20px) rotate(0deg) scale(1); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg) scale(0.3); opacity: 0; }
+        }
+
+        .levelup-title {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
+            font-size: 34px;
+            font-weight: 900;
+            color: #fbbf24;
+            text-shadow: 0 0 50px rgba(251, 191, 36, 0.5);
+            animation: titlePop 1.2s ease forwards;
+            pointer-events: none;
+            opacity: 0;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        @keyframes titlePop {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            30% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+            60% { transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -60%) scale(1); }
+        }
+
+        .hapo-jump { animation: hapoJump 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+        @keyframes hapoJump {
+            0% { transform: scale(1) rotate(0deg); }
+            30% { transform: scale(1.3) rotate(-10deg); }
+            60% { transform: scale(1.1) rotate(5deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        .hunt-animation {
+            display: inline-block;
+            animation: huntPulse 0.6s ease-in-out infinite alternate;
+        }
+
+        @keyframes huntPulse {
+            0% { transform: scale(1) rotate(0deg) opacity: 0.6; }
+            100% { transform: scale(1.15) rotate(8deg) opacity: 1; }
+        }
+
+        .gold-pulse { animation: goldPulse 0.7s ease; }
+
+        @keyframes goldPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); color: #fbbf24; }
+            100% { transform: scale(1); }
+        }
+
+        .academy-icon {
+            display: inline-block;
+            font-size: 28px;
+            margin: 0 4px;
+            vertical-align: middle;
+        }
+
+        .academy-nav-btns {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 6px;
+        }
+
+        .academy-nav-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 4px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--tg-text-secondary);
+            font-family: var(--tg-font);
+        }
+
+        .academy-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: var(--tg-text-primary);
         }
 
         @media (max-width: 520px) {
-            .container {
-                max-height: 100vh;
-                height: 100vh;
-                border-radius: 0;
-            }
+            .container { max-height: 100vh; height: 100vh; border-radius: 0; }
             .header { padding: 12px 14px 8px 14px; }
             .header-info .name { font-size: 15px; }
             .paw-header-svg { width: 30px; height: 30px; }
@@ -485,15 +580,18 @@
             .input-area .send-btn { font-size: 13px; padding: 8px 16px; }
             .header-avatar { width: 34px; height: 34px; }
             .header-avatar svg { width: 24px; height: 24px; }
-            .footer .main-line { font-size: 10px; }
-            .footer .sub-line { font-size: 8px; }
-            .glass-btn { font-size: 13px; padding: 4px 12px; }
+            .glass-btn { font-size: 13px; padding: 5px 14px; }
+            .levelup-title { font-size: 24px; }
+            .academy-icon { font-size: 22px; }
+            .academy-nav-btn { font-size: 11px; padding: 3px 12px; }
         }
 
         @media (max-width: 380px) {
             .msg { font-size: 12px; max-width: 95%; }
-            .footer .main-line { font-size: 9px; }
-            .glass-btn { font-size: 11px; padding: 3px 10px; }
+            .glass-btn { font-size: 11px; padding: 4px 10px; }
+            .levelup-title { font-size: 20px; }
+            .academy-icon { font-size: 18px; }
+            .academy-nav-btn { font-size: 10px; padding: 2px 10px; }
         }
     </style>
 </head>
@@ -560,14 +658,14 @@
         <div class="sub-line">
             Built with <span style="color:#f87171;">❤</span> by <span class="brand">KnoX</span> &amp; <span class="ai">AI</span>
         </div>
-        <div class="version">Version 1.4.0</div>
+        <div class="version">Version 1.8.0</div>
     </div>
 
 </div>
 
 <script>
 // ================================================================
-// HOPDOG — Version 1.4.0
+// HOPDOG — Version 1.8.0
 // ================================================================
 
 // ================================================================
@@ -595,17 +693,14 @@ const LEVEL_DATA = {
     19: { required: 2550, minPoints: 350, maxPoints: 625, cooldown: 285, reward: 27250 },
     20: { required: 2900, minPoints: 375, maxPoints: 675, cooldown: 280, reward: 30500 },
 };
-
 const MAX_LEVEL = 20;
 
 // ================================================================
-// HAPO SYSTEM (هاپو)
+// HAPO SYSTEM
 // ================================================================
 const HAPO_NAMES = ['رکس', 'لوسی', 'بارنی', 'مکس', 'بلا', 'چارلی', 'راکی', 'مولی', 'تدی', 'لونا', 'سیمبا', 'نلا', 'بادی', 'مایلو', 'کوکو', 'روبی', 'اسکار', 'جک', 'دِیزی', 'تایسون'];
-
 const RANK_NAMES = ['تازه‌وارد', 'حرفه‌ای', 'استاد', 'افسانه', 'بی‌نهایت'];
 
-// ظرفیت بر اساس سطح
 const HAPO_CAPACITY = {
     1: 500, 2: 5000, 3: 10000, 4: 15000, 5: 20000,
     6: 25000, 7: 30000, 8: 35000, 9: 40000, 10: 50000,
@@ -614,7 +709,6 @@ const HAPO_CAPACITY = {
     21: 450000, 22: 500000, 23: 550000, 24: 600000, 25: 650000
 };
 
-// تولید در ثانیه بر اساس سطح
 const HAPO_PRODUCTION = {
     1: 0.1, 2: 0.2, 3: 1.0, 4: 1.5, 5: 2.0,
     6: 2.5, 7: 3.0, 8: 3.5, 9: 4.0, 10: 4.5,
@@ -623,7 +717,6 @@ const HAPO_PRODUCTION = {
     21: 10.0, 22: 10.5, 23: 11.0, 24: 11.5, 25: 12.0
 };
 
-// قیمت ارتقا سطح
 const HAPO_LEVEL_PRICES = {
     1: 250, 2: 500, 3: 5000, 4: 7500, 5: 15000,
     6: 25000, 7: 50000, 8: 75000, 9: 150000, 10: 300000,
@@ -633,7 +726,7 @@ const HAPO_LEVEL_PRICES = {
 };
 
 // ================================================================
-// CLAW SYSTEM (پنجه)
+// CLAW SYSTEM
 // ================================================================
 const CLAW_DATA = {
     1: { cost: 500, cooldown: 60, common: 95, uncommon: 5, epic: 0, legendary: 0 },
@@ -644,7 +737,6 @@ const CLAW_DATA = {
     6: { cost: 1000000, cooldown: 35, common: 10, uncommon: 30, epic: 40, legendary: 20 },
     7: { cost: 3250000, cooldown: 30, common: 5, uncommon: 25, epic: 45, legendary: 25 },
 };
-
 const MAX_CLAW_LEVEL = 7;
 
 // ================================================================
@@ -710,12 +802,12 @@ const RARITY_COLORS = {
 
 const ICONS = {
     check: `<svg width="24" height="24" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;">
-        <circle cx="50" cy="50" r="45" fill="#22c55e" opacity="0.15"/>
+        <circle cx="50" cy="50" r="45" fill="#22c55e" opacity="0.12"/>
         <circle cx="50" cy="50" r="42" fill="none" stroke="#22c55e" stroke-width="4"/>
         <polyline points="28,50 45,68 72,38" fill="none" stroke="#22c55e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`,
     cross: `<svg width="24" height="24" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;">
-        <circle cx="50" cy="50" r="45" fill="#f87171" opacity="0.15"/>
+        <circle cx="50" cy="50" r="45" fill="#f87171" opacity="0.12"/>
         <circle cx="50" cy="50" r="42" fill="none" stroke="#f87171" stroke-width="4"/>
         <line x1="32" y1="32" x2="68" y2="68" stroke="#f87171" stroke-width="6" stroke-linecap="round"/>
         <line x1="68" y1="32" x2="32" y2="68" stroke="#f87171" stroke-width="6" stroke-linecap="round"/>
@@ -725,34 +817,13 @@ const ICONS = {
 // ================================================================
 // VARIABLES
 // ================================================================
-let HopPoint = 0;
-let lastHopTime = 0;
-let Level = 1;
-let HopCount = 0;
-let PlayerName = '';
-let waitingForName = false;
-let waitingForNewName = false;
-let changeNamePending = false;
-let isAdmin = false;
-let waitingForAdminPassword = false;
-
-// Claw variables
-let clawLevel = 0;
-let lastHuntTime = 0;
-let huntActive = false;
-let huntTimerId = null;
-
-// Hapo variables
-let hapoOwned = false;
-let hapoName = '';
-let hapoRank = 0; // 0-4
-let hapoLevel = 1; // 1-5 per rank
-let hapoTotalLevel = 0; // 0-25
-let hapoFood = 0;
-let hapoMaxFood = 4;
-let hapoHarvest = 0;
-let hapoProduction = 0.1;
-let hapoLastUpdate = Date.now();
+let HopPoint = 0, lastHopTime = 0, Level = 1, HopCount = 0;
+let PlayerName = '', waitingForName = false, waitingForNewName = false;
+let changeNamePending = false, isAdmin = false, waitingForAdminPassword = false;
+let clawLevel = 0, lastHuntTime = 0, huntActive = false, huntTimerId = null;
+let hapoOwned = false, hapoName = '', hapoRank = 0, hapoLevel = 1;
+let hapoFood = 0, hapoHarvest = 0, hapoLastUpdate = Date.now();
+let waitingForHapoName = false;
 
 const chat = document.getElementById('chat');
 const cmdInput = document.getElementById('cmdInput');
@@ -776,7 +847,7 @@ const S = {
         <text x="50" y="82" font-size="70" text-anchor="middle" fill="#fbbf24">✦</text>
     </svg>`,
     welcome: `<svg width="34" height="34" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 4px;">
-        <circle cx="50" cy="50" r="45" fill="#fbbf24" opacity="0.08"/>
+        <circle cx="50" cy="50" r="45" fill="#fbbf24" opacity="0.06"/>
         <ellipse cx="50" cy="60" rx="18" ry="16" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
         <ellipse cx="34" cy="40" rx="10" ry="11" fill="#fbbf24" stroke="#d97706" stroke-width="1.5" transform="rotate(-25, 34, 40)"/>
         <ellipse cx="50" cy="35" rx="10" ry="11" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
@@ -790,7 +861,7 @@ const S = {
         <line x1="50" y1="50" x2="70" y2="50" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
     </svg>`,
     error: `<svg width="18" height="18" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
-        <circle cx="50" cy="50" r="45" fill="#f87171" opacity="0.1"/>
+        <circle cx="50" cy="50" r="45" fill="#f87171" opacity="0.08"/>
         <circle cx="50" cy="50" r="42" fill="none" stroke="#f87171" stroke-width="4"/>
         <line x1="32" y1="32" x2="68" y2="68" stroke="#f87171" stroke-width="5" stroke-linecap="round"/>
         <line x1="68" y1="32" x2="32" y2="68" stroke="#f87171" stroke-width="5" stroke-linecap="round"/>
@@ -824,7 +895,7 @@ const S = {
         <text x="50" y="70" font-size="22" text-anchor="middle" fill="#b45309" font-weight="bold">👑</text>
     </svg>`,
     levelup: `<svg width="24" height="24" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
-        <circle cx="50" cy="50" r="45" fill="#fbbf24" opacity="0.15"/>
+        <circle cx="50" cy="50" r="45" fill="#fbbf24" opacity="0.12"/>
         <text x="50" y="72" font-size="60" text-anchor="middle" fill="#fbbf24">⬆</text>
     </svg>`,
     namechange: `<svg width="24" height="24" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
@@ -848,54 +919,98 @@ const S = {
         <rect x="30" y="55" width="40" height="15" rx="4" fill="#fcd34d" stroke="#d97706" stroke-width="1.5"/>
     </svg>`,
     harvest: `<svg width="22" height="22" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
-        <circle cx="50" cy="50" r="45" fill="#22c55e" opacity="0.1"/>
+        <circle cx="50" cy="50" r="45" fill="#22c55e" opacity="0.08"/>
         <circle cx="50" cy="50" r="42" fill="none" stroke="#22c55e" stroke-width="4"/>
         <polyline points="30,50 48,68 72,32" fill="none" stroke="#22c55e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`,
     upgrade: `<svg width="22" height="22" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
-        <circle cx="50" cy="50" r="45" fill="#fbbf24" opacity="0.1"/>
+        <circle cx="50" cy="50" r="45" fill="#fbbf24" opacity="0.08"/>
         <circle cx="50" cy="50" r="42" fill="none" stroke="#fbbf24" stroke-width="4"/>
         <polyline points="30,60 50,35 70,60" fill="none" stroke="#fbbf24" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
         <line x1="50" y1="35" x2="50" y2="80" stroke="#fbbf24" stroke-width="4" stroke-linecap="round"/>
+    </svg>`,
+    huntAnim: `<svg width="32" height="32" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;animation:huntPulse 0.6s ease-in-out infinite alternate;">
+        <text x="50" y="78" font-size="70" text-anchor="middle" fill="#fbbf24">🏹</text>
+    </svg>`,
+    academy: `<svg width="28" height="28" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 4px;">
+        <rect x="10" y="30" width="80" height="55" rx="8" fill="#fbbf24" opacity="0.08" stroke="#fbbf24" stroke-width="2"/>
+        <text x="50" y="65" font-size="45" text-anchor="middle" fill="#fbbf24">🏫</text>
     </svg>`
 };
 
 // ================================================================
-// HAPO FUNCTIONS
+// HELPERS
 // ================================================================
-function getHapoTotalLevel() {
-    return hapoRank * 5 + hapoLevel;
-}
-
-function getHapoMaxFood() {
-    return (hapoRank + 1) * 4;
-}
-
-function getHapoCapacity() {
-    const total = getHapoTotalLevel();
-    return HAPO_CAPACITY[total] || 500;
-}
-
-function getHapoProduction() {
-    const total = getHapoTotalLevel();
-    return HAPO_PRODUCTION[total] || 0.1;
-}
-
+function getHapoTotalLevel() { return hapoRank * 5 + hapoLevel; }
+function getHapoMaxFood() { return (hapoRank + 1) * 4; }
+function getHapoCapacity() { return HAPO_CAPACITY[getHapoTotalLevel()] || 500; }
+function getHapoProduction() { return HAPO_PRODUCTION[getHapoTotalLevel()] || 0.1; }
 function getHapoUpgradePrice() {
     const total = getHapoTotalLevel();
     if (total >= 25) return Infinity;
     return HAPO_LEVEL_PRICES[total + 1] || 10000000;
 }
-
 function getHapoFoodStatus() {
     const max = getHapoMaxFood();
-    const ratio = hapoFood / max;
     if (hapoFood === 0) return { text: 'دیگه کار نمیکنم', speed: 0 };
-    if (ratio < 0.25) return { text: 'من گشنمه', speed: 0.5 };
-    if (ratio < 0.75) return { text: 'شکمم پره', speed: 1.0 };
+    if (hapoFood / max < 0.25) return { text: 'من گشنمه', speed: 0.5 };
+    if (hapoFood / max < 0.75) return { text: 'شکمم پره', speed: 1.0 };
     return { text: 'عاشقتم', speed: 1.5 };
 }
+function getLevelData(l) { return LEVEL_DATA[l] || LEVEL_DATA[1]; }
+function getRequiredForLevel(l) { return l >= MAX_LEVEL ? Infinity : getLevelData(l + 1).required; }
+function getCooldownForLevel(l) { return getLevelData(l).cooldown; }
+function getClawData(l) { return CLAW_DATA[l] || null; }
+function getClawCost(l) { const d = getClawData(l); return d ? d.cost : Infinity; }
+function getClawCooldown(l) { const d = getClawData(l); return d ? d.cooldown : Infinity; }
+function getClawChances(l) {
+    const d = getClawData(l);
+    return d ? { common: d.common, uncommon: d.uncommon, epic: d.epic || 0, legendary: d.legendary || 0 } : { common: 0, uncommon: 0, epic: 0, legendary: 0 };
+}
+function getRarityIcon(r) { return RARITY_ICONS[r] || ''; }
 
+// ================================================================
+// LEVEL UP ANIMATION
+// ================================================================
+function triggerLevelUpAnimation(level) {
+    const flash = document.createElement('div');
+    flash.className = 'levelup-flash';
+    document.body.appendChild(flash);
+    setTimeout(() => flash.remove(), 1300);
+    
+    const title = document.createElement('div');
+    title.className = 'levelup-title';
+    title.innerHTML = '🎊<br/>سطح ' + level + '!';
+    document.body.appendChild(title);
+    setTimeout(() => title.remove(), 1500);
+    
+    const container = document.createElement('div');
+    container.className = 'confetti-container';
+    document.body.appendChild(container);
+    const colors = ['#fbbf24', '#f59e0b', '#ec4899', '#3b82f6', '#22c55e', '#8b5cf6', '#f87171', '#67e8f9'];
+    for (let i = 0; i < 50; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti';
+        el.style.left = Math.random() * 100 + '%';
+        el.style.background = colors[Math.floor(Math.random() * colors.length)];
+        el.style.width = (Math.random() * 8 + 4) + 'px';
+        el.style.height = (Math.random() * 8 + 4) + 'px';
+        el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        el.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+        el.style.animationDelay = (Math.random() * 0.5) + 's';
+        container.appendChild(el);
+    }
+    setTimeout(() => container.remove(), 3500);
+}
+
+function triggerHapoJump() {
+    const el = document.querySelector('.hapo-jump');
+    if (el) { el.classList.remove('hapo-jump'); void el.offsetWidth; el.classList.add('hapo-jump'); }
+}
+
+// ================================================================
+// UPDATE HAPO PRODUCTION
+// ================================================================
 function updateHapoProduction() {
     const now = Date.now();
     const elapsed = (now - hapoLastUpdate) / 1000;
@@ -903,59 +1018,567 @@ function updateHapoProduction() {
     const status = getHapoFoodStatus();
     
     if (hapoFood > 0 && hapoHarvest < capacity) {
-        const production = getHapoProduction() * status.speed;
-        const gained = production * elapsed;
+        const gained = getHapoProduction() * status.speed * elapsed;
         hapoHarvest = Math.min(capacity, hapoHarvest + gained);
     }
-    
-    // کاهش غذا هر 12 ساعت = 6 واحد (دونه‌دونه و بدون اعشار)
     if (hapoFood > 0) {
-        const foodDecay = (elapsed / (12 * 3600)) * 6;
-        if (foodDecay > 1) {
-            const decayAmount = Math.floor(foodDecay);
-            hapoFood = Math.max(0, Math.floor(hapoFood - decayAmount));
-        }
+        const decay = Math.floor((elapsed / (12 * 3600)) * 6);
+        if (decay > 0) hapoFood = Math.max(0, Math.floor(hapoFood - decay));
     }
-    
     hapoLastUpdate = now;
 }
 
+// ================================================================
+// CHAT FUNCTIONS
+// ================================================================
+function addMessage(type, html) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + type;
+    const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    if (type === 'system') { div.innerHTML = html; }
+    else { div.innerHTML = html + '<span class="msg-time">' + time + '</span>'; }
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+    return div;
+}
+function addSystem(t) { addMessage('system', t); }
+function addUser(t) { addMessage('user', t); }
+function addBot(t) {
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    div.innerHTML = t + '<span class="msg-time">' + time + '</span>';
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+    return div;
+}
+function addBotAndReturn(t) {
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    div.innerHTML = t + '<span class="msg-time">' + time + '</span>';
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+    return div;
+}
+function editMessage(div, newHtml) {
+    const timeSpan = div.querySelector('.msg-time');
+    if (timeSpan) { div.innerHTML = newHtml + '<span class="msg-time">' + timeSpan.textContent + '</span>'; }
+    else { div.innerHTML = newHtml; }
+}
+
+function addBotWithGlassButtons(html, confirmCb, cancelCb) {
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    const btnContainer = document.createElement('div');
+    btnContainer.className = 'glass-buttons';
+    const confirmBtn = document.createElement('button');
+    confirmBtn.className = 'glass-btn confirm';
+    confirmBtn.innerHTML = ICONS.check + ' بله';
+    confirmBtn.onclick = function(e) { e.stopPropagation(); confirmCb(); btnContainer.remove(); };
+    const cancelBtn = document.createElement('button');
+    cancelBtn.className = 'glass-btn cancel';
+    cancelBtn.innerHTML = ICONS.cross + ' نه';
+    cancelBtn.onclick = function(e) { e.stopPropagation(); cancelCb(); btnContainer.remove(); };
+    btnContainer.appendChild(confirmBtn);
+    btnContainer.appendChild(cancelBtn);
+    div.innerHTML = html + '<span class="msg-time">' + time + '</span>';
+    div.appendChild(btnContainer);
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+    return div;
+}
+
+// ================================================================
+// SAVE / LOAD
+// ================================================================
+const SAVE_KEY = 'hopdog_data';
+function saveGame() {
+    try {
+        localStorage.setItem(SAVE_KEY, JSON.stringify({
+            HopPoint, lastHopTime, Level, HopCount, PlayerName, hasVisited: true,
+            isAdmin, clawLevel, lastHuntTime,
+            hapoOwned, hapoName, hapoRank, hapoLevel, hapoFood, hapoHarvest, hapoLastUpdate
+        }));
+    } catch(e) {}
+}
+function loadGame() {
+    try {
+        const raw = localStorage.getItem(SAVE_KEY);
+        if (!raw) return false;
+        const d = JSON.parse(raw);
+        HopPoint = d.HopPoint || 0; lastHopTime = d.lastHopTime || 0;
+        Level = d.Level || 1; HopCount = d.HopCount || 0;
+        PlayerName = d.PlayerName || ''; isAdmin = d.isAdmin || false;
+        clawLevel = d.clawLevel || 0; lastHuntTime = d.lastHuntTime || 0;
+        hapoOwned = d.hapoOwned || false; hapoName = d.hapoName || '';
+        hapoRank = d.hapoRank || 0; hapoLevel = d.hapoLevel || 1;
+        hapoFood = d.hapoFood || getHapoMaxFood();
+        hapoHarvest = d.hapoHarvest || 0; hapoLastUpdate = d.hapoLastUpdate || Date.now();
+        return true;
+    } catch(e) { return false; }
+}
+
+// ================================================================
+// ACADEMY - SYSTEM
+// ================================================================
+let academyPage = 1;
+const ACADEMY_ITEMS_PER_PAGE = 5;
+
+function showAcademySystemPage(page) {
+    academyPage = page || 1;
+    const totalPages = Math.ceil(MAX_LEVEL / ACADEMY_ITEMS_PER_PAGE);
+    const start = (academyPage - 1) * ACADEMY_ITEMS_PER_PAGE + 1;
+    const end = Math.min(academyPage * ACADEMY_ITEMS_PER_PAGE, MAX_LEVEL);
+    
+    let msg = S.academy + ' <span class="gold">آکادمی هاپویی</span> ✨<br/>';
+    msg += '┘─ 🐾 بخش : سیستم هاپویی ⚙️<br/>';
+    msg += '┘─ 📚 مطلب : سطح کاربران 🐾<br/><br/>';
+    msg += '✨ لیست سطح های موجود کاربران ⬇️<br/><br/>';
+    
+    for (let i = start; i <= end; i++) {
+        const data = getLevelData(i);
+        msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
+        msg += '⭐️ سطح ' + i + '<br/>';
+        if (i === 1) {
+            msg += '┘─ 💰 پوینت های دریافتی : ' + data.minPoints + ' - ' + data.maxPoints + ' ' + S.hopoCoin + '<br/>';
+            msg += '┘─ ⏳ زمان استراحت : 5:00<br/>';
+            if (i === 1) msg += '┘─ 🔓 قابلیت ها : شروع<br/>';
+        } else {
+            msg += '┘─ 🐾 هاپ های مورد نیاز : ' + data.required + '<br/>';
+            msg += '┘─ 💰 پوینت های دریافتی : ' + data.minPoints + ' - ' + data.maxPoints + ' ' + S.hopoCoin + '<br/>';
+            msg += '┘─ ⏳ زمان استراحت : ' + Math.floor(data.cooldown/60) + ':00<br/>';
+            msg += '┘─ 💝 جایزه ارتقا : ' + data.reward + ' ' + S.hopoCoin + '<br/>';
+            if (i === 2) msg += '┘─ 🔓 قابلیت ها : پنجه، شکار<br/>';
+            else if (i === 3) msg += '┘─ 🔓 قابلیت ها : هاپو<br/>';
+            else if (i >= 4) msg += '┘─ 🔓 قابلیت ها : ارتقا بیشتر<br/>';
+        }
+    }
+    
+    msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
+    
+    if (totalPages > 1) {
+        msg += '<div class="academy-nav-btns">';
+        if (academyPage > 1) {
+            msg += '<button class="academy-nav-btn" onclick="showAcademySystemPage(' + (academyPage - 1) + ')">◀ قبلی</button>';
+        }
+        msg += '<span style="font-size:11px;color:var(--tg-text-muted);opacity:0.5;padding:4px 12px;">صفحه ' + academyPage + '/' + totalPages + '</span>';
+        if (academyPage < totalPages) {
+            msg += '<button class="academy-nav-btn" onclick="showAcademySystemPage(' + (academyPage + 1) + ')">بعدی ▶</button>';
+        }
+        msg += '</div>';
+    }
+    
+    addBot(msg);
+}
+
+// ================================================================
+// ACADEMY - ANIMALS
+// ================================================================
+let academyAnimalPage = 1;
+const ACADEMY_ANIMALS_PER_PAGE = 3;
+
+function showAcademyAnimalsPage(page) {
+    academyAnimalPage = page || 1;
+    const allAnimals = [];
+    for (const [rarity, animals] of Object.entries(ANIMALS)) {
+        for (const animal of animals) {
+            allAnimals.push({ ...animal, rarity });
+        }
+    }
+    const totalPages = Math.ceil(allAnimals.length / ACADEMY_ANIMALS_PER_PAGE);
+    const start = (academyAnimalPage - 1) * ACADEMY_ANIMALS_PER_PAGE;
+    const end = Math.min(start + ACADEMY_ANIMALS_PER_PAGE, allAnimals.length);
+    
+    let msg = S.academy + ' <span class="gold">آکادمی هاپویی</span> ✨<br/>';
+    msg += '┘─ 🐾 بخش : سیستم هاپویی ⚙️<br/>';
+    msg += '┘─ 📚 مطلب : حیوانات 🐾<br/><br/>';
+    msg += '✨ لیست حیوانات موجود ⬇️<br/><br/>';
+    
+    for (let i = start; i < end; i++) {
+        const a = allAnimals[i];
+        const rarityName = RARITY_NAMES[a.rarity] || 'نامشخص';
+        const rarityColor = RARITY_COLORS[a.rarity] || 'gold';
+        const avgWeight = Math.round((a.weightMin + a.weightMax) / 2 * 10) / 10;
+        msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
+        msg += '🐾 <span class="gold">' + a.name + '</span><br/>';
+        msg += '⭐ سطح : <span class="' + rarityColor + '">' + rarityName + '</span><br/>';
+        msg += '⚖️ وزن : ' + a.weightMin + ' - ' + a.weightMax + ' کیلو<br/>';
+        msg += '💰 ارزش : ~' + Math.round(avgWeight * a.multiplier) + ' ' + S.hopoCoin + '<br/>';
+        msg += '🥩 ارزش غذایی : ' + a.nutrition + ' کالری<br/>';
+    }
+    
+    msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
+    
+    if (totalPages > 1) {
+        msg += '<div class="academy-nav-btns">';
+        if (academyAnimalPage > 1) {
+            msg += '<button class="academy-nav-btn" onclick="showAcademyAnimalsPage(' + (academyAnimalPage - 1) + ')">◀ قبلی</button>';
+        }
+        msg += '<span style="font-size:11px;color:var(--tg-text-muted);opacity:0.5;padding:4px 12px;">صفحه ' + academyAnimalPage + '/' + totalPages + '</span>';
+        if (academyAnimalPage < totalPages) {
+            msg += '<button class="academy-nav-btn" onclick="showAcademyAnimalsPage(' + (academyAnimalPage + 1) + ')">بعدی ▶</button>';
+        }
+        msg += '</div>';
+    }
+    
+    addBot(msg);
+}
+
+// ================================================================
+// ACADEMY - CLAW
+// ================================================================
+let academyClawPage = 1;
+const ACADEMY_CLAW_PER_PAGE = 3;
+
+function showAcademyClawPage(page) {
+    academyClawPage = page || 1;
+    const totalPages = Math.ceil(MAX_CLAW_LEVEL / ACADEMY_CLAW_PER_PAGE);
+    const start = (academyClawPage - 1) * ACADEMY_CLAW_PER_PAGE + 1;
+    const end = Math.min(academyClawPage * ACADEMY_CLAW_PER_PAGE, MAX_CLAW_LEVEL);
+    
+    let msg = S.academy + ' <span class="gold">آکادمی هاپویی</span> ✨<br/>';
+    msg += '┘─ 🐾 بخش : سیستم هاپویی ⚙️<br/>';
+    msg += '┘─ 📚 مطلب : سطح پنجه 🐾<br/><br/>';
+    msg += '✨ لیست سطح های موجود پنجه ⬇️<br/><br/>';
+    
+    for (let i = start; i <= end; i++) {
+        const d = getClawData(i);
+        if (!d) continue;
+        msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
+        msg += '⭐️ سطح ' + i + '<br/>';
+        if (i === 1) {
+            msg += '┘─ 💰 هزینه خرید : ' + d.cost + ' ' + S.hopoCoin + '<br/>';
+        } else {
+            msg += '┘─ 💰 هزینه ارتقا : ' + d.cost + ' ' + S.hopoCoin + '<br/>';
+        }
+        msg += '┘─ ⏳ زمان استراحت : ' + d.cooldown + ':00<br/>';
+        msg += '┘─ 🍀 شانس شکار :<br/>';
+        msg += '  ┘─ معمولی : ' + d.common + '%<br/>';
+        msg += '  ┘─ کمیاب : ' + d.uncommon + '%<br/>';
+        if (d.epic > 0) msg += '  ┘─ حماسی : ' + d.epic + '%<br/>';
+        if (d.legendary > 0) msg += '  ┘─ افسانه‌ای : ' + d.legendary + '%<br/>';
+    }
+    
+    msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
+    
+    if (totalPages > 1) {
+        msg += '<div class="academy-nav-btns">';
+        if (academyClawPage > 1) {
+            msg += '<button class="academy-nav-btn" onclick="showAcademyClawPage(' + (academyClawPage - 1) + ')">◀ قبلی</button>';
+        }
+        msg += '<span style="font-size:11px;color:var(--tg-text-muted);opacity:0.5;padding:4px 12px;">صفحه ' + academyClawPage + '/' + totalPages + '</span>';
+        if (academyClawPage < totalPages) {
+            msg += '<button class="academy-nav-btn" onclick="showAcademyClawPage(' + (academyClawPage + 1) + ')">بعدی ▶</button>';
+        }
+        msg += '</div>';
+    }
+    
+    addBot(msg);
+}
+
+// ================================================================
+// ACADEMY - MAIN MENU
+// ================================================================
+function showAcademy() {
+    const academyMsg = S.academy + ' <span class="gold">آکادمی هاپویی</span> ✨<br/><br/>' +
+        S.dog + ' جایی که هاپوهای کنجکاو جواب سوال‌هاشون رو پیدا میکنن 🐾<br/><br/>' +
+        'لطفا بخش مورد نظر را انتخاب کنید ⬇️';
+    
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    div.innerHTML = academyMsg + '<span class="msg-time">' + time + '</span>';
+    
+    const btnContainer = document.createElement('div');
+    btnContainer.className = 'glass-buttons';
+    
+    const btn1 = document.createElement('button');
+    btn1.className = 'glass-btn';
+    btn1.innerHTML = '📚 سیستم هاپویی';
+    btn1.onclick = function(e) { e.stopPropagation(); showAcademySubMenu(); };
+    
+    const btn2 = document.createElement('button');
+    btn2.className = 'glass-btn';
+    btn2.innerHTML = '🔓 قابلیت های هاپویی';
+    btn2.onclick = function(e) { e.stopPropagation(); showAcademyFeaturesMenu(); };
+    
+    const btn3 = document.createElement('button');
+    btn3.className = 'glass-btn';
+    btn3.innerHTML = '🚀 شروع ماجراجویی';
+    btn3.onclick = function(e) { e.stopPropagation(); showAcademyAdventure(); };
+    
+    btnContainer.appendChild(btn1);
+    btnContainer.appendChild(btn2);
+    btnContainer.appendChild(btn3);
+    div.appendChild(btnContainer);
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+// ================================================================
+// ACADEMY - SUB MENU (سیستم هاپویی)
+// ================================================================
+function showAcademySubMenu() {
+    const msg = S.academy + ' <span class="gold">آکادمی هاپویی</span> ✨<br/><br/>' +
+        '🐾 لطفا بخش مورد نظر را انتخاب کنید ⬇️';
+    
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    div.innerHTML = msg + '<span class="msg-time">' + time + '</span>';
+    
+    const btnContainer = document.createElement('div');
+    btnContainer.className = 'glass-buttons';
+    
+    const btn1 = document.createElement('button');
+    btn1.className = 'glass-btn';
+    btn1.innerHTML = '⭐ سطح کاربران';
+    btn1.onclick = function(e) { e.stopPropagation(); showAcademySystemPage(1); };
+    
+    const btn2 = document.createElement('button');
+    btn2.className = 'glass-btn';
+    btn2.innerHTML = '🐾 حیوانات';
+    btn2.onclick = function(e) { e.stopPropagation(); showAcademyAnimalsPage(1); };
+    
+    const btn3 = document.createElement('button');
+    btn3.className = 'glass-btn';
+    btn3.innerHTML = '🐾 سطح پنجه';
+    btn3.onclick = function(e) { e.stopPropagation(); showAcademyClawPage(1); };
+    
+    btnContainer.appendChild(btn1);
+    btnContainer.appendChild(btn2);
+    btnContainer.appendChild(btn3);
+    div.appendChild(btnContainer);
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+// ================================================================
+// ACADEMY - FEATURES MENU (هاپو و شکار هاپویی)
+// ================================================================
+function showAcademyFeaturesMenu() {
+    const msg = S.academy + ' <span class="gold">آکادمی هاپویی</span> ✨<br/><br/>' +
+        '🐾 لطفا بخش مورد نظر را انتخاب کنید ⬇️';
+    
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    div.innerHTML = msg + '<span class="msg-time">' + time + '</span>';
+    
+    const btnContainer = document.createElement('div');
+    btnContainer.className = 'glass-buttons';
+    
+    const btn1 = document.createElement('button');
+    btn1.className = 'glass-btn';
+    btn1.innerHTML = '🐕 هاپو';
+    btn1.onclick = function(e) { e.stopPropagation(); showAcademyFeaturesHapo(); };
+    
+    const btn2 = document.createElement('button');
+    btn2.className = 'glass-btn';
+    btn2.innerHTML = '🏹 شکار هاپویی';
+    btn2.onclick = function(e) { e.stopPropagation(); showAcademyFeaturesHunt(); };
+    
+    btnContainer.appendChild(btn1);
+    btnContainer.appendChild(btn2);
+    div.appendChild(btnContainer);
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+// ================================================================
+// ACADEMY - FEATURES: هاپو
+// ================================================================
+function showAcademyFeaturesHapo() {
+    let msg = S.academy + ' <span class="gold">آکادمی هاپویی</span> ✨<br/>';
+    msg += '┘─ 🐾 بخش : قابلیت های هاپویی 🔓<br/>';
+    msg += '┘─ 📚 مطلب : هاپو 🐕<br/><br/>';
+    msg += '🌘 در میان سایه‌های این دنیای مرموز، هیچ‌چیز دلگرم‌کننده‌تر از صدای خُرخُر یک همدم کوچک نیست…<br/><br/>';
+    msg += '🐕 وقت آن رسیده که صاحب یک <span class="gold">هاپو</span> اختصاصی بشی !<br/>';
+    msg += '😻 برای اینکه همراه ملوس خودت رو به خونه بیاری، کافیه بگی <span class="gold">هاپو</span><br/><br/>';
+    msg += '💫 از اون لحظه به بعد، هاپو تو شروع میکنه به تولید جادوییِ ' + S.hopoCoin + ' هاپو پوینت ! حتی وقتی تو خوابی، اون هر ثانیه براشون زحمت میکشه<br/>';
+    msg += '┘─ 🔺 مثلاً یک هاپو سطح 1 در هر ثانیه 0.1 ' + S.hopoCoin + ' هاپو پوینت تولید میکنه<br/><br/>';
+    msg += '❗️ اما نگهداری از این موجودات ناز، مسئولیت‌هایی هم داره ⬇️<br/><br/>';
+    msg += '- 🍖 شکم گرسنه، هاپ هاپ نمیکنه<br/>';
+    msg += '┘─ ⚡️ هاپو تو برای کار کردن به انرژی نیاز داره. اگه شکمش خالی بشه، تولید پوینت رو متوقف میکنه.<br/>';
+    msg += '  ┘─ 😋 چطوری سیرش کنی ؟ با همون حیواناتی که از جنگل شکار کردی ! 🐾 هر وعده غذا، هاپو تو رو تا 2 ساعت سرحال و پرانرژی نگه میداره.<br/><br/>';
+    msg += '- 📦 ظرفیت محدود<br/>';
+    msg += '┘─ 💰 هاپوها جعبه کوچیکی برای جمع‌آوری پوینت‌ها دارن. اگه <span class="gold">ظرفیت</span> هاپوت پر بشه، دیگه پوینتی اضافه نمیشه تا زمانی که سر بزنی و پوینت‌های جمع‌شده رو از توی جعبه برداری. 🐾<br/><br/>';
+    msg += '✨ رشد و فراتر از آن<br/>';
+    msg += '- ⭐️ با بالاتر بردن سطح هاپو، سرعت تولید پوینت و ظرفیت نگهداری اون بیشتر میشه.<br/>';
+    msg += '- 🌟 اما هر 5 سطح، هاپو تو به یک تحول بزرگ نیاز داره : <span class="gold">ارتقا مقام</span> !<br/>';
+    msg += '┘─ ❗️ وقتی مقام هاپوت رو بالا میبری، سطح و پوینت‌های داخل جعبش صفر میشه، اما در عوض ⬇️<br/>';
+    msg += '  ┘─ 1️⃣ سقف سطح‌های بعدی 5 تا بیشتر میشه (مثلاً تا سطح 10 باز میشه)<br/>';
+    msg += '  ┘─ 2️⃣ حجم شکم هاپوت بزرگتر میشه و میتونه غذای بیشتری رو برای مدت طولانی‌تر ذخیره کنه<br/><br/>';
+    msg += '💕 یک اسم، یک هویت<br/>';
+    msg += '- 😺 هاپو تو لایق یک نامِ زیباست. میتونی براش اسم انتخاب کنی و از اون به بعد، به جای کلمه عمومی، با اسم خودش صداش بزنی !<br/><br/>';
+    msg += '✨ همین حالا هاپو خودت رو بخر، براش حیوان شکار کن و شاهد رشد سرمایه ' + S.hopoCoin + ' خودت باش<br/><br/>';
+    msg += '❗️ سطح مورد نیاز جهت خرید هاپو : 3';
+    
+    addBot(msg);
+}
+
+// ================================================================
+// ACADEMY - FEATURES: شکار هاپویی
+// ================================================================
+function showAcademyFeaturesHunt() {
+    let msg = S.academy + ' <span class="gold">آکادمی هاپویی</span> ✨<br/>';
+    msg += '┘─ 🐾 بخش : قابلیت های هاپویی 🔓<br/>';
+    msg += '┘─ 📚 مطلب : شکار هاپویی 🏹<br/><br/>';
+    msg += '✨ در کنار جنگل‌های اسرارآمیز این جهان، هاپوهای گرسنه و ماجراجو به چیزی بیشتر از یک صدا نیاز دارن…<br/><br/>';
+    msg += '😻 وقتشه مهارت جدیدی رو امتحان کنی : <span class="gold">شکار</span><br/><br/>';
+    msg += '😽 برای شروع این ماجراجویی، اول از همه باید بگی <span class="gold">پنجه</span> تا یک پنجه سطح 1 برای خودت بخری<br/>';
+    msg += '🐾 بعد از اون، کافیه بگی <span class="gold">شکار</span> تا پنجه‌ات رو بندازی توی جنگل تا ببینی چه صید شگفت‌انگیزی انتظارت رو میکشه !<br/><br/>';
+    msg += '⌛️ وقتی حیوان رو شکار کردی، فقط 60 ثانیه فرصت داری تا یک تصمیم مهم بگیری ⬇️<br/>';
+    msg += '- 🪙 میتونی اون رو بفروشی و جیبت رو پر از ' + S.hopoCoin + ' هاپو پوینت کنی<br/>';
+    msg += '- 🍖 یا اگه یک هاپوی ملوس داری، اون رو به عنوان غذا به هاپوت بدی تا شکمش پر شه !<br/><br/>';
+    msg += S.claw + ' هر زمان که دوباره بگی <span class="gold">پنجه</span>، میتونی سطح پنجه‌ات رو ببینی و اگه خواستی اون رو ارتقا بدی و قوی‌ترش کنی.<br/><br/>';
+    msg += '⭐️ هر حیوان برای خودش <span class="gold">سطح</span> و همچنین <span class="gold">وزن</span> ⚖️ خاص داره. اگه شانس باهات یار باشه و یه حیوان کمیاب و حسابی سنگین به تور بندازی، قیمت فروشش سر به فلک میکشه<br/><br/>';
+    msg += '⌛️ ولی خب، شکارچی بودن کار خسته‌کننده‌ای‌ست و بعد از هر بار شکار، به کمی <span class="gold">استراحت</span> ⚡️ نیاز داری تا دوباره انرژی بگیری.<br/><br/>';
+    msg += '😺 خبر خوب اینجاست که برای کم کردن زمان استراحت و سریع‌تر شکار کردن، یه راه عالی داری ⬇️<br/>';
+    msg += '1️⃣ پنجه‌ات رو به سطح‌های بالاتر ارتقا بدی 🌟<br/><br/>';
+    msg += '😼 پس منتظر چی هستی شکارچی ؟<br/>';
+    msg += '✨ همین حالا پنجه‌ات رو بخر و بزرگترین حیوان دنیای هاپوها رو صید کن<br/><br/>';
+    msg += '❗️ سطح مورد نیاز جهت شکار : 2';
+    
+    addBot(msg);
+}
+
+// ================================================================
+// ACADEMY - ADVENTURE
+// ================================================================
+function showAcademyAdventure() {
+    const adventureMsg = S.academy + ' <span class="gold">آکادمی هاپویی</span> ✨<br/><br/>' +
+        '🐾 لطفا بخش مورد نظر را انتخاب کنید ⬇️';
+    
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    div.innerHTML = adventureMsg + '<span class="msg-time">' + time + '</span>';
+    
+    const btnContainer = document.createElement('div');
+    btnContainer.className = 'glass-buttons';
+    
+    const btn1 = document.createElement('button');
+    btn1.className = 'glass-btn';
+    btn1.innerHTML = '🐾 هاپ هاپ';
+    btn1.onclick = function(e) { e.stopPropagation(); showAcademyHop(); };
+    
+    const btn2 = document.createElement('button');
+    btn2.className = 'glass-btn';
+    btn2.innerHTML = '🪙 هاپو پوینت';
+    btn2.onclick = function(e) { e.stopPropagation(); showAcademyPoints(); };
+    
+    const btn3 = document.createElement('button');
+    btn3.className = 'glass-btn';
+    btn3.innerHTML = '⭐ تجربه و سطح';
+    btn3.onclick = function(e) { e.stopPropagation(); showAcademyExp(); };
+    
+    const btn4 = document.createElement('button');
+    btn4.className = 'glass-btn';
+    btn4.innerHTML = '🪪 پروفایل';
+    btn4.onclick = function(e) { e.stopPropagation(); showAcademyProfile(); };
+    
+    btnContainer.appendChild(btn1);
+    btnContainer.appendChild(btn2);
+    btnContainer.appendChild(btn3);
+    btnContainer.appendChild(btn4);
+    div.appendChild(btnContainer);
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+// ================================================================
+// ACADEMY - HOP
+// ================================================================
+function showAcademyHop() {
+    let msg = S.academy + ' <span class="gold">آکادمی هاپویی</span> ✨<br/>';
+    msg += '┘─ 🐾 بخش : شروع ماجراجویی 🐾<br/>';
+    msg += '┘─ 📚 مطلب : هاپ هاپ 🐾<br/><br/>';
+    msg += '🌘 در این دنیای بزرگ ، هر هاپوی نازی برای زنده موندن باید اول از همه یک کار مهم انجام بده…<br/>';
+    msg += '🐾 باید <span class="gold">هاپ هاپ</span> کنه !<br/><br/>';
+    msg += 'هر بار که یک هاپو توی این جهان <span class="gold">هاپ هاپ</span> کنه ، مقداری ' + S.hopoCoin + ' هاپو پوینت دریافت میکنه.<br/>';
+    msg += '💰 هاپو پوینت همون ارز ارزشمند دنیای هاپوهاست که با اون میتونی قوی‌تر بشی و در مسیر رشد قدم برداری. ✨<br/><br/>';
+    msg += 'اما حواست باشه…<br/>';
+    msg += 'هر هاپو بعد از هر بار هاپ کردن ، به کمی استراحت نیاز داره ⌛️<br/>';
+    msg += 'چون حتی نازترین هاپوها هم برای ادامه ماجراجویی باید نفسی تازه کنن.<br/><br/>';
+    msg += 'خبر خوب اینجاست که اگه خودت سطح بیشتری داشته باشی ، نیاز به استراحت کمتری داری ⌛️<br/>';
+    msg += 'و میتونی خیلی سریعتر دوباره <span class="gold">هاپ هاپ</span> کنی ⚡️<br/><br/>';
+    msg += 'از طرفی اگه میخای با هر بار هاپ کردن ، هاپو پوینت بیشتری به دست بیاری ،<br/>';
+    msg += 'باید سطح خودت رو بالاتر ببری 🌟<br/>';
+    msg += 'هرچی قوی‌تر بشی ، پاداش بیشتری هم دریافت میکنی.<br/><br/>';
+    msg += 'پس منتظر چی هستی ؟ 😼<br/>';
+    msg += '✨ همین حالا <span class="gold">هاپ هاپ</span> کن و قدم به دنیای شگفت‌انگیز هاپوها بزار 🐾';
+    addBot(msg);
+}
+
+// ================================================================
+// ACADEMY - POINTS
+// ================================================================
+function showAcademyPoints() {
+    let msg = S.academy + ' <span class="gold">آکادمی هاپویی</span> ✨<br/>';
+    msg += '┘─ 🐾 بخش : شروع ماجراجویی 🐾<br/>';
+    msg += '┘─ 📚 مطلب : هاپو پوینت ' + S.hopoCoin + '<br/><br/>';
+    msg += S.hopoCoin + ' <span class="gold">هاپو پوینت</span> ارز با ارزش دنیای هاپوهاست 🐾<br/>';
+    msg += '🐈 هرچی بیشتر ازین ارز داشته باشی بیشتر بهت احترام گذاشته میشه و قدرت بیشتری توی دنیای هاپوها داری !<br/><br/>';
+    msg += '💫 راه های زیادی برای به دست آوردن این ارز وجود داره از جمله ابتدایی ترینشون یعنی <span class="gold">هاپ هاپ</span> کردن 🐾<br/>';
+    msg += '😽 ولی از طرفی هم راه های زیادی برای خرج کردنشون وجود داره مثلا خرید اولین هاپوی گوگولی خودت و...<br/><br/>';
+    msg += '📚 مطمئن شو قبل از استفاده ازین ارز با ارزش با زدن <span class="gold">آکادمی</span> تمامی قوانین مهم دنیای هاپوها رو مطالعه کنی ❤️';
+    addBot(msg);
+}
+
+// ================================================================
+// ACADEMY - EXP
+// ================================================================
+function showAcademyExp() {
+    let msg = S.academy + ' <span class="gold">آکادمی هاپویی</span> ✨<br/>';
+    msg += '┘─ 🐾 بخش : شروع ماجراجویی 🐾<br/>';
+    msg += '┘─ 📚 مطلب : تجربه و سطح ⭐️<br/><br/>';
+    msg += '💫 همه ی هاپوها از سطح 1 شروع میکنن و به مرور زمان , با کسب تجربه سطح خودشون رو ارتقا میدن ✨<br/><br/>';
+    msg += '⭐️ برای کسب تجربه و رسیدن به سطح بعدی (ارتقا سطح) باید مقدار مشخصی <span class="gold">هاپ هاپ</span> کنی 🐾<br/>';
+    msg += '🐾 هر هاپ هاپ ثبت شده برای شما , یک تجربه به حساب میاد<br/><br/>';
+    msg += '💝 هربار که سطحت ارتقا پیدا کنه , جوایز خفن مانند ' + S.hopoCoin + ' هاپو پوینت دریافت میکنی…<br/>';
+    msg += '✨ و همچنین با رسیدن به سطح های بالاتر , قابلیت ها و امکانات تازه ای برات باز میشه<br/><br/>';
+    msg += '🐾 میتونی با نوشتن <span class="gold">هاپویی</span> پروفایل هاپویی خودت رو مشاهده کنی و سطح کنونی خودت و همچنین تعداد باقی مونده هاپ هات تا رسیدن به سطح بعدی رو ببینی';
+    addBot(msg);
+}
+
+// ================================================================
+// ACADEMY - PROFILE
+// ================================================================
+function showAcademyProfile() {
+    let msg = S.academy + ' <span class="gold">آکادمی هاپویی</span> ✨<br/>';
+    msg += '┘─ 🐾 بخش : شروع ماجراجویی 🐾<br/>';
+    msg += '┘─ 📚 مطلب : پروفایل هاپویی 🪪<br/><br/>';
+    msg += '🐈 هر هاپوی ناز و گوگولی یه هویت خاص برای خودش داره ✨<br/><br/>';
+    msg += '🪪 توی پروفایل هاپویی میتونی اطلاعات دقیق خودت رو مشاهده کنی !<br/>';
+    msg += '🐾 مثلا تعداد هاپ هاپ هاتون یا ' + S.hopoCoin + ' هاپو پوینت هاتون و یا ⭐️ سطحتون و...<br/><br/>';
+    msg += '🐱 برای مشاهده پروفایل هاپویی خودت بنویس <span class="gold">هاپویی</span>';
+    addBot(msg);
+}
+
+// ================================================================
+// HAPO MENU
+// ================================================================
 function showHapoMenu() {
     if (!hapoOwned) {
-        if (Level < 3) {
-            addBot(S.hapo + ' <span class="gold">هاپو از سطح 3 باز میشود</span>');
-            return;
-        }
+        if (Level < 3) { addBot(S.hapo + ' <span class="gold">هاپو از سطح 3 باز میشود</span>'); return; }
         const cost = 300;
-        if (HopPoint < cost) {
-            addBot(S.hapo + ' <span class="gold">برای خرید هاپو به 300 ' + S.hopoCoin + ' نیاز داری</span>');
-            return;
-        }
+        if (HopPoint < cost) { addBot(S.hapo + ' <span class="gold">برای خرید هاپو به 300 ' + S.hopoCoin + ' نیاز داری</span>'); return; }
         addBotWithGlassButtons(
-            S.hapo + ' <span class="gold">خرید هاپو</span><br/>' +
-            '💰 هزینه : <span class="gold">' + cost + '</span> ' + S.hopoCoin + '<br/>' +
-            'آیا میخوای هاپو بخری؟',
+            S.hapo + ' <span class="gold">خرید هاپو</span><br/>💰 هزینه : <span class="gold">' + cost + '</span> ' + S.hopoCoin + '<br/>آیا میخوای هاپو بخری؟',
             function() {
-                if (HopPoint < 300) {
-                    addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست');
-                    return;
-                }
-                HopPoint -= 300;
-                hapoOwned = true;
+                if (HopPoint < 300) { addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست'); return; }
+                HopPoint -= 300; hapoOwned = true;
                 hapoName = HAPO_NAMES[Math.floor(Math.random() * HAPO_NAMES.length)];
-                hapoRank = 0;
-                hapoLevel = 1;
-                hapoFood = getHapoMaxFood();
-                hapoHarvest = 0;
-                hapoLastUpdate = Date.now();
+                hapoRank = 0; hapoLevel = 1; hapoFood = getHapoMaxFood(); hapoHarvest = 0; hapoLastUpdate = Date.now();
                 saveGame();
-                addBot(S.hapo + ' ✅ <span class="gold">هاپو خریداری شد</span><br/>' +
-                       'اسم هاپو : <span class="gold">' + hapoName + '</span>');
+                addBot(S.hapo + ' ✅ <span class="gold">هاپو خریداری شد</span><br/>اسم هاپو : <span class="gold">' + hapoName + '</span>');
+                triggerHapoJump();
                 showHapoMenu();
             },
-            function() {
-                addBot('❌ خرید هاپو لغو شد');
-            }
+            function() { addBot('❌ خرید هاپو لغو شد'); }
         );
         return;
     }
@@ -969,8 +1592,7 @@ function showHapoMenu() {
     const price = getHapoUpgradePrice();
     const isMaxLevel = total >= 25;
     
-    let msg = '';
-    msg += S.hapo + ' <span class="gold">' + hapoName + '</span><br/>';
+    let msg = S.hapo + ' <span class="gold">' + hapoName + '</span><br/>';
     msg += '💕 نام : ' + hapoName + '<br/>';
     msg += S.food + ' شکم : ' + status.text + ' (' + Math.floor(hapoFood) + '/' + maxFood + ')<br/>';
     msg += '🌟 مقام : ' + RANK_NAMES[hapoRank] + ' (' + hapoRank + ')<br/>';
@@ -978,13 +1600,9 @@ function showHapoMenu() {
     msg += S.hopoCoin + ' هاپو پوینت های تولید شده : ' + Math.floor(hapoHarvest) + '<br/>';
     msg += '💫 تولید در ثانیه : ' + prod.toFixed(2) + '<br/>';
     msg += '📦 ظرفیت : ' + capacity.toLocaleString() + '<br/>';
-    if (!isMaxLevel) {
-        msg += '💰 هزینه ارتقا : ' + price.toLocaleString();
-    } else {
-        msg += '🏆 مقام نهایی';
-    }
+    if (!isMaxLevel) msg += '💰 هزینه ارتقا : ' + price.toLocaleString();
+    else msg += '🏆 مقام نهایی';
     
-    // Buttons
     const btnContainer = document.createElement('div');
     btnContainer.className = 'glass-buttons';
     
@@ -994,14 +1612,8 @@ function showHapoMenu() {
     harvestBtn.onclick = function(e) {
         e.stopPropagation();
         const amount = Math.floor(hapoHarvest);
-        if (amount > 0) {
-            HopPoint += amount;
-            hapoHarvest = 0;
-            saveGame();
-            addBot(S.hopoCoin + ' ✅ <span class="gold">' + amount.toLocaleString() + '</span> هاپو پوینت برداشت شد');
-        } else {
-            addBot('❌ هیچ هاپو پوینتی برای برداشت نیست');
-        }
+        if (amount > 0) { HopPoint += amount; hapoHarvest = 0; saveGame(); addBot(S.hopoCoin + ' ✅ <span class="gold">' + amount.toLocaleString() + '</span> هاپو پوینت برداشت شد'); }
+        else { addBot('❌ هیچ هاپو پوینتی برای برداشت نیست'); }
     };
     
     const upgradeBtn = document.createElement('button');
@@ -1009,70 +1621,42 @@ function showHapoMenu() {
     if (isMaxLevel) {
         upgradeBtn.innerHTML = '🏆 نهایی';
         upgradeBtn.style.opacity = '0.5';
-        upgradeBtn.onclick = function() {
-            addBot('🏆 هاپو در بالاترین سطح است');
-        };
+        upgradeBtn.onclick = function() { addBot('🏆 هاپو در بالاترین سطح است'); };
     } else if (hapoLevel >= 5 && hapoRank < 4) {
         upgradeBtn.innerHTML = S.upgrade + ' ارتقا مقام';
         upgradeBtn.onclick = function(e) {
             e.stopPropagation();
-            if (HopPoint < price) {
-                addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به ' + price.toLocaleString() + ' ' + S.hopoCoin + ')');
-                return;
-            }
+            if (HopPoint < price) { addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به ' + price.toLocaleString() + ' ' + S.hopoCoin + ')'); return; }
             addBotWithGlassButtons(
-                '⚠️ <span class="gold">هشدار ارتقا مقام</span><br/>' +
-                '⭐ مقام فعلی : ' + RANK_NAMES[hapoRank] + ' (' + hapoRank + ')<br/>' +
-                '⭐ مقام بعدی : ' + RANK_NAMES[hapoRank + 1] + ' (' + (hapoRank + 1) + ')<br/>' +
-                '📌 سطح فعلی : ' + hapoLevel + '/5<br/>' +
-                '📌 بعد از ارتقا سطح به 1 برمیگردد و همه چیز ریست میشود<br/>' +
-                '💰 هزینه : ' + price.toLocaleString() + ' ' + S.hopoCoin + '<br/>' +
-                'آیا مطمئنی میخوای مقام هاپو رو ارتقا بدی؟',
+                '⚠️ <span class="gold">هشدار ارتقا مقام</span><br/>⭐ مقام فعلی : ' + RANK_NAMES[hapoRank] + ' (' + hapoRank + ')<br/>⭐ مقام بعدی : ' + RANK_NAMES[hapoRank + 1] + ' (' + (hapoRank + 1) + ')<br/>📌 سطح فعلی : ' + hapoLevel + '/5<br/>📌 بعد از ارتقا سطح به 1 برمیگردد و همه چیز ریست میشود<br/>💰 هزینه : ' + price.toLocaleString() + ' ' + S.hopoCoin + '<br/>آیا مطمئنی میخوای مقام هاپو رو ارتقا بدی؟',
                 function() {
-                    if (HopPoint < price) {
-                        addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست');
-                        return;
-                    }
-                    HopPoint -= price;
-                    hapoRank++;
-                    hapoLevel = 1;
-                    hapoFood = getHapoMaxFood();
-                    hapoHarvest = 0;
+                    if (HopPoint < price) { addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست'); return; }
+                    HopPoint -= price; hapoRank++; hapoLevel = 1; hapoFood = getHapoMaxFood(); hapoHarvest = 0;
                     saveGame();
                     addBot(S.sparkle + ' ✅ <span class="gold">مقام هاپو به ' + RANK_NAMES[hapoRank] + ' ارتقا یافت</span>');
+                    triggerHapoJump();
                     showHapoMenu();
                 },
-                function() {
-                    addBot('❌ ارتقا مقام لغو شد');
-                }
+                function() { addBot('❌ ارتقا مقام لغو شد'); }
             );
         };
     } else {
         upgradeBtn.innerHTML = S.upgrade + ' ارتقا سطح';
         upgradeBtn.onclick = function(e) {
             e.stopPropagation();
-            if (HopPoint < price) {
-                addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به ' + price.toLocaleString() + ' ' + S.hopoCoin + ')');
-                return;
-            }
+            if (HopPoint < price) { addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به ' + price.toLocaleString() + ' ' + S.hopoCoin + ')'); return; }
             addBotWithGlassButtons(
-                S.upgrade + ' آیا مطمئنی میخوای سطح هاپو رو ارتقا بدی؟<br/>' +
-                '💰 هزینه : ' + price.toLocaleString() + ' ' + S.hopoCoin,
+                S.upgrade + ' آیا مطمئنی میخوای سطح هاپو رو ارتقا بدی؟<br/>💰 هزینه : ' + price.toLocaleString() + ' ' + S.hopoCoin,
                 function() {
-                    if (HopPoint < price) {
-                        addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست');
-                        return;
-                    }
-                    HopPoint -= price;
-                    hapoLevel++;
+                    if (HopPoint < price) { addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست'); return; }
+                    HopPoint -= price; hapoLevel++;
                     hapoFood = Math.min(getHapoMaxFood(), Math.floor(hapoFood + 2));
                     saveGame();
                     addBot(S.sparkle + ' ✅ <span class="gold">سطح هاپو به ' + hapoLevel + ' ارتقا یافت</span>');
+                    triggerHapoJump();
                     showHapoMenu();
                 },
-                function() {
-                    addBot('❌ ارتقا سطح لغو شد');
-                }
+                function() { addBot('❌ ارتقا سطح لغو شد'); }
             );
         };
     }
@@ -1082,319 +1666,62 @@ function showHapoMenu() {
     nameBtn.innerHTML = S.namechange + ' تغییر اسم';
     nameBtn.onclick = function(e) {
         e.stopPropagation();
-        if (HopPoint < 750) {
-            addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به 750 ' + S.hopoCoin + ')');
-            return;
-        }
+        if (HopPoint < 750) { addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به 750 ' + S.hopoCoin + ')'); return; }
         addBotWithGlassButtons(
-            S.namechange + ' آیا مطمئنی میخوای اسم هاپو رو عوض کنی؟<br/>' +
-            '💰 هزینه : 750 ' + S.hopoCoin,
+            S.namechange + ' آیا مطمئنی میخوای اسم هاپو رو عوض کنی؟<br/>💰 هزینه : 750 ' + S.hopoCoin,
             function() {
-                if (HopPoint < 750) {
-                    addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست');
-                    return;
-                }
+                if (HopPoint < 750) { addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست'); return; }
                 HopPoint -= 750;
                 addBot('✏️ اسم جدید هاپو را وارد کن');
                 waitingForHapoName = true;
             },
-            function() {
-                addBot('❌ تغییر اسم لغو شد');
-            }
+            function() { addBot('❌ تغییر اسم لغو شد'); }
         );
     };
     
     btnContainer.appendChild(harvestBtn);
     btnContainer.appendChild(upgradeBtn);
     btnContainer.appendChild(nameBtn);
-    
     const div = addBotAndReturn(msg);
     div.appendChild(btnContainer);
 }
 
-let waitingForHapoName = false;
-
 // ================================================================
-// CHAT FUNCTIONS
-// ================================================================
-function addMessage(type, html) {
-    const div = document.createElement('div');
-    div.className = 'msg ' + type;
-    const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
-    if (type === 'system') {
-        div.innerHTML = html;
-    } else {
-        div.innerHTML = html + '<span class="msg-time">' + time + '</span>';
-    }
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-    return div;
-}
-
-function addSystem(text) { addMessage('system', text); }
-function addUser(text) { addMessage('user', text); }
-
-function addBotWithGlassButtons(html, confirmCallback, cancelCallback) {
-    const div = document.createElement('div');
-    div.className = 'msg bot';
-    const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
-    
-    const btnContainer = document.createElement('div');
-    btnContainer.className = 'glass-buttons';
-    
-    const confirmBtn = document.createElement('button');
-    confirmBtn.className = 'glass-btn confirm';
-    confirmBtn.innerHTML = ICONS.check + ' بله';
-    confirmBtn.onclick = function(e) {
-        e.stopPropagation();
-        confirmCallback();
-        btnContainer.remove();
-    };
-    
-    const cancelBtn = document.createElement('button');
-    cancelBtn.className = 'glass-btn cancel';
-    cancelBtn.innerHTML = ICONS.cross + ' نه';
-    cancelBtn.onclick = function(e) {
-        e.stopPropagation();
-        cancelCallback();
-        btnContainer.remove();
-    };
-    
-    btnContainer.appendChild(confirmBtn);
-    btnContainer.appendChild(cancelBtn);
-    
-    div.innerHTML = html + '<span class="msg-time">' + time + '</span>';
-    div.appendChild(btnContainer);
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-    return div;
-}
-
-function addBot(text) {
-    const div = document.createElement('div');
-    div.className = 'msg bot';
-    const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
-    div.innerHTML = text + '<span class="msg-time">' + time + '</span>';
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-    return div;
-}
-
-function addBotAndReturn(text) {
-    const div = document.createElement('div');
-    div.className = 'msg bot';
-    const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
-    div.innerHTML = text + '<span class="msg-time">' + time + '</span>';
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-    return div;
-}
-
-function editMessage(div, newHtml) {
-    const timeSpan = div.querySelector('.msg-time');
-    if (timeSpan) {
-        div.innerHTML = newHtml + '<span class="msg-time">' + timeSpan.textContent + '</span>';
-    } else {
-        div.innerHTML = newHtml;
-    }
-}
-
-// ================================================================
-// SAVE / LOAD
-// ================================================================
-const SAVE_KEY = 'hopdog_data';
-
-function saveGame() {
-    try {
-        const data = {
-            HopPoint: HopPoint,
-            lastHopTime: lastHopTime,
-            Level: Level,
-            HopCount: HopCount,
-            PlayerName: PlayerName,
-            hasVisited: true,
-            isAdmin: isAdmin,
-            clawLevel: clawLevel,
-            lastHuntTime: lastHuntTime,
-            hapoOwned: hapoOwned,
-            hapoName: hapoName,
-            hapoRank: hapoRank,
-            hapoLevel: hapoLevel,
-            hapoFood: hapoFood,
-            hapoHarvest: hapoHarvest,
-            hapoLastUpdate: hapoLastUpdate
-        };
-        localStorage.setItem(SAVE_KEY, JSON.stringify(data));
-    } catch(e) {}
-}
-
-function loadGame() {
-    try {
-        const raw = localStorage.getItem(SAVE_KEY);
-        if (raw) {
-            const data = JSON.parse(raw);
-            HopPoint = data.HopPoint || 0;
-            lastHopTime = data.lastHopTime || 0;
-            Level = data.Level || 1;
-            HopCount = data.HopCount || 0;
-            PlayerName = data.PlayerName || '';
-            isAdmin = data.isAdmin || false;
-            clawLevel = data.clawLevel || 0;
-            lastHuntTime = data.lastHuntTime || 0;
-            hapoOwned = data.hapoOwned || false;
-            hapoName = data.hapoName || '';
-            hapoRank = data.hapoRank || 0;
-            hapoLevel = data.hapoLevel || 1;
-            hapoFood = data.hapoFood || getHapoMaxFood();
-            hapoHarvest = data.hapoHarvest || 0;
-            hapoLastUpdate = data.hapoLastUpdate || Date.now();
-            return true;
-        }
-    } catch(e) {}
-    return false;
-}
-
-// ================================================================
-// LEVEL HELPERS
-// ================================================================
-function getLevelData(level) {
-    if (level > MAX_LEVEL) return LEVEL_DATA[MAX_LEVEL];
-    return LEVEL_DATA[level] || LEVEL_DATA[1];
-}
-
-function getRequiredForLevel(level) {
-    if (level >= MAX_LEVEL) return Infinity;
-    return getLevelData(level + 1).required;
-}
-
-function getCooldownForLevel(level) {
-    return getLevelData(level).cooldown;
-}
-
-// ================================================================
-// CLAW HELPERS
-// ================================================================
-function getClawData(level) {
-    if (level > MAX_CLAW_LEVEL) return CLAW_DATA[MAX_CLAW_LEVEL];
-    return CLAW_DATA[level] || null;
-}
-
-function getClawCost(level) {
-    const data = getClawData(level);
-    if (!data) return Infinity;
-    return data.cost;
-}
-
-function getClawCooldown(level) {
-    const data = getClawData(level);
-    if (!data) return Infinity;
-    return data.cooldown;
-}
-
-function getClawChances(level) {
-    const data = getClawData(level);
-    if (!data) return { common: 0, uncommon: 0, epic: 0, legendary: 0 };
-    return {
-        common: data.common,
-        uncommon: data.uncommon,
-        epic: data.epic,
-        legendary: data.legendary
-    };
-}
-
-function getRarityIcon(rarity) {
-    return RARITY_ICONS[rarity] || '';
-}
-
-// ================================================================
-// CLAW COMMAND
+// CLAW MENU
 // ================================================================
 function showClawMenu() {
-    if (Level < 2) {
-        addBot(S.error + ' قابلیت پنجه از سطح 2 باز میشود');
-        return;
-    }
-    
+    if (Level < 2) { addBot(S.error + ' قابلیت پنجه از سطح 2 باز میشود'); return; }
     if (clawLevel === 0) {
         const cost = getClawCost(1);
-        const msg = 
-            S.claw + ' <span class="gold">شما پنجه ندارید</span><br/>' +
-            'برای شروع شکار باید پنجه بخرید<br/>' +
-            '💰 هزینه خرید سطح 1 : <span class="gold">' + cost + '</span> ' + S.hopoCoin + '<br/>' +
-            S.clock + ' زمان استراحت : 60:00<br/>' +
-            '🍀 شانس شکار :<br/>' +
-            '  ' + getRarityIcon('common') + ' معمولی : 95%<br/>' +
-            '  ' + getRarityIcon('uncommon') + ' کمیاب : 5%';
-        
-        addBotWithGlassButtons(
-            msg,
-            function() {
-                buyClawAction();
-            },
-            function() {
-                addBot('❌ خرید پنجه لغو شد');
-            }
-        );
+        const msg = S.claw + ' <span class="gold">شما پنجه ندارید</span><br/>برای شروع شکار باید پنجه بخرید<br/>💰 هزینه خرید سطح 1 : <span class="gold">' + cost + '</span> ' + S.hopoCoin + '<br/>' + S.clock + ' زمان استراحت : 60:00<br/>🍀 شانس شکار :<br/>  ' + getRarityIcon('common') + ' معمولی : 95%<br/>  ' + getRarityIcon('uncommon') + ' کمیاب : 5%';
+        addBotWithGlassButtons(msg, function() { buyClawAction(); }, function() { addBot('❌ خرید پنجه لغو شد'); });
         return;
     }
-    
     const data = getClawData(clawLevel);
     const nextLevel = clawLevel + 1;
     const nextData = getClawData(nextLevel);
-    
-    let msg = '';
-    msg += S.claw + ' <span class="gold">پنجه شما</span><br/>';
-    msg += '⭐ سطح : <span class="gold">' + clawLevel + '</span><br/>';
-    msg += S.clock + ' زمان استراحت : ' + String(data.cooldown).padStart(2, '0') + ':00<br/>';
-    msg += '🍀 شانس شکار :<br/>';
-    msg += '  ' + getRarityIcon('common') + ' معمولی : ' + data.common + '%<br/>';
-    msg += '  ' + getRarityIcon('uncommon') + ' کمیاب : ' + data.uncommon + '%<br/>';
+    let msg = S.claw + ' <span class="gold">پنجه شما</span><br/>⭐ سطح : <span class="gold">' + clawLevel + '</span><br/>' + S.clock + ' زمان استراحت : ' + String(data.cooldown).padStart(2, '0') + ':00<br/>🍀 شانس شکار :<br/>  ' + getRarityIcon('common') + ' معمولی : ' + data.common + '%<br/>  ' + getRarityIcon('uncommon') + ' کمیاب : ' + data.uncommon + '%<br/>';
     if (data.epic > 0) msg += '  ' + getRarityIcon('epic') + ' حماسی : ' + data.epic + '%<br/>';
     if (data.legendary > 0) msg += '  ' + getRarityIcon('legendary') + ' افسانه‌ای : ' + data.legendary + '%<br/>';
-    
     if (nextData) {
-        msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
-        msg += S.upgrade + ' ارتقا به سطح ' + nextLevel + '<br/>';
-        msg += '💰 هزینه : <span class="gold">' + nextData.cost + '</span> ' + S.hopoCoin;
-        
-        addBotWithGlassButtons(
-            msg,
-            function() {
-                upgradeClawAction(nextLevel, nextData.cost);
-            },
-            function() {
-                addBot('❌ ارتقا پنجه لغو شد');
-            }
-        );
+        msg += '〰️〰️〰️〰️〰️〰️〰️<br/>' + S.upgrade + ' ارتقا به سطح ' + nextLevel + '<br/>💰 هزینه : <span class="gold">' + nextData.cost + '</span> ' + S.hopoCoin;
+        addBotWithGlassButtons(msg, function() { upgradeClawAction(nextLevel, nextData.cost); }, function() { addBot('❌ ارتقا پنجه لغو شد'); });
     } else {
-        msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
-        msg += '🏆 سطح نهایی';
+        msg += '〰️〰️〰️〰️〰️〰️〰️<br/>🏆 سطح نهایی';
         addBot(msg);
     }
 }
 
 function buyClawAction() {
     const cost = getClawCost(1);
-    if (HopPoint < cost) {
-        addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به ' + cost + ' ' + S.hopoCoin + ')');
-        return;
-    }
-    HopPoint -= cost;
-    clawLevel = 1;
-    saveGame();
-    addBot(S.claw + ' ✅ <span class="gold">پنجه خریداری شد</span><br/>' +
-           'اکنون میتونی با زدن <span class="gold">شکار</span> به شکار بری<br/>' +
-           'برای ارتقا پنجه، دوباره <span class="gold">پنجه</span> بزن');
+    if (HopPoint < cost) { addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به ' + cost + ' ' + S.hopoCoin + ')'); return; }
+    HopPoint -= cost; clawLevel = 1; saveGame();
+    addBot(S.claw + ' ✅ <span class="gold">پنجه خریداری شد</span><br/>اکنون میتونی با زدن <span class="gold">شکار</span> به شکار بری<br/>برای ارتقا پنجه، دوباره <span class="gold">پنجه</span> بزن');
 }
 
 function upgradeClawAction(nextLevel, cost) {
-    if (HopPoint < cost) {
-        addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به ' + cost + ' ' + S.hopoCoin + ')');
-        return;
-    }
-    HopPoint -= cost;
-    clawLevel = nextLevel;
-    saveGame();
+    if (HopPoint < cost) { addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به ' + cost + ' ' + S.hopoCoin + ')'); return; }
+    HopPoint -= cost; clawLevel = nextLevel; saveGame();
     addBot(S.upgrade + ' ✅ <span class="gold">پنجه به سطح ' + clawLevel + ' ارتقا یافت</span> ' + S.sparkle);
 }
 
@@ -1402,10 +1729,7 @@ function upgradeClawAction(nextLevel, cost) {
 // HUNTING
 // ================================================================
 function getRandomAnimal() {
-    if (clawLevel === 0) {
-        return null;
-    }
-    
+    if (clawLevel === 0) return null;
     const chances = getClawChances(clawLevel);
     const rand = Math.random() * 100;
     let rarity;
@@ -1413,47 +1737,22 @@ function getRandomAnimal() {
     else if (rand < chances.common + chances.uncommon) rarity = 'uncommon';
     else if (rand < chances.common + chances.uncommon + chances.epic) rarity = 'epic';
     else rarity = 'legendary';
-    
     const animals = ANIMALS[rarity];
     const animal = animals[Math.floor(Math.random() * animals.length)];
     const weight = Math.round((animal.weightMin + Math.random() * (animal.weightMax - animal.weightMin)) * 10) / 10;
     const value = Math.round(weight * animal.multiplier);
-    
-    return {
-        ...animal,
-        rarity: rarity,
-        rarityName: RARITY_NAMES[rarity],
-        rarityIcon: getRarityIcon(rarity),
-        weight: weight,
-        value: Math.round(value),
-        name: animal.name
-    };
+    return { ...animal, rarity, rarityName: RARITY_NAMES[rarity], rarityIcon: getRarityIcon(rarity), weight, value: Math.round(value), name: animal.name };
 }
 
 function doHunt() {
-    if (Level < 2) {
-        addBot(S.error + ' قابلیت شکار از سطح 2 باز میشود');
-        return;
-    }
-    
+    if (Level < 2) { addBot(S.error + ' قابلیت شکار از سطح 2 باز میشود'); return; }
     if (clawLevel === 0) {
-        addBot(
-            S.claw + ' <span class="gold">شما پنجه ندارید</span><br/>' +
-            'برای شکار باید پنجه بخرید<br/>' +
-            '💰 هزینه خرید سطح 1 : <span class="gold">' + getClawCost(1) + '</span> ' + S.hopoCoin + '<br/>' +
-            'با زدن <span class="gold">پنجه</span> اطلاعات بیشتری ببین'
-        );
+        addBot(S.claw + ' <span class="gold">شما پنجه ندارید</span><br/>برای شکار باید پنجه بخرید<br/>💰 هزینه خرید سطح 1 : <span class="gold">' + getClawCost(1) + '</span> ' + S.hopoCoin + '<br/>با زدن <span class="gold">پنجه</span> اطلاعات بیشتری ببین');
         return;
     }
-    
-    if (huntActive) {
-        addBot(S.clock + ' در حال شکار هستی صبر کن');
-        return;
-    }
-    
+    if (huntActive) { addBot(S.clock + ' در حال شکار هستی صبر کن'); return; }
     const cooldown = getClawCooldown(clawLevel) * 60 * 1000;
     const now = Date.now();
-    
     if (lastHuntTime > 0 && (now - lastHuntTime) < cooldown) {
         const remaining = cooldown - (now - lastHuntTime);
         const minutes = Math.floor(remaining / 60000);
@@ -1462,114 +1761,74 @@ function doHunt() {
         addBot(S.clock + ' تا شکار بعدی ' + timeStr + ' مونده');
         return;
     }
-    
     huntActive = true;
     lastHuntTime = now;
-    
-    const animMsg = addBotAndReturn(
-        S.hunt + ' <span class="gold">در حال شکار</span> <span class="hunt-dots">...</span>'
-    );
-    
+    const animMsg = addBotAndReturn(S.huntAnim + ' <span class="gold">در حال شکار</span> <span class="hunt-dots">...</span>');
     setTimeout(() => {
         const animal = getRandomAnimal();
-        if (!animal) {
-            editMessage(animMsg, S.error + ' خطا در شکار');
-            huntActive = false;
-            return;
-        }
-        
+        if (!animal) { editMessage(animMsg, S.error + ' خطا در شکار'); huntActive = false; return; }
         const rarityColor = RARITY_COLORS[animal.rarity] || 'gold';
-        
-        const resultHtml = 
-            S.hunt + ' <span class="gold">شما موفق به شکار شدید</span><br/>' +
-            S.dog + ' <span class="gold">' + animal.name + '</span><br/>' +
-            '⭐ سطح : <span class="' + rarityColor + '">' + animal.rarityName + ' ' + animal.rarityIcon + '</span><br/>' +
-            '⚖️ وزن : <span class="gold">' + animal.weight + '</span> کیلو<br/>' +
-            S.hopoCoin + ' ارزش : <span class="gold">' + animal.value + '</span> ' + S.hopoCoin + '<br/>' +
-            S.food + ' ارزش غذایی : <span class="gold">' + animal.nutrition + '</span> کالری<br/>' +
-            S.clock + ' 60 ثانیه فرصت انتخاب دارید';
-        
+        const resultHtml = S.hunt + ' <span class="gold">شما موفق به شکار شدید</span><br/>' + S.dog + ' <span class="gold">' + animal.name + '</span><br/>⭐ سطح : <span class="' + rarityColor + '">' + animal.rarityName + ' ' + animal.rarityIcon + '</span><br/>⚖️ وزن : <span class="gold">' + animal.weight + '</span> کیلو<br/>' + S.hopoCoin + ' ارزش : <span class="gold">' + animal.value + '</span> ' + S.hopoCoin + '<br/>' + S.food + ' ارزش غذایی : <span class="gold">' + animal.nutrition + '</span> کالری<br/>' + S.clock + ' 60 ثانیه فرصت انتخاب دارید';
         editMessage(animMsg, resultHtml);
-        
         const btnContainer = document.createElement('div');
         btnContainer.className = 'glass-buttons';
-        
         const sellBtn = document.createElement('button');
         sellBtn.className = 'glass-btn sell';
         sellBtn.innerHTML = S.hopoCoin + ' فروش';
         sellBtn.onclick = function(e) {
             e.stopPropagation();
-            if (huntTimerId) {
-                clearTimeout(huntTimerId);
-                huntTimerId = null;
-            }
-            
-            const confirmDiv = addBotAndReturn(
-                S.hopoCoin + ' آیا مطمئنی میخوای <span class="gold">' + animal.name + '</span> رو به قیمت <span class="gold">' + animal.value + '</span> ' + S.hopoCoin + ' بفروشی؟'
-            );
-            
+            if (huntTimerId) { clearTimeout(huntTimerId); huntTimerId = null; }
+            const confirmDiv = addBotAndReturn(S.hopoCoin + ' آیا مطمئنی میخوای <span class="gold">' + animal.name + '</span> رو به قیمت <span class="gold">' + animal.value + '</span> ' + S.hopoCoin + ' بفروشی؟');
             const confirmContainer = document.createElement('div');
             confirmContainer.className = 'glass-buttons';
-            
             const confirmBtn = document.createElement('button');
             confirmBtn.className = 'glass-btn confirm';
             confirmBtn.innerHTML = ICONS.check + ' بله';
-            confirmBtn.onclick = function(e) {
-                e.stopPropagation();
+            confirmBtn.onclick = function(e2) {
+                e2.stopPropagation();
                 HopPoint = Math.round((HopPoint + animal.value) * 100) / 100;
-                const soldName = animal.name;
-                const soldValue = animal.value;
+                const soldName = animal.name, soldValue = animal.value;
                 saveGame();
                 editMessage(confirmDiv, S.hopoCoin + ' ✅ <span class="gold">' + soldName + '</span> فروخته شد 💰 <span class="gold">' + soldValue + '</span> ' + S.hopoCoin);
                 addBot(S.hopoCoin + ' هاپو پوینت هات : <span class="gold">' + Math.round(HopPoint) + '</span> ' + S.hopoCoin);
                 btnContainer.remove();
                 huntActive = false;
             };
-            
             const cancelBtn = document.createElement('button');
             cancelBtn.className = 'glass-btn cancel';
             cancelBtn.innerHTML = ICONS.cross + ' نه';
-            cancelBtn.onclick = function(e) {
-                e.stopPropagation();
+            cancelBtn.onclick = function(e2) {
+                e2.stopPropagation();
                 editMessage(confirmDiv, '❌ فروش لغو شد');
                 btnContainer.remove();
                 huntActive = false;
             };
-            
             confirmContainer.appendChild(confirmBtn);
             confirmContainer.appendChild(cancelBtn);
             confirmDiv.appendChild(confirmContainer);
             btnContainer.remove();
         };
-        
         const feedBtn = document.createElement('button');
         feedBtn.className = 'glass-btn hapo-btn';
         feedBtn.innerHTML = S.food + ' بده به هاپو';
         feedBtn.onclick = function(e) {
             e.stopPropagation();
-            if (!hapoOwned) {
-                addBot(S.error + ' شما هاپو ندارید');
-                return;
-            }
+            if (!hapoOwned) { addBot(S.error + ' شما هاپو ندارید'); return; }
             const maxFood = getHapoMaxFood();
-            if (hapoFood >= maxFood) {
-                addBot(S.food + ' هاپو سیر است');
-                return;
-            }
+            if (hapoFood >= maxFood) { addBot(S.food + ' هاپو سیر است'); return; }
             const feedAmount = animal.nutrition;
             const newFood = Math.min(maxFood, Math.floor(hapoFood + feedAmount));
             const actual = newFood - Math.floor(hapoFood);
             hapoFood = newFood;
             saveGame();
             addBot(S.food + ' ✅ <span class="gold">' + actual + '</span> غذا به هاپو داده شد');
+            triggerHapoJump();
             btnContainer.remove();
             huntActive = false;
         };
-        
         btnContainer.appendChild(sellBtn);
         btnContainer.appendChild(feedBtn);
         animMsg.appendChild(btnContainer);
-        
         huntTimerId = setTimeout(() => {
             if (huntActive) {
                 editMessage(animMsg, S.error + ' <span class="red">حیوان فرار کرد</span>');
@@ -1579,33 +1838,22 @@ function doHunt() {
                 huntTimerId = null;
             }
         }, 60000);
-        
         saveGame();
-        
     }, 2000);
 }
 
 // ================================================================
-// HOPUI (بدون پنجه و هاپو)
+// HOPUI
 // ================================================================
 function showHopUI() {
     const required = getRequiredForLevel(Level);
-    
-    let msg = '';
-    msg += '📊 <span class="bold">وضعیت هاپویی شما</span><br/>';
+    let msg = '📊 <span class="bold">وضعیت هاپویی شما</span><br/>';
     msg += '👤 کاربر: <span class="gold">' + (PlayerName || 'ناشناس') + '</span>';
     if (isAdmin) msg += ' ' + S.admin + ' <span class="gold">[ادمین]</span>';
-    msg += '<br/>';
-    msg += S.star + ' سطح : <span class="gold">' + Level + '</span><br/>';
-    
-    if (Level < MAX_LEVEL) {
-        msg += '🐾 هاپ شمار : <span class="gold">' + HopCount + '</span>/<span class="gold">' + required + '</span><br/>';
-    } else {
-        msg += '🐾 هاپ شمار : <span class="gold">' + HopCount + '</span> (سطح نهایی) 🏆<br/>';
-    }
-    
+    msg += '<br/>' + S.star + ' سطح : <span class="gold">' + Level + '</span><br/>';
+    if (Level < MAX_LEVEL) msg += '🐾 هاپ شمار : <span class="gold">' + HopCount + '</span>/<span class="gold">' + required + '</span><br/>';
+    else msg += '🐾 هاپ شمار : <span class="gold">' + HopCount + '</span> (سطح نهایی) 🏆<br/>';
     msg += S.hopoCoin + ' هاپو پوینت هات : <span class="gold">' + Math.round(HopPoint) + '</span>';
-    
     addBot(msg);
 }
 
@@ -1615,51 +1863,24 @@ function showHopUI() {
 function doHop() {
     const now = Date.now();
     const cooldown = getCooldownForLevel(Level);
-
     if (lastHopTime > 0 && (now - lastHopTime) / 1000 < cooldown) {
         const remaining = cooldown - ((now - lastHopTime) / 1000);
         const minutes = Math.floor(remaining / 60);
         const seconds = Math.floor(remaining % 60);
-        
-        let timeMsg = '';
-        if (minutes > 0) {
-            timeMsg = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-        } else {
-            timeMsg = seconds + ' ثانیه';
-        }
-        
-        addBot(
-            S.clock + ' هنوز هاپت نمیاد ...' + '<br/>' +
-            'باید ' + timeMsg + ' صبر کنی'
-        );
+        const timeMsg = minutes > 0 ? minutes + ':' + (seconds < 10 ? '0' : '') + seconds : seconds + ' ثانیه';
+        addBot(S.clock + ' هنوز هاپت نمیاد ...<br/>باید ' + timeMsg + ' صبر کنی');
         return;
     }
-
     const levelData = getLevelData(Level);
-    const minP = levelData.minPoints;
-    const maxP = levelData.maxPoints;
-    const earned = Math.floor(Math.random() * (maxP - minP + 1)) + minP;
-    
+    const earned = Math.floor(Math.random() * (levelData.maxPoints - levelData.minPoints + 1)) + levelData.minPoints;
     HopPoint += earned;
     lastHopTime = now;
     HopCount += 1;
-    
     const colors = ['gold', 'pink', 'blue', 'green', 'purple', 'red', 'cyan'];
     const c1 = colors[Math.floor(Math.random() * colors.length)];
-
-    addBot(
-        S.paw + ' <span class="' + c1 + '">' + earned + '</span> هاپو پوینت گرفتی' + ' ' + S.sparkle + '<br/>' +
-        S.hopoCoin + ' هاپو پوینت هات : ' + '<span class="' + c1 + '">' + Math.round(HopPoint) + '</span>' + '<br/>' +
-        S.clock + ' بعد از ' + Math.floor(cooldown/60) + ':00 میتونی دوباره <span class="hop-text">هاپ هاپ</span> کنی'
-    );
-
+    addBot(S.paw + ' <span class="' + c1 + '">' + earned + '</span> هاپو پوینت گرفتی ' + S.sparkle + '<br/>' + S.hopoCoin + ' هاپو پوینت هات : <span class="' + c1 + '">' + Math.round(HopPoint) + '</span><br/>' + S.clock + ' بعد از ' + Math.floor(cooldown/60) + ':00 میتونی دوباره <span class="hop-text">هاپ هاپ</span> کنی');
     const required = getRequiredForLevel(Level);
-    if (Level < MAX_LEVEL && HopCount >= required) {
-        HopCount = 0;
-        Level += 1;
-        doLevelUp();
-    }
-    
+    if (Level < MAX_LEVEL && HopCount >= required) { HopCount = 0; Level += 1; doLevelUp(); }
     saveGame();
 }
 
@@ -1669,244 +1890,137 @@ function doHop() {
 function doLevelUp() {
     const reward = getLevelData(Level).reward;
     HopPoint += reward;
-    
-    let msg = '';
-    msg += S.levelup + ' <span class="gold">تبریک سطح شما به ' + Level + ' ارتقا یافت</span> ' + S.crown + '<br/>';
-    msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
-    msg += '🔓 قابلیت های باز شده ⬇️<br/>';
-    if (Level === 2) {
-        msg += S.claw + ' پنجه (برای خرید و ارتقا)<br/>';
-    }
-    if (Level === 3) {
-        msg += S.hapo + ' هاپو (قابل خرید با 300 ' + S.hopoCoin + ')<br/>';
-    }
-    msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
-    msg += S.hopoCoin + ' جایزه ارتقا سطح : <span class="gold">' + reward + '</span> ' + S.hopoCoin + '<br/>';
-    msg += S.hopoCoin + ' هاپو پوینت هات : <span class="gold">' + Math.round(HopPoint) + '</span> ' + S.hopoCoin;
-    
+    let msg = S.levelup + ' <span class="gold">تبریک سطح شما به ' + Level + ' ارتقا یافت</span> ' + S.crown + '<br/>〰️〰️〰️〰️〰️〰️〰️<br/>🔓 قابلیت های باز شده ⬇️<br/>';
+    if (Level === 2) msg += S.claw + ' پنجه (برای خرید و ارتقا)<br/>';
+    if (Level === 3) msg += S.hapo + ' هاپو (قابل خرید با 300 ' + S.hopoCoin + ')<br/>';
+    msg += '〰️〰️〰️〰️〰️〰️〰️<br/>' + S.hopoCoin + ' جایزه ارتقا سطح : <span class="gold">' + reward + '</span> ' + S.hopoCoin + '<br/>' + S.hopoCoin + ' هاپو پوینت هات : <span class="gold">' + Math.round(HopPoint) + '</span> ' + S.hopoCoin;
     addBot(msg);
+    triggerLevelUpAnimation(Level);
     saveGame();
 }
 
 // ================================================================
-// ADMIN COMMANDS
+// ADMIN
 // ================================================================
 function adminSetLevel() {
-    if (!isAdmin) {
-        addBot(S.error + ' شما ادمین نیستید');
-        return;
-    }
+    if (!isAdmin) { addBot(S.error + ' شما ادمین نیستید'); return; }
     addBot('سطح جدید را وارد کن (1 تا 20):');
     waitingForAdminCommand = true;
     adminCommandType = 'setlevel';
 }
-
 function adminSetPoint() {
-    if (!isAdmin) {
-        addBot(S.error + ' شما ادمین نیستید');
-        return;
-    }
+    if (!isAdmin) { addBot(S.error + ' شما ادمین نیستید'); return; }
     addBot(S.hopoCoin + ' جدید را وارد کن:');
     waitingForAdminCommand = true;
     adminCommandType = 'setpoint';
 }
-
-let waitingForAdminCommand = false;
-let adminCommandType = '';
+let waitingForAdminCommand = false, adminCommandType = '';
 
 // ================================================================
-// WELCOME
+// WELCOME & CHANGE NAME
 // ================================================================
 function showWelcome() {
     addSystem(S.welcome + ' به هاپ داگ خوش اومدی');
-    addBot(
-        S.game + ' ربات سرگرمی هاپ داگ' + '<br/>' +
-        S.dog + ' یه هاپوی بامزه' + '<br/>' +
-        'کافیه <span class="hop-text">هاپ هاپ</span> کنی تا ' + S.hopoCoin + ' بگیری'
-    );
-    
+    addBot(S.game + ' ربات سرگرمی هاپ داگ<br/>' + S.dog + ' یه هاپوی بامزه<br/>کافیه <span class="hop-text">هاپ هاپ</span> کنی تا ' + S.hopoCoin + ' بگیری');
     addBot(S.paw + ' اسمت چیه (یک اسم برایه خودت انتخاب کن)؟');
     waitingForName = true;
 }
-
-// ================================================================
-// CHANGE NAME (User)
-// ================================================================
 function startChangeName() {
-    if (HopPoint < 750) {
-        addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست برای تغییر اسم (نیاز به 750 ' + S.hopoCoin + ')');
-        return;
-    }
-    
+    if (HopPoint < 750) { addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست برای تغییر اسم (نیاز به 750 ' + S.hopoCoin + ')'); return; }
     changeNamePending = true;
-    addBotWithGlassButtons(
-        S.namechange + ' <span class="gold">تغییر اسم</span><br/>' +
-        '💰 هزینه : <span class="gold">750</span> ' + S.hopoCoin + '<br/>' +
-        'آیا مطمئنی میخوای اسمت رو عوض کنی؟',
+    addBotWithGlassButtons(S.namechange + ' <span class="gold">تغییر اسم</span><br/>💰 هزینه : <span class="gold">750</span> ' + S.hopoCoin + '<br/>آیا مطمئنی میخوای اسمت رو عوض کنی؟',
         function() {
-            if (HopPoint < 750) {
-                addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به 750 ' + S.hopoCoin + ')');
-                changeNamePending = false;
-                return;
-            }
-            HopPoint -= 750;
-            saveGame();
-            addBot('✏️ اسم جدید خود را وارد کن');
-            waitingForNewName = true;
-            changeNamePending = false;
+            if (HopPoint < 750) { addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به 750 ' + S.hopoCoin + ')'); changeNamePending = false; return; }
+            HopPoint -= 750; saveGame(); addBot('✏️ اسم جدید خود را وارد کن'); waitingForNewName = true; changeNamePending = false;
         },
-        function() {
-            addBot('❌ تغییر اسم لغو شد');
-            changeNamePending = false;
-        }
+        function() { addBot('❌ تغییر اسم لغو شد'); changeNamePending = false; }
     );
 }
+function startAdminLogin() { addBot('🔑 رمز ادمین را وارد کن'); waitingForAdminPassword = true; }
 
 // ================================================================
-// ADMIN LOGIN
-// ================================================================
-function startAdminLogin() {
-    addBot('🔑 رمز ادمین را وارد کن');
-    waitingForAdminPassword = true;
-}
-
-// ================================================================
-// PROCESS
+// PROCESS COMMAND
 // ================================================================
 function processCommand(cmd) {
     addUser(cmd);
     const t = cmd.trim();
     
-    // Waiting for name (first time)
-    if (waitingForName) {
-        PlayerName = t;
-        waitingForName = false;
-        saveGame();
-        addBot('اسم شما ثبت شد ' + S.paw + ' <span class="gold">' + PlayerName + '</span>');
-        return;
-    }
-    
-    // Waiting for new name (change user name)
+    if (waitingForName) { PlayerName = t; waitingForName = false; saveGame(); addBot('اسم شما ثبت شد ' + S.paw + ' <span class="gold">' + PlayerName + '</span>'); return; }
     if (waitingForNewName) {
-        if (t.length > 0) {
-            const oldName = PlayerName;
-            PlayerName = t;
-            waitingForNewName = false;
-            saveGame();
-            addBot('✅ اسم شما از <span class="gold">' + oldName + '</span> به <span class="gold">' + PlayerName + '</span> تغییر یافت ' + S.paw);
-        } else {
-            addBot('❌ اسم نمی‌تواند خالی باشد');
-        }
+        if (t.length > 0) { const old = PlayerName; PlayerName = t; waitingForNewName = false; saveGame(); addBot('✅ اسم شما از <span class="gold">' + old + '</span> به <span class="gold">' + PlayerName + '</span> تغییر یافت ' + S.paw); }
+        else { addBot('❌ اسم نمی‌تواند خالی باشد'); }
         return;
     }
-    
-    // Waiting for hapo name change
     if (waitingForHapoName) {
-        if (t.length > 0) {
-            hapoName = t;
-            waitingForHapoName = false;
-            saveGame();
-            addBot('✅ اسم هاپو به <span class="gold">' + hapoName + '</span> تغییر یافت ' + S.hapo);
-            showHapoMenu();
-        } else {
-            addBot('❌ اسم نمی‌تواند خالی باشد');
-        }
+        if (t.length > 0) { hapoName = t; waitingForHapoName = false; saveGame(); addBot('✅ اسم هاپو به <span class="gold">' + hapoName + '</span> تغییر یافت ' + S.hapo); triggerHapoJump(); showHapoMenu(); }
+        else { addBot('❌ اسم نمی‌تواند خالی باشد'); }
         return;
     }
-    
-    // Waiting for admin password
     if (waitingForAdminPassword) {
-        if (t === '9061') {
-            isAdmin = true;
-            saveGame();
-            addBot(S.admin + ' <span class="gold">تبریک! شما ادمین شدید</span> 🛡️');
-        } else {
-            addBot(S.error + ' رمز اشتباه است');
-        }
+        if (t === '9061') { isAdmin = true; saveGame(); addBot(S.admin + ' <span class="gold">تبریک! شما ادمین شدید</span> 🛡️'); }
+        else { addBot(S.error + ' رمز اشتباه است'); }
         waitingForAdminPassword = false;
         return;
     }
-    
-    // Waiting for admin command
     if (waitingForAdminCommand) {
         const val = parseInt(t);
-        if (isNaN(val) || val < 0) {
-            addBot(S.error + ' لطفاً یک عدد معتبر وارد کن');
-            waitingForAdminCommand = false;
-            adminCommandType = '';
-            return;
-        }
-        
+        if (isNaN(val) || val < 0) { addBot(S.error + ' لطفاً یک عدد معتبر وارد کن'); waitingForAdminCommand = false; adminCommandType = ''; return; }
         if (adminCommandType === 'setlevel') {
-            if (val >= 1 && val <= MAX_LEVEL) {
-                Level = val;
-                saveGame();
-                addBot('✅ سطح شما به <span class="gold">' + Level + '</span> تغییر یافت');
-            } else {
-                addBot(S.error + ' سطح باید بین 1 تا ' + MAX_LEVEL + ' باشد');
-            }
+            if (val >= 1 && val <= MAX_LEVEL) { Level = val; saveGame(); addBot('✅ سطح شما به <span class="gold">' + Level + '</span> تغییر یافت'); }
+            else { addBot(S.error + ' سطح باید بین 1 تا ' + MAX_LEVEL + ' باشد'); }
         } else if (adminCommandType === 'setpoint') {
-            HopPoint = val;
-            saveGame();
-            addBot('✅ ' + S.hopoCoin + ' شما به <span class="gold">' + HopPoint + '</span> تغییر یافت');
+            HopPoint = val; saveGame(); addBot('✅ ' + S.hopoCoin + ' شما به <span class="gold">' + HopPoint + '</span> تغییر یافت');
         }
-        
-        waitingForAdminCommand = false;
-        adminCommandType = '';
+        waitingForAdminCommand = false; adminCommandType = '';
         return;
     }
     
     const lower = t.toLowerCase();
     
-    // ============ HAPO COMMAND ============
+    // ACADEMY
+    if (lower === 'آکادمی' || lower === 'academy' || lower === 'راهنما' || lower === 'help') {
+        showAcademy();
+        return;
+    }
+    
+    // HAPO
     if (lower === 'هاپو' || lower === 'hapo' || (hapoOwned && lower === hapoName.toLowerCase())) {
         showHapoMenu();
         return;
     }
     
-    // ============ CLAW COMMAND ============
+    // CLAW
     if (lower === 'پنجه' || lower === 'claw') {
         showClawMenu();
         return;
     }
     
-    // ============ HUNTING ============
+    // HUNT
     if (lower === 'شکار' || lower === 'hunt') {
         doHunt();
         return;
     }
     
-    // ============ ADMIN ============
-    if (lower === 'setlevel' || lower === 'تعیین سطح') {
-        adminSetLevel();
-        return;
-    }
+    // ADMIN
+    if (lower === 'setlevel' || lower === 'تعیین سطح') { adminSetLevel(); return; }
+    if (lower === 'setpoint' || lower === 'تعیین پوینت' || lower === 'تعیین پوین') { adminSetPoint(); return; }
+    if (lower === 'kknoxx1') { startAdminLogin(); return; }
     
-    if (lower === 'setpoint' || lower === 'تعیین پوینت' || lower === 'تعیین پوین') {
-        adminSetPoint();
-        return;
-    }
-    
-    if (lower === 'kknoxx1') {
-        startAdminLogin();
-        return;
-    }
-    
-    // ============ HOPUI ============
+    // HOPUI
     if (lower === 'هاپویی' || lower === 'hapui' || lower === 'stats') {
         showHopUI();
         return;
     }
     
-    // ============ CHANGE NAME (User) ============
+    // CHANGE NAME
     if (lower === 'اسم هاپویی' || lower === 'change name' || lower === 'changename') {
         startChangeName();
         return;
     }
     
-    // ============ HOP ============
-    const hopCommands = ['هاپ', 'هاپ هاپ', 'هاپ هوپ', 'هوپ', 'hop', 'hop hop', 'hap', 'واق', 'واق واق'];
-    if (hopCommands.includes(lower)) {
+    // HOP
+    const hopCmds = ['هاپ', 'هاپ هاپ', 'هاپ هوپ', 'هوپ', 'hop', 'hop hop', 'hap', 'واق', 'واق واق'];
+    if (hopCmds.includes(lower)) {
         doHop();
         return;
     }
@@ -1914,9 +2028,6 @@ function processCommand(cmd) {
     addBot(S.error + ' دستور اشتباه است');
 }
 
-// ================================================================
-// SEND
-// ================================================================
 function sendCmd() {
     const text = cmdInput.value.trim();
     if (!text) return;
@@ -1929,23 +2040,11 @@ function sendCmd() {
 // INIT
 // ================================================================
 const hasSavedData = loadGame();
-
-if (!hasSavedData || !PlayerName) {
-    showWelcome();
-}
-
+if (!hasSavedData || !PlayerName) showWelcome();
 cmdInput.focus();
-
 setInterval(saveGame, 3000);
 window.addEventListener('beforeunload', saveGame);
-
-// Auto-update hapo production every 10 seconds
-setInterval(function() {
-    if (hapoOwned) {
-        updateHapoProduction();
-        saveGame();
-    }
-}, 10000);
+setInterval(function() { if (hapoOwned) { updateHapoProduction(); saveGame(); } }, 10000);
 </script>
 </body>
 </html>
