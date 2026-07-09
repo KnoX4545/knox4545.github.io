@@ -2,7 +2,7 @@
 
 **by KnoX** | **Version 1.2.0**
 
-[![Website](https://img.shields.io/badge/Website-KnoX-00ff41?style=for-the-badge)](https://knox4545.github.io/2)
+[![Website](https://img.shields.io/badge/Website-KnoX-00ff41?style=for-the-badge)](https://knox4545.github.io)
 
 [![Made with](https://img.shields.io/badge/Made%20with-HTML%2FCSS%2FJS-red?style=for-the-badge)](https://github.com/KnoX4545)
 
@@ -17,7 +17,8 @@
 | 🧮 **Calculator** | Advanced calculator with functions | [Use](https://knox4545.github.io/Calculator.html) |
 | 🗓️ **Calendar** | Accurate Persian calendar | [View](https://knox4545.github.io/Calendar.html) |
 | 🎮 **Tic-Tac-Toe** | Classic game vs Bot or 2 Players | [Play](https://knox4545.github.io/TicTacToe.html) |
-| 🏠 **Hub** | Main page with all projects | [Visit](https://knox4545.github.io/2) |
+| 📝 **Editor** | Rich text editor with save & share | [Use](https://knox4545.github.io/Editor.html) |
+| 🏠 **Hub** | Main page with all projects | [Visit](https://knox4545.github.io) |
 
 ---
 
@@ -101,11 +102,31 @@ The classic Tic-Tac-Toe game with smart AI opponent.
 
 ---
 
+## 📝 **Dillimore Editor**
+
+A professional rich text editor with powerful features. Write, format, save, and share your documents.
+
+**Features:**
+- ✏️ Rich text formatting (Bold, Italic, Underline)
+- 🎨 Text and background color picker
+- 📑 Headings (H1, H2, H3) and Quote
+- 📋 Bullet and Numbered lists
+- 🔗 Insert links and images
+- 💾 Auto-save every 5 seconds
+- 🔗 Share documents with unique links
+- 📂 Open and edit text files
+- 📥 Download documents as HTML
+- 📊 Word and character counter
+
+[▶ Use Editor](https://knox4545.github.io/Editor.html)
+
+---
+
 ## 🏠 **Projects Hub**
 
 Visit our main page to see all projects in one place.
 
-[▶ Visit Hub](https://knox4545.github.io/2)
+[▶ Visit Hub](https://knox4545.github.io)
 
 ---
 
@@ -124,7 +145,7 @@ Visit our main page to see all projects in one place.
 **Team Dillimore**
 - Leader: **KnoX**
 - GitHub: [@KnoX4545](https://github.com/KnoX4545)
-- Website: [knox4545.github.io](https://knox4545.github.io/2)
+- Website: [knox4545.github.io](https://knox4545.github.io)
 
 ---
 
