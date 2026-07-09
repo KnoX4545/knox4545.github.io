@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>HopDog</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐕</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --tg-bg: #0f0f0f;
+            --tg-header: #1a1a1a;
+            --tg-chat-bg: #0a0a0a;
+            --tg-bubble-user: #1a7a3a;
+            --tg-bubble-bot: #1c1c1c;
+            --tg-bubble-system: #121212;
+            --tg-text-primary: #e8e8e8;
+            --tg-text-secondary: #a8a8a8;
+            --tg-text-muted: #6a6a6a;
+            --tg-accent: #1a7a3a;
+            --tg-accent-hover: #228a44;
+            --tg-border: #2a2a2a;
+            --tg-input-bg: #1a1a1a;
+            --tg-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            --tg-radius: 12px;
+            --tg-radius-bubble: 16px;
+            --tg-transition: 0.2s ease;
+            --tg-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --tg-bg: #ece8e4;
+                --tg-header: #e0dcd8;
+                --tg-chat-bg: #d5d1cd;
+                --tg-bubble-user: #1a7a3a;
+                --tg-bubble-bot: #ffffff;
+                --tg-bubble-system: #cac6c2;
+                --tg-text-primary: #1a1a1a;
+                --tg-text-secondary: #4a4a4a;
+                --tg-text-muted: #8a8a8a;
+                --tg-border: #c0bcb8;
+                --tg-input-bg: #ffffff;
+                --tg-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--tg-bg);
+            font-family: var(--tg-font);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            color: var(--tg-text-secondary);
+            line-height: 1.6;
+            transition: background var(--tg-transition), color var(--tg-transition);
+        }
+
+        .container {
+            background: var(--tg-bg);
+            max-width: 480px;
+            width: 100%;
+            height: 100vh;
+            max-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--tg-shadow);
+            position: relative;
+            overflow: hidden;
+            transition: background var(--tg-transition);
+        }
+
+        .header {
+            background: var(--tg-header);
+            padding: 14px 18px 10px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--tg-border);
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            transition: background var(--tg-transition), border-color var(--tg-transition);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .header-avatar svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .header-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-info .name {
+            color: var(--tg-text-primary);
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.2;
+            transition: color var(--tg-transition);
+        }
+
+        .header-info .status {
+            color: var(--tg-text-muted);
+            font-size: 11px;
+            font-weight: 400;
+        }
+
+        .header-info .status .online {
+            color: var(--tg-accent);
+        }
+
+        .paw-header-svg {
+            width: 36px;
+            height: 36px;
+            filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.1));
+            animation: pawFloat 3s ease-in-out infinite;
+            cursor: default;
+            flex-shrink: 0;
+        }
+
+        @keyframes pawFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
+        }
+
+        .chat {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 14px 10px 14px;
+            background: var(--tg-chat-bg);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            transition: background var(--tg-transition);
+        }
+
+        .chat::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat::-webkit-scrollbar-thumb {
+            background: var(--tg-border);
+            border-radius: 4px;
+        }
+
+        .msg {
+            max-width: 88%;
+            padding: 8px 14px;
+            border-radius: var(--tg-radius-bubble);
+            font-size: 14px;
+            line-height: 1.7;
+            animation: fadeIn 0.15s ease;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        .msg.system {
+            background: var(--tg-bubble-system);
+            color: var(--tg-text-muted);
+            font-size: 12px;
+            text-align: center;
+            max-width: 100%;
+            border-radius: 8px;
+            padding: 6px 16px;
+            align-self: center;
+            margin: 2px 0;
+            transition: background var(--tg-transition), color var(--tg-transition);
+        }
+
+        .msg.user {
+            background: var(--tg-bubble-user);
+            color: var(--tg-text-primary);
+            align-self: flex-end;
+            border-bottom-left-radius: 4px;
+        }
+
+        .msg.bot {
+            background: var(--tg-bubble-bot);
+            color: var(--tg-text-secondary);
+            align-self: flex-start;
+            border-bottom-right-radius: 4px;
+            transition: background var(--tg-transition), color var(--tg-transition);
+        }
+
+        .msg .gold { color: #fbbf24; font-weight: 600; }
+        .msg .pink { color: #ec4899; font-weight: 600; }
+        .msg .blue { color: #3b82f6; font-weight: 600; }
+        .msg .green { color: #22c55e; font-weight: 600; }
+        .msg .purple { color: #8b5cf6; font-weight: 600; }
+        .msg .red { color: #f87171; font-weight: 600; }
+        .msg .cyan { color: #67e8f9; font-weight: 600; }
+        .msg .bold { font-weight: 700; }
+
+        .msg .hop-text {
+            display: inline-block;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            font-size: 16px;
+            text-shadow: 0 0 30px rgba(251, 191, 36, 0.08);
+        }
+
+        .msg .msg-time {
+            font-size: 9px;
+            color: var(--tg-text-muted);
+            margin-top: 4px;
+            display: block;
+            text-align: left;
+            opacity: 0.5;
+        }
+
+        .msg.user .msg-time {
+            text-align: right;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        @media (prefers-color-scheme: light) {
+            .msg.user .msg-time {
+                color: rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .date-divider {
+            text-align: center;
+            font-size: 11px;
+            color: var(--tg-text-muted);
+            padding: 6px 12px;
+            border-radius: 8px;
+            align-self: center;
+            margin: 4px 0;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: color var(--tg-transition), border-color var(--tg-transition);
+        }
+
+        @media (prefers-color-scheme: light) {
+            .date-divider {
+                background: rgba(0, 0, 0, 0.02);
+                border: 1px solid rgba(0, 0, 0, 0.05);
+            }
+        }
+
+        .input-area {
+            display: flex;
+            gap: 8px;
+            padding: 8px 14px 12px 14px;
+            background: var(--tg-header);
+            border-top: 1px solid var(--tg-border);
+            flex-shrink: 0;
+            align-items: center;
+            transition: background var(--tg-transition), border-color var(--tg-transition);
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 10px 16px;
+            background: var(--tg-input-bg);
+            border: 1px solid var(--tg-border);
+            border-radius: 24px;
+            color: var(--tg-text-primary);
+            font-family: var(--tg-font);
+            font-size: 14px;
+            outline: none;
+            transition: all var(--tg-transition);
+        }
+
+        .input-area input:focus {
+            border-color: var(--tg-accent);
+        }
+
+        .input-area input::placeholder {
+            color: var(--tg-text-muted);
+            font-size: 13px;
+        }
+
+        .input-area .send-btn {
+            padding: 10px 20px;
+            background: var(--tg-accent);
+            color: #fff;
+            border: none;
+            border-radius: 24px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--tg-font);
+            font-size: 14px;
+            transition: all var(--tg-transition);
+            white-space: nowrap;
+            flex-shrink: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .input-area .send-btn:hover {
+            background: var(--tg-accent-hover);
+            transform: scale(0.97);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 8px 0 10px 0;
+            background: var(--tg-bg);
+            flex-shrink: 0;
+            border-top: 1px solid var(--tg-border);
+            transition: background var(--tg-transition), border-color var(--tg-transition);
+        }
+
+        .footer .main-line {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--tg-text-primary);
+            letter-spacing: 0.3px;
+            transition: color var(--tg-transition);
+        }
+
+        .footer .main-line .brand {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer .main-line .sep {
+            color: var(--tg-text-muted);
+            opacity: 0.4;
+            margin: 0 4px;
+        }
+
+        .footer .sub-line {
+            font-size: 9px;
+            color: var(--tg-text-muted);
+            margin-top: 2px;
+            opacity: 0.5;
+            letter-spacing: 0.2px;
+            transition: color var(--tg-transition);
+        }
+
+        .footer .sub-line .ai {
+            color: #60a5fa;
+            opacity: 0.7;
+        }
+
+        .footer .version {
+            font-size: 8px;
+            color: var(--tg-text-muted);
+            margin-top: 1px;
+            opacity: 0.3;
+            letter-spacing: 0.5px;
+            transition: color var(--tg-transition);
+        }
+
+        @media (max-width: 520px) {
+            .container {
+                max-height: 100vh;
+                height: 100vh;
+                border-radius: 0;
+            }
+            .header { padding: 12px 14px 8px 14px; }
+            .header-info .name { font-size: 15px; }
+            .paw-header-svg { width: 30px; height: 30px; }
+            .chat { padding: 8px 12px 8px 12px; }
+            .msg { font-size: 13px; padding: 6px 12px; max-width: 92%; }
+            .input-area { padding: 6px 12px 10px 12px; gap: 6px; }
+            .input-area input { font-size: 13px; padding: 8px 14px; }
+            .input-area .send-btn { font-size: 13px; padding: 8px 16px; }
+            .header-avatar { width: 34px; height: 34px; }
+            .header-avatar svg { width: 24px; height: 24px; }
+            .footer .main-line { font-size: 10px; }
+            .footer .sub-line { font-size: 8px; }
+        }
+
+        @media (max-width: 380px) {
+            .msg { font-size: 12px; max-width: 95%; }
+            .footer .main-line { font-size: 9px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+
+    <div class="header">
+        <div class="header-left">
+            <div class="header-avatar">
+                <svg viewBox="0 0 100 100">
+                    <ellipse cx="50" cy="62" rx="22" ry="20" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
+                    <ellipse cx="30" cy="38" rx="13" ry="14" fill="#fbbf24" stroke="#d97706" stroke-width="1.5" transform="rotate(-25, 30, 38)"/>
+                    <ellipse cx="50" cy="32" rx="13" ry="14" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
+                    <ellipse cx="70" cy="38" rx="13" ry="14" fill="#fbbf24" stroke="#d97706" stroke-width="1.5" transform="rotate(25, 70, 38)"/>
+                </svg>
+            </div>
+            <div class="header-info">
+                <div class="name">HopDog</div>
+                <div class="status"><span class="online">●</span> Online</div>
+            </div>
+        </div>
+        <svg class="paw-header-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <radialGradient id="pawGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.1"/>
+                    <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+                </radialGradient>
+                <linearGradient id="pawGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#fbbf24"/>
+                    <stop offset="50%" stop-color="#f59e0b"/>
+                    <stop offset="100%" stop-color="#d97706"/>
+                </linearGradient>
+            </defs>
+            <circle cx="50" cy="50" r="48" fill="url(#pawGlow)"/>
+            <ellipse cx="50" cy="62" rx="22" ry="20" fill="url(#pawGrad)" stroke="#b45309" stroke-width="1.5"/>
+            <ellipse cx="30" cy="38" rx="13" ry="14" fill="url(#pawGrad)" stroke="#b45309" stroke-width="1.5" transform="rotate(-25, 30, 38)"/>
+            <ellipse cx="50" cy="32" rx="13" ry="14" fill="url(#pawGrad)" stroke="#b45309" stroke-width="1.5"/>
+            <ellipse cx="70" cy="38" rx="13" ry="14" fill="url(#pawGrad)" stroke="#b45309" stroke-width="1.5" transform="rotate(25, 70, 38)"/>
+            <ellipse cx="50" cy="62" rx="12" ry="10" fill="#fcd34d" opacity="0.3"/>
+            <ellipse cx="34" cy="40" rx="6" ry="6" fill="#fcd34d" opacity="0.2"/>
+            <ellipse cx="50" cy="34" rx="6" ry="6" fill="#fcd34d" opacity="0.2"/>
+            <ellipse cx="66" cy="40" rx="6" ry="6" fill="#fcd34d" opacity="0.2"/>
+            <text x="78" y="22" font-size="16" fill="#fbbf24" opacity="0.6">✦</text>
+            <text x="15" y="24" font-size="12" fill="#fbbf24" opacity="0.4">✦</text>
+        </svg>
+    </div>
+
+    <div class="chat" id="chat">
+        <div class="date-divider">امروز</div>
+    </div>
+
+    <div class="input-area">
+        <input type="text" id="cmdInput" placeholder="پیام خود را بنویسید..." onkeydown="if(event.key==='Enter') sendCmd()" autofocus />
+        <button class="send-btn" onclick="sendCmd()">ارسال</button>
+    </div>
+
+    <div class="footer">
+        <div class="main-line">
+            <span class="brand">KnoX</span>
+            <span class="sep">✦</span>
+            <span class="brand">Dillimore</span>
+        </div>
+        <div class="sub-line">
+            Built with <span style="color:#f87171;">❤</span> by <span class="brand">KnoX</span> &amp; <span class="ai">AI</span>
+        </div>
+        <div class="version">Version 1.0.0</div>
+    </div>
+
+</div>
+
+<script>
+// ================================================================
+// HOPDOG — Version 1.0.0
+// ================================================================
+
+let HopPoint = 0;
+let lastHopTime = 0;
+let hasVisited = false;
+const HOP_COOLDOWN = 5 * 60 * 1000;
+
+const chat = document.getElementById('chat');
+const cmdInput = document.getElementById('cmdInput');
+
+// ================================================================
+// CUSTOM STICKERS (SVG)
+// ================================================================
+const S = {
+    paw: `<svg width="22" height="22" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <ellipse cx="50" cy="62" rx="20" ry="18" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
+        <ellipse cx="32" cy="40" rx="11" ry="12" fill="#fbbf24" stroke="#d97706" stroke-width="1.5" transform="rotate(-25, 32, 40)"/>
+        <ellipse cx="50" cy="34" rx="11" ry="12" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
+        <ellipse cx="68" cy="40" rx="11" ry="12" fill="#fbbf24" stroke="#d97706" stroke-width="1.5" transform="rotate(25, 68, 40)"/>
+    </svg>`,
+    coin: `<svg width="18" height="18" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <circle cx="50" cy="50" r="45" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+        <circle cx="50" cy="50" r="35" fill="#fcd34d"/>
+        <text x="50" y="58" font-size="40" text-anchor="middle" fill="#b45309" font-weight="bold">$</text>
+    </svg>`,
+    sparkle: `<svg width="16" height="16" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <text x="50" y="82" font-size="70" text-anchor="middle" fill="#fbbf24">✦</text>
+    </svg>`,
+    welcome: `<svg width="34" height="34" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 4px;">
+        <circle cx="50" cy="50" r="45" fill="#fbbf24" opacity="0.08"/>
+        <ellipse cx="50" cy="60" rx="18" ry="16" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
+        <ellipse cx="34" cy="40" rx="10" ry="11" fill="#fbbf24" stroke="#d97706" stroke-width="1.5" transform="rotate(-25, 34, 40)"/>
+        <ellipse cx="50" cy="35" rx="10" ry="11" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
+        <ellipse cx="66" cy="40" rx="10" ry="11" fill="#fbbf24" stroke="#d97706" stroke-width="1.5" transform="rotate(25, 66, 40)"/>
+        <text x="50" y="82" font-size="35" text-anchor="middle" fill="#fbbf24">✦</text>
+    </svg>`,
+    clock: `<svg width="18" height="18" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#6a6a6a" stroke-width="5"/>
+        <circle cx="50" cy="50" r="4" fill="#6a6a6a"/>
+        <line x1="50" y1="50" x2="50" y2="22" stroke="#fbbf24" stroke-width="4" stroke-linecap="round"/>
+        <line x1="50" y1="50" x2="70" y2="50" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
+    </svg>`,
+    error: `<svg width="18" height="18" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <circle cx="50" cy="50" r="45" fill="#f87171" opacity="0.1"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#f87171" stroke-width="4"/>
+        <line x1="32" y1="32" x2="68" y2="68" stroke="#f87171" stroke-width="5" stroke-linecap="round"/>
+        <line x1="68" y1="32" x2="32" y2="68" stroke="#f87171" stroke-width="5" stroke-linecap="round"/>
+    </svg>`,
+    game: `<svg width="18" height="18" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <rect x="10" y="30" width="80" height="55" rx="12" fill="#2a2a2a" stroke="#4a4a4a" stroke-width="2"/>
+        <rect x="25" y="40" width="50" height="35" rx="6" fill="#0a0a0a" stroke="#3a3a3a" stroke-width="1.5"/>
+        <circle cx="40" cy="58" r="6" fill="#fbbf24"/>
+        <circle cx="60" cy="58" r="6" fill="#fbbf24"/>
+        <rect x="30" y="48" width="40" height="3" rx="1.5" fill="#fbbf24" opacity="0.2"/>
+        <rect x="30" y="65" width="40" height="3" rx="1.5" fill="#fbbf24" opacity="0.2"/>
+    </svg>`,
+    dog: `<svg width="18" height="18" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <circle cx="35" cy="45" r="15" fill="#d97706" stroke="#b45309" stroke-width="2"/>
+        <circle cx="65" cy="45" r="15" fill="#d97706" stroke="#b45309" stroke-width="2"/>
+        <ellipse cx="50" cy="65" rx="22" ry="18" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+        <circle cx="30" cy="42" r="4" fill="#1a1a1a"/>
+        <circle cx="40" cy="42" r="4" fill="#1a1a1a"/>
+        <circle cx="60" cy="42" r="4" fill="#1a1a1a"/>
+        <circle cx="70" cy="42" r="4" fill="#1a1a1a"/>
+        <ellipse cx="50" cy="52" rx="8" ry="5" fill="#1a1a1a"/>
+    </svg>`
+};
+
+// ================================================================
+// CHAT
+// ================================================================
+function addMessage(type, html) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + type;
+    const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    if (type === 'system') {
+        div.innerHTML = html;
+    } else {
+        div.innerHTML = html + '<span class="msg-time">' + time + '</span>';
+    }
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function addSystem(text) { addMessage('system', text); }
+function addUser(text) { addMessage('user', text); }
+function addBot(text) { addMessage('bot', text); }
+
+// ================================================================
+// SAVE / LOAD
+// ================================================================
+const SAVE_KEY = 'hopdog_data';
+
+function saveGame() {
+    try {
+        localStorage.setItem(SAVE_KEY, JSON.stringify({
+            HopPoint: HopPoint,
+            lastHopTime: lastHopTime,
+            hasVisited: true
+        }));
+    } catch(e) {}
+}
+
+function loadGame() {
+    try {
+        const raw = localStorage.getItem(SAVE_KEY);
+        if (raw) {
+            const data = JSON.parse(raw);
+            HopPoint = data.HopPoint || 0;
+            lastHopTime = data.lastHopTime || 0;
+            hasVisited = true;
+            return true;
+        }
+    } catch(e) {}
+    return false;
+}
+
+// ================================================================
+// WELCOME
+// ================================================================
+function showWelcome() {
+    addSystem(S.welcome + ' به هاپ داگ خوش اومدی');
+    addBot(
+        S.game + ' ربات سرگرمی هاپ داگ' + '<br/>' +
+        S.dog + ' یه هاپوی بامزه' + '<br/>' +
+        'کافیه <span class="hop-text">هاپ هاپ</span> کنی تا هاپ پوینت بگیری'
+    );
+}
+
+// ================================================================
+// HOP
+// ================================================================
+function doHop() {
+    const now = Date.now();
+
+    if (lastHopTime > 0 && now - lastHopTime < HOP_COOLDOWN) {
+        const remaining = HOP_COOLDOWN - (now - lastHopTime);
+        const minutes = Math.floor(remaining / 60000);
+        const seconds = Math.floor((remaining % 60000) / 1000);
+        
+        let timeMsg = '';
+        if (minutes > 0) {
+            timeMsg = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+        } else {
+            timeMsg = seconds + ' ثانیه';
+        }
+        
+        addBot(
+            S.clock + ' هنوز هاپت نمیاد ...' + '<br/>' +
+            'باید ' + timeMsg + ' صبر کنی'
+        );
+        return;
+    }
+
+    const earned = Math.floor(Math.random() * 96) + 5;
+    HopPoint += earned;
+    lastHopTime = now;
+    saveGame();
+
+    const colors = ['gold', 'pink', 'blue', 'green', 'purple', 'red', 'cyan'];
+    const c1 = colors[Math.floor(Math.random() * colors.length)];
+
+    addBot(
+        S.paw + ' <span class="' + c1 + '">' + earned + '</span> هاپ پوینت گرفتی' + ' ' + S.sparkle + '<br/>' +
+        S.coin + ' هاپ پوینت هات : ' + '<span class="' + c1 + '">' + HopPoint + '</span>' + '<br/>' +
+        'بعد از 5:00 میتونی دوباره <span class="hop-text">هاپ هاپ</span> کنی'
+    );
+}
+
+// ================================================================
+// PROCESS
+// ================================================================
+function processCommand(cmd) {
+    addUser(cmd);
+    const t = cmd.trim().toLowerCase();
+    const hopWords = ['هاپ', 'هاپ هاپ', 'hop', 'hop hop', 'هاعپ', 'هاپ‌هاپ', 'هوپ', 'هوپ هوپ'];
+    if (hopWords.includes(t) || hopWords.some(w => t.includes(w))) {
+        doHop();
+        return;
+    }
+    addBot(S.error + ' دستور اشتباه هست');
+}
+
+// ================================================================
+// SEND
+// ================================================================
+function sendCmd() {
+    const text = cmdInput.value.trim();
+    if (!text) return;
+    cmdInput.value = '';
+    processCommand(text);
+    cmdInput.focus();
+}
+
+// ================================================================
+// INIT
+// ================================================================
+localStorage.removeItem(SAVE_KEY);
+
+HopPoint = 0;
+lastHopTime = 0;
+hasVisited = false;
+
+showWelcome();
+saveGame();
+
+cmdInput.focus();
+
+setInterval(saveGame, 3000);
+window.addEventListener('beforeunload', saveGame);
+</script>
+</body>
+</html>
