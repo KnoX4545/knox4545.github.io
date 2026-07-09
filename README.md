@@ -2,7 +2,7 @@
 
 **by KnoX** | **Version 1.2.0**
 
-[![Website](https://img.shields.io/badge/Website-KnoX-00ff41?style=for-the-badge)](https://knox4545.github.io)
+[![Website](https://img.shields.io/badge/Website-KnoX-00ff41?style=for-the-badge)](https://knox4545.github.io/2)
 
 [![Made with](https://img.shields.io/badge/Made%20with-HTML%2FCSS%2FJS-red?style=for-the-badge)](https://github.com/KnoX4545)
 
