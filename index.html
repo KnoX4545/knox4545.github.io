@@ -459,6 +459,16 @@
             letter-spacing: 4px;
         }
 
+        .hapo-btn {
+            background: rgba(251, 191, 36, 0.08) !important;
+            border-color: rgba(251, 191, 36, 0.2) !important;
+            color: #fbbf24 !important;
+        }
+        .hapo-btn:hover {
+            background: rgba(251, 191, 36, 0.15) !important;
+            border-color: rgba(251, 191, 36, 0.35) !important;
+        }
+
         @media (max-width: 520px) {
             .container {
                 max-height: 100vh;
@@ -550,14 +560,14 @@
         <div class="sub-line">
             Built with <span style="color:#f87171;">❤</span> by <span class="brand">KnoX</span> &amp; <span class="ai">AI</span>
         </div>
-        <div class="version">Version 1.3.0</div>
+        <div class="version">Version 1.4.0</div>
     </div>
 
 </div>
 
 <script>
 // ================================================================
-// HOPDOG — Version 1.3.0
+// HOPDOG — Version 1.4.0
 // ================================================================
 
 // ================================================================
@@ -589,6 +599,40 @@ const LEVEL_DATA = {
 const MAX_LEVEL = 20;
 
 // ================================================================
+// HAPO SYSTEM (هاپو)
+// ================================================================
+const HAPO_NAMES = ['رکس', 'لوسی', 'بارنی', 'مکس', 'بلا', 'چارلی', 'راکی', 'مولی', 'تدی', 'لونا', 'سیمبا', 'نلا', 'بادی', 'مایلو', 'کوکو', 'روبی', 'اسکار', 'جک', 'دِیزی', 'تایسون'];
+
+const RANK_NAMES = ['تازه‌وارد', 'حرفه‌ای', 'استاد', 'افسانه', 'بی‌نهایت'];
+
+// ظرفیت بر اساس سطح
+const HAPO_CAPACITY = {
+    1: 500, 2: 5000, 3: 10000, 4: 15000, 5: 20000,
+    6: 25000, 7: 30000, 8: 35000, 9: 40000, 10: 50000,
+    11: 70000, 12: 90000, 13: 110000, 14: 130000, 15: 150000,
+    16: 170000, 17: 190000, 18: 200000, 19: 300000, 20: 400000,
+    21: 450000, 22: 500000, 23: 550000, 24: 600000, 25: 650000
+};
+
+// تولید در ثانیه بر اساس سطح
+const HAPO_PRODUCTION = {
+    1: 0.1, 2: 0.2, 3: 1.0, 4: 1.5, 5: 2.0,
+    6: 2.5, 7: 3.0, 8: 3.5, 9: 4.0, 10: 4.5,
+    11: 5.0, 12: 5.5, 13: 6.0, 14: 6.5, 15: 7.0,
+    16: 7.5, 17: 8.0, 18: 8.5, 19: 9.0, 20: 9.5,
+    21: 10.0, 22: 10.5, 23: 11.0, 24: 11.5, 25: 12.0
+};
+
+// قیمت ارتقا سطح
+const HAPO_LEVEL_PRICES = {
+    1: 250, 2: 500, 3: 5000, 4: 7500, 5: 15000,
+    6: 25000, 7: 50000, 8: 75000, 9: 150000, 10: 300000,
+    11: 500000, 12: 750000, 13: 1000000, 14: 1500000, 15: 2500000,
+    16: 5000000, 17: 7500000, 18: 10000000, 19: 15000000, 20: 20000000,
+    21: 25000000, 22: 30000000, 23: 35000000, 24: 40000000, 25: 50000000
+};
+
+// ================================================================
 // CLAW SYSTEM (پنجه)
 // ================================================================
 const CLAW_DATA = {
@@ -604,30 +648,30 @@ const CLAW_DATA = {
 const MAX_CLAW_LEVEL = 7;
 
 // ================================================================
-// HUNTING SYSTEM (با قیمت‌های بالای 40)
+// HUNTING SYSTEM
 // ================================================================
 const ANIMALS = {
     common: [
-        { name: 'خرگوش', emoji: '🐇', weightMin: 0.25, weightMax: 0.50, multiplier: 80, nutrition: 1 },
-        { name: 'سنجاب', emoji: '🐿️', weightMin: 0.50, weightMax: 0.99, multiplier: 60, nutrition: 1 },
-        { name: 'جوجه‌تیغی', emoji: '🦔', weightMin: 0.10, weightMax: 0.20, multiplier: 300, nutrition: 1 },
-        { name: 'اردک', emoji: '🦆', weightMin: 0.75, weightMax: 1.45, multiplier: 50, nutrition: 1 },
+        { name: 'خرگوش', emoji: '', weightMin: 0.25, weightMax: 0.50, multiplier: 80, nutrition: 1 },
+        { name: 'سنجاب', emoji: '', weightMin: 0.50, weightMax: 0.99, multiplier: 60, nutrition: 1 },
+        { name: 'جوجه‌تیغی', emoji: '', weightMin: 0.10, weightMax: 0.20, multiplier: 300, nutrition: 1 },
+        { name: 'اردک', emoji: '', weightMin: 0.75, weightMax: 1.45, multiplier: 50, nutrition: 1 },
     ],
     uncommon: [
-        { name: 'روباه', emoji: '🦊', weightMin: 1.00, weightMax: 1.99, multiplier: 50, nutrition: 2 },
-        { name: 'آهو', emoji: '🦌', weightMin: 1.50, weightMax: 2.50, multiplier: 40, nutrition: 2 },
-        { name: 'گراز', emoji: '🐗', weightMin: 2.00, weightMax: 2.99, multiplier: 35, nutrition: 2 },
+        { name: 'روباه', emoji: '', weightMin: 1.00, weightMax: 1.99, multiplier: 50, nutrition: 2 },
+        { name: 'آهو', emoji: '', weightMin: 1.50, weightMax: 2.50, multiplier: 40, nutrition: 2 },
+        { name: 'گراز', emoji: '', weightMin: 2.00, weightMax: 2.99, multiplier: 35, nutrition: 2 },
     ],
     epic: [
-        { name: 'گرگ', emoji: '🐺', weightMin: 3.00, weightMax: 4.99, multiplier: 30, nutrition: 3 },
-        { name: 'خرس', emoji: '🐻', weightMin: 5.00, weightMax: 7.99, multiplier: 20, nutrition: 3 },
-        { name: 'پلنگ', emoji: '🐆', weightMin: 8.00, weightMax: 11.99, multiplier: 20, nutrition: 3 },
+        { name: 'گرگ', emoji: '', weightMin: 3.00, weightMax: 4.99, multiplier: 30, nutrition: 3 },
+        { name: 'خرس', emoji: '', weightMin: 5.00, weightMax: 7.99, multiplier: 20, nutrition: 3 },
+        { name: 'پلنگ', emoji: '', weightMin: 8.00, weightMax: 11.99, multiplier: 20, nutrition: 3 },
     ],
     legendary: [
-        { name: 'اژدها', emoji: '🐉', weightMin: 12.00, weightMax: 17.99, multiplier: 15, nutrition: 5 },
-        { name: 'یونیکورن', emoji: '🦄', weightMin: 5.00, weightMax: 7.99, multiplier: 20, nutrition: 5 },
-        { name: 'فنیکس', emoji: '🔥', weightMin: 10.00, weightMax: 20.00, multiplier: 10, nutrition: 5 },
-        { name: 'نهنگ بزرگ', emoji: '🐋', weightMin: 15.00, weightMax: 25.00, multiplier: 10, nutrition: 5 },
+        { name: 'اژدها', emoji: '', weightMin: 12.00, weightMax: 17.99, multiplier: 15, nutrition: 5 },
+        { name: 'یونیکورن', emoji: '', weightMin: 5.00, weightMax: 7.99, multiplier: 20, nutrition: 5 },
+        { name: 'فنیکس', emoji: '', weightMin: 10.00, weightMax: 20.00, multiplier: 10, nutrition: 5 },
+        { name: 'نهنگ بزرگ', emoji: '', weightMin: 15.00, weightMax: 25.00, multiplier: 10, nutrition: 5 },
     ]
 };
 
@@ -697,6 +741,18 @@ let clawLevel = 0;
 let lastHuntTime = 0;
 let huntActive = false;
 let huntTimerId = null;
+
+// Hapo variables
+let hapoOwned = false;
+let hapoName = '';
+let hapoRank = 0; // 0-4
+let hapoLevel = 1; // 1-5 per rank
+let hapoTotalLevel = 0; // 0-25
+let hapoFood = 0;
+let hapoMaxFood = 4;
+let hapoHarvest = 0;
+let hapoProduction = 0.1;
+let hapoLastUpdate = Date.now();
 
 const chat = document.getElementById('chat');
 const cmdInput = document.getElementById('cmdInput');
@@ -782,8 +838,281 @@ const S = {
     </svg>`,
     claw: `<svg width="28" height="28" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
         <text x="50" y="78" font-size="70" text-anchor="middle" fill="#fbbf24">🐾</text>
+    </svg>`,
+    hapo: `<svg width="28" height="28" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <text x="50" y="78" font-size="70" text-anchor="middle" fill="#fbbf24">🐕</text>
+    </svg>`,
+    food: `<svg width="22" height="22" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <rect x="15" y="30" width="70" height="50" rx="10" fill="#d97706" stroke="#b45309" stroke-width="2"/>
+        <rect x="25" y="35" width="50" height="15" rx="4" fill="#fcd34d" stroke="#d97706" stroke-width="1.5"/>
+        <rect x="30" y="55" width="40" height="15" rx="4" fill="#fcd34d" stroke="#d97706" stroke-width="1.5"/>
+    </svg>`,
+    harvest: `<svg width="22" height="22" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <circle cx="50" cy="50" r="45" fill="#22c55e" opacity="0.1"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#22c55e" stroke-width="4"/>
+        <polyline points="30,50 48,68 72,32" fill="none" stroke="#22c55e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`,
+    upgrade: `<svg width="22" height="22" viewBox="0 0 100 100" style="display:inline-block;vertical-align:middle;margin:0 2px;">
+        <circle cx="50" cy="50" r="45" fill="#fbbf24" opacity="0.1"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#fbbf24" stroke-width="4"/>
+        <polyline points="30,60 50,35 70,60" fill="none" stroke="#fbbf24" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="50" y1="35" x2="50" y2="80" stroke="#fbbf24" stroke-width="4" stroke-linecap="round"/>
     </svg>`
 };
+
+// ================================================================
+// HAPO FUNCTIONS
+// ================================================================
+function getHapoTotalLevel() {
+    return hapoRank * 5 + hapoLevel;
+}
+
+function getHapoMaxFood() {
+    return (hapoRank + 1) * 4;
+}
+
+function getHapoCapacity() {
+    const total = getHapoTotalLevel();
+    return HAPO_CAPACITY[total] || 500;
+}
+
+function getHapoProduction() {
+    const total = getHapoTotalLevel();
+    return HAPO_PRODUCTION[total] || 0.1;
+}
+
+function getHapoUpgradePrice() {
+    const total = getHapoTotalLevel();
+    if (total >= 25) return Infinity;
+    return HAPO_LEVEL_PRICES[total + 1] || 10000000;
+}
+
+function getHapoFoodStatus() {
+    const max = getHapoMaxFood();
+    const ratio = hapoFood / max;
+    if (hapoFood === 0) return { text: 'دیگه کار نمیکنم', speed: 0 };
+    if (ratio < 0.25) return { text: 'من گشنمه', speed: 0.5 };
+    if (ratio < 0.75) return { text: 'شکمم پره', speed: 1.0 };
+    return { text: 'عاشقتم', speed: 1.5 };
+}
+
+function updateHapoProduction() {
+    const now = Date.now();
+    const elapsed = (now - hapoLastUpdate) / 1000;
+    const capacity = getHapoCapacity();
+    const status = getHapoFoodStatus();
+    
+    if (hapoFood > 0 && hapoHarvest < capacity) {
+        const production = getHapoProduction() * status.speed;
+        const gained = production * elapsed;
+        hapoHarvest = Math.min(capacity, hapoHarvest + gained);
+    }
+    
+    // کاهش غذا هر 12 ساعت = 6 واحد (دونه‌دونه و بدون اعشار)
+    if (hapoFood > 0) {
+        const foodDecay = (elapsed / (12 * 3600)) * 6;
+        if (foodDecay > 1) {
+            const decayAmount = Math.floor(foodDecay);
+            hapoFood = Math.max(0, Math.floor(hapoFood - decayAmount));
+        }
+    }
+    
+    hapoLastUpdate = now;
+}
+
+function showHapoMenu() {
+    if (!hapoOwned) {
+        if (Level < 3) {
+            addBot(S.hapo + ' <span class="gold">هاپو از سطح 3 باز میشود</span>');
+            return;
+        }
+        const cost = 300;
+        if (HopPoint < cost) {
+            addBot(S.hapo + ' <span class="gold">برای خرید هاپو به 300 ' + S.hopoCoin + ' نیاز داری</span>');
+            return;
+        }
+        addBotWithGlassButtons(
+            S.hapo + ' <span class="gold">خرید هاپو</span><br/>' +
+            '💰 هزینه : <span class="gold">' + cost + '</span> ' + S.hopoCoin + '<br/>' +
+            'آیا میخوای هاپو بخری؟',
+            function() {
+                if (HopPoint < 300) {
+                    addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست');
+                    return;
+                }
+                HopPoint -= 300;
+                hapoOwned = true;
+                hapoName = HAPO_NAMES[Math.floor(Math.random() * HAPO_NAMES.length)];
+                hapoRank = 0;
+                hapoLevel = 1;
+                hapoFood = getHapoMaxFood();
+                hapoHarvest = 0;
+                hapoLastUpdate = Date.now();
+                saveGame();
+                addBot(S.hapo + ' ✅ <span class="gold">هاپو خریداری شد</span><br/>' +
+                       'اسم هاپو : <span class="gold">' + hapoName + '</span>');
+                showHapoMenu();
+            },
+            function() {
+                addBot('❌ خرید هاپو لغو شد');
+            }
+        );
+        return;
+    }
+    
+    updateHapoProduction();
+    const total = getHapoTotalLevel();
+    const maxFood = getHapoMaxFood();
+    const capacity = getHapoCapacity();
+    const status = getHapoFoodStatus();
+    const prod = getHapoProduction();
+    const price = getHapoUpgradePrice();
+    const isMaxLevel = total >= 25;
+    
+    let msg = '';
+    msg += S.hapo + ' <span class="gold">' + hapoName + '</span><br/>';
+    msg += '💕 نام : ' + hapoName + '<br/>';
+    msg += S.food + ' شکم : ' + status.text + ' (' + Math.floor(hapoFood) + '/' + maxFood + ')<br/>';
+    msg += '🌟 مقام : ' + RANK_NAMES[hapoRank] + ' (' + hapoRank + ')<br/>';
+    msg += '⭐️ سطح : ' + hapoLevel + '/5<br/>';
+    msg += S.hopoCoin + ' هاپو پوینت های تولید شده : ' + Math.floor(hapoHarvest) + '<br/>';
+    msg += '💫 تولید در ثانیه : ' + prod.toFixed(2) + '<br/>';
+    msg += '📦 ظرفیت : ' + capacity.toLocaleString() + '<br/>';
+    if (!isMaxLevel) {
+        msg += '💰 هزینه ارتقا : ' + price.toLocaleString();
+    } else {
+        msg += '🏆 مقام نهایی';
+    }
+    
+    // Buttons
+    const btnContainer = document.createElement('div');
+    btnContainer.className = 'glass-buttons';
+    
+    const harvestBtn = document.createElement('button');
+    harvestBtn.className = 'glass-btn hapo-btn';
+    harvestBtn.innerHTML = S.harvest + ' برداشت';
+    harvestBtn.onclick = function(e) {
+        e.stopPropagation();
+        const amount = Math.floor(hapoHarvest);
+        if (amount > 0) {
+            HopPoint += amount;
+            hapoHarvest = 0;
+            saveGame();
+            addBot(S.hopoCoin + ' ✅ <span class="gold">' + amount.toLocaleString() + '</span> هاپو پوینت برداشت شد');
+        } else {
+            addBot('❌ هیچ هاپو پوینتی برای برداشت نیست');
+        }
+    };
+    
+    const upgradeBtn = document.createElement('button');
+    upgradeBtn.className = 'glass-btn hapo-btn';
+    if (isMaxLevel) {
+        upgradeBtn.innerHTML = '🏆 نهایی';
+        upgradeBtn.style.opacity = '0.5';
+        upgradeBtn.onclick = function() {
+            addBot('🏆 هاپو در بالاترین سطح است');
+        };
+    } else if (hapoLevel >= 5 && hapoRank < 4) {
+        upgradeBtn.innerHTML = S.upgrade + ' ارتقا مقام';
+        upgradeBtn.onclick = function(e) {
+            e.stopPropagation();
+            if (HopPoint < price) {
+                addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به ' + price.toLocaleString() + ' ' + S.hopoCoin + ')');
+                return;
+            }
+            addBotWithGlassButtons(
+                '⚠️ <span class="gold">هشدار ارتقا مقام</span><br/>' +
+                '⭐ مقام فعلی : ' + RANK_NAMES[hapoRank] + ' (' + hapoRank + ')<br/>' +
+                '⭐ مقام بعدی : ' + RANK_NAMES[hapoRank + 1] + ' (' + (hapoRank + 1) + ')<br/>' +
+                '📌 سطح فعلی : ' + hapoLevel + '/5<br/>' +
+                '📌 بعد از ارتقا سطح به 1 برمیگردد و همه چیز ریست میشود<br/>' +
+                '💰 هزینه : ' + price.toLocaleString() + ' ' + S.hopoCoin + '<br/>' +
+                'آیا مطمئنی میخوای مقام هاپو رو ارتقا بدی؟',
+                function() {
+                    if (HopPoint < price) {
+                        addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست');
+                        return;
+                    }
+                    HopPoint -= price;
+                    hapoRank++;
+                    hapoLevel = 1;
+                    hapoFood = getHapoMaxFood();
+                    hapoHarvest = 0;
+                    saveGame();
+                    addBot(S.sparkle + ' ✅ <span class="gold">مقام هاپو به ' + RANK_NAMES[hapoRank] + ' ارتقا یافت</span>');
+                    showHapoMenu();
+                },
+                function() {
+                    addBot('❌ ارتقا مقام لغو شد');
+                }
+            );
+        };
+    } else {
+        upgradeBtn.innerHTML = S.upgrade + ' ارتقا سطح';
+        upgradeBtn.onclick = function(e) {
+            e.stopPropagation();
+            if (HopPoint < price) {
+                addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به ' + price.toLocaleString() + ' ' + S.hopoCoin + ')');
+                return;
+            }
+            addBotWithGlassButtons(
+                S.upgrade + ' آیا مطمئنی میخوای سطح هاپو رو ارتقا بدی؟<br/>' +
+                '💰 هزینه : ' + price.toLocaleString() + ' ' + S.hopoCoin,
+                function() {
+                    if (HopPoint < price) {
+                        addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست');
+                        return;
+                    }
+                    HopPoint -= price;
+                    hapoLevel++;
+                    hapoFood = Math.min(getHapoMaxFood(), Math.floor(hapoFood + 2));
+                    saveGame();
+                    addBot(S.sparkle + ' ✅ <span class="gold">سطح هاپو به ' + hapoLevel + ' ارتقا یافت</span>');
+                    showHapoMenu();
+                },
+                function() {
+                    addBot('❌ ارتقا سطح لغو شد');
+                }
+            );
+        };
+    }
+    
+    const nameBtn = document.createElement('button');
+    nameBtn.className = 'glass-btn hapo-btn';
+    nameBtn.innerHTML = S.namechange + ' تغییر اسم';
+    nameBtn.onclick = function(e) {
+        e.stopPropagation();
+        if (HopPoint < 750) {
+            addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به 750 ' + S.hopoCoin + ')');
+            return;
+        }
+        addBotWithGlassButtons(
+            S.namechange + ' آیا مطمئنی میخوای اسم هاپو رو عوض کنی؟<br/>' +
+            '💰 هزینه : 750 ' + S.hopoCoin,
+            function() {
+                if (HopPoint < 750) {
+                    addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست');
+                    return;
+                }
+                HopPoint -= 750;
+                addBot('✏️ اسم جدید هاپو را وارد کن');
+                waitingForHapoName = true;
+            },
+            function() {
+                addBot('❌ تغییر اسم لغو شد');
+            }
+        );
+    };
+    
+    btnContainer.appendChild(harvestBtn);
+    btnContainer.appendChild(upgradeBtn);
+    btnContainer.appendChild(nameBtn);
+    
+    const div = addBotAndReturn(msg);
+    div.appendChild(btnContainer);
+}
+
+let waitingForHapoName = false;
 
 // ================================================================
 // CHAT FUNCTIONS
@@ -886,7 +1215,14 @@ function saveGame() {
             hasVisited: true,
             isAdmin: isAdmin,
             clawLevel: clawLevel,
-            lastHuntTime: lastHuntTime
+            lastHuntTime: lastHuntTime,
+            hapoOwned: hapoOwned,
+            hapoName: hapoName,
+            hapoRank: hapoRank,
+            hapoLevel: hapoLevel,
+            hapoFood: hapoFood,
+            hapoHarvest: hapoHarvest,
+            hapoLastUpdate: hapoLastUpdate
         };
         localStorage.setItem(SAVE_KEY, JSON.stringify(data));
     } catch(e) {}
@@ -905,6 +1241,13 @@ function loadGame() {
             isAdmin = data.isAdmin || false;
             clawLevel = data.clawLevel || 0;
             lastHuntTime = data.lastHuntTime || 0;
+            hapoOwned = data.hapoOwned || false;
+            hapoName = data.hapoName || '';
+            hapoRank = data.hapoRank || 0;
+            hapoLevel = data.hapoLevel || 1;
+            hapoFood = data.hapoFood || getHapoMaxFood();
+            hapoHarvest = data.hapoHarvest || 0;
+            hapoLastUpdate = data.hapoLastUpdate || Date.now();
             return true;
         }
     } catch(e) {}
@@ -978,7 +1321,7 @@ function showClawMenu() {
             S.claw + ' <span class="gold">شما پنجه ندارید</span><br/>' +
             'برای شروع شکار باید پنجه بخرید<br/>' +
             '💰 هزینه خرید سطح 1 : <span class="gold">' + cost + '</span> ' + S.hopoCoin + '<br/>' +
-            '⏳ زمان استراحت : 60:00<br/>' +
+            S.clock + ' زمان استراحت : 60:00<br/>' +
             '🍀 شانس شکار :<br/>' +
             '  ' + getRarityIcon('common') + ' معمولی : 95%<br/>' +
             '  ' + getRarityIcon('uncommon') + ' کمیاب : 5%';
@@ -1002,7 +1345,7 @@ function showClawMenu() {
     let msg = '';
     msg += S.claw + ' <span class="gold">پنجه شما</span><br/>';
     msg += '⭐ سطح : <span class="gold">' + clawLevel + '</span><br/>';
-    msg += '⏳ زمان استراحت : ' + String(data.cooldown).padStart(2, '0') + ':00<br/>';
+    msg += S.clock + ' زمان استراحت : ' + String(data.cooldown).padStart(2, '0') + ':00<br/>';
     msg += '🍀 شانس شکار :<br/>';
     msg += '  ' + getRarityIcon('common') + ' معمولی : ' + data.common + '%<br/>';
     msg += '  ' + getRarityIcon('uncommon') + ' کمیاب : ' + data.uncommon + '%<br/>';
@@ -1011,7 +1354,7 @@ function showClawMenu() {
     
     if (nextData) {
         msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
-        msg += '⬆️ ارتقا به سطح ' + nextLevel + '<br/>';
+        msg += S.upgrade + ' ارتقا به سطح ' + nextLevel + '<br/>';
         msg += '💰 هزینه : <span class="gold">' + nextData.cost + '</span> ' + S.hopoCoin;
         
         addBotWithGlassButtons(
@@ -1033,30 +1376,30 @@ function showClawMenu() {
 function buyClawAction() {
     const cost = getClawCost(1);
     if (HopPoint < cost) {
-        addBot(S.error + ' هاپو پوینت کافی نیست (نیاز به ' + cost + ' ' + S.hopoCoin + ')');
+        addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به ' + cost + ' ' + S.hopoCoin + ')');
         return;
     }
     HopPoint -= cost;
     clawLevel = 1;
     saveGame();
-    addBot('✅ <span class="gold">پنجه خریداری شد</span> ' + S.claw + '<br/>' +
+    addBot(S.claw + ' ✅ <span class="gold">پنجه خریداری شد</span><br/>' +
            'اکنون میتونی با زدن <span class="gold">شکار</span> به شکار بری<br/>' +
            'برای ارتقا پنجه، دوباره <span class="gold">پنجه</span> بزن');
 }
 
 function upgradeClawAction(nextLevel, cost) {
     if (HopPoint < cost) {
-        addBot(S.error + ' هاپو پوینت کافی نیست (نیاز به ' + cost + ' ' + S.hopoCoin + ')');
+        addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به ' + cost + ' ' + S.hopoCoin + ')');
         return;
     }
     HopPoint -= cost;
     clawLevel = nextLevel;
     saveGame();
-    addBot('✅ <span class="gold">پنجه به سطح ' + clawLevel + ' ارتقا یافت</span> ' + S.sparkle);
+    addBot(S.upgrade + ' ✅ <span class="gold">پنجه به سطح ' + clawLevel + ' ارتقا یافت</span> ' + S.sparkle);
 }
 
 // ================================================================
-// HUNTING (با قیمت‌های بالای 40)
+// HUNTING
 // ================================================================
 function getRandomAnimal() {
     if (clawLevel === 0) {
@@ -1104,7 +1447,7 @@ function doHunt() {
     }
     
     if (huntActive) {
-        addBot('⏳ در حال شکار هستی صبر کن');
+        addBot(S.clock + ' در حال شکار هستی صبر کن');
         return;
     }
     
@@ -1116,7 +1459,7 @@ function doHunt() {
         const minutes = Math.floor(remaining / 60000);
         const seconds = Math.floor((remaining % 60000) / 1000);
         const timeStr = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
-        addBot('🕐 تا شکار بعدی ' + timeStr + ' مونده');
+        addBot(S.clock + ' تا شکار بعدی ' + timeStr + ' مونده');
         return;
     }
     
@@ -1136,16 +1479,15 @@ function doHunt() {
         }
         
         const rarityColor = RARITY_COLORS[animal.rarity] || 'gold';
-        const animalEmoji = animal.emoji || '🐾';
         
         const resultHtml = 
             S.hunt + ' <span class="gold">شما موفق به شکار شدید</span><br/>' +
-            animalEmoji + ' <span class="gold">' + animal.name + '</span><br/>' +
+            S.dog + ' <span class="gold">' + animal.name + '</span><br/>' +
             '⭐ سطح : <span class="' + rarityColor + '">' + animal.rarityName + ' ' + animal.rarityIcon + '</span><br/>' +
             '⚖️ وزن : <span class="gold">' + animal.weight + '</span> کیلو<br/>' +
-            '💰 ارزش : <span class="gold">' + animal.value + '</span> ' + S.hopoCoin + '<br/>' +
-            '🥩 ارزش غذایی : <span class="gold">' + animal.nutrition + '</span> کالری<br/>' +
-            '🕐 60 ثانیه فرصت انتخاب دارید';
+            S.hopoCoin + ' ارزش : <span class="gold">' + animal.value + '</span> ' + S.hopoCoin + '<br/>' +
+            S.food + ' ارزش غذایی : <span class="gold">' + animal.nutrition + '</span> کالری<br/>' +
+            S.clock + ' 60 ثانیه فرصت انتخاب دارید';
         
         editMessage(animMsg, resultHtml);
         
@@ -1154,7 +1496,7 @@ function doHunt() {
         
         const sellBtn = document.createElement('button');
         sellBtn.className = 'glass-btn sell';
-        sellBtn.innerHTML = '💰 فروش';
+        sellBtn.innerHTML = S.hopoCoin + ' فروش';
         sellBtn.onclick = function(e) {
             e.stopPropagation();
             if (huntTimerId) {
@@ -1163,7 +1505,7 @@ function doHunt() {
             }
             
             const confirmDiv = addBotAndReturn(
-                '💰 آیا مطمئنی میخوای <span class="gold">' + animal.name + '</span> رو به قیمت <span class="gold">' + animal.value + '</span> ' + S.hopoCoin + ' بفروشی؟'
+                S.hopoCoin + ' آیا مطمئنی میخوای <span class="gold">' + animal.name + '</span> رو به قیمت <span class="gold">' + animal.value + '</span> ' + S.hopoCoin + ' بفروشی؟'
             );
             
             const confirmContainer = document.createElement('div');
@@ -1178,8 +1520,8 @@ function doHunt() {
                 const soldName = animal.name;
                 const soldValue = animal.value;
                 saveGame();
-                editMessage(confirmDiv, '✅ <span class="gold">' + soldName + '</span> فروخته شد 💰 <span class="gold">' + soldValue + '</span> ' + S.hopoCoin);
-                addBot('💰 هاپو پوینت هات : <span class="gold">' + Math.round(HopPoint) + '</span> ' + S.hopoCoin);
+                editMessage(confirmDiv, S.hopoCoin + ' ✅ <span class="gold">' + soldName + '</span> فروخته شد 💰 <span class="gold">' + soldValue + '</span> ' + S.hopoCoin);
+                addBot(S.hopoCoin + ' هاپو پوینت هات : <span class="gold">' + Math.round(HopPoint) + '</span> ' + S.hopoCoin);
                 btnContainer.remove();
                 huntActive = false;
             };
@@ -1200,12 +1542,37 @@ function doHunt() {
             btnContainer.remove();
         };
         
+        const feedBtn = document.createElement('button');
+        feedBtn.className = 'glass-btn hapo-btn';
+        feedBtn.innerHTML = S.food + ' بده به هاپو';
+        feedBtn.onclick = function(e) {
+            e.stopPropagation();
+            if (!hapoOwned) {
+                addBot(S.error + ' شما هاپو ندارید');
+                return;
+            }
+            const maxFood = getHapoMaxFood();
+            if (hapoFood >= maxFood) {
+                addBot(S.food + ' هاپو سیر است');
+                return;
+            }
+            const feedAmount = animal.nutrition;
+            const newFood = Math.min(maxFood, Math.floor(hapoFood + feedAmount));
+            const actual = newFood - Math.floor(hapoFood);
+            hapoFood = newFood;
+            saveGame();
+            addBot(S.food + ' ✅ <span class="gold">' + actual + '</span> غذا به هاپو داده شد');
+            btnContainer.remove();
+            huntActive = false;
+        };
+        
         btnContainer.appendChild(sellBtn);
+        btnContainer.appendChild(feedBtn);
         animMsg.appendChild(btnContainer);
         
         huntTimerId = setTimeout(() => {
             if (huntActive) {
-                editMessage(animMsg, '🐾 <span class="red">حیوان فرار کرد</span>');
+                editMessage(animMsg, S.error + ' <span class="red">حیوان فرار کرد</span>');
                 const btns = animMsg.querySelector('.glass-buttons');
                 if (btns) btns.remove();
                 huntActive = false;
@@ -1219,7 +1586,7 @@ function doHunt() {
 }
 
 // ================================================================
-// HOPUI (با استیکرهای جدید)
+// HOPUI (بدون پنجه و هاپو)
 // ================================================================
 function showHopUI() {
     const required = getRequiredForLevel(Level);
@@ -1237,19 +1604,13 @@ function showHopUI() {
         msg += '🐾 هاپ شمار : <span class="gold">' + HopCount + '</span> (سطح نهایی) 🏆<br/>';
     }
     
-    msg += S.hopoCoin + ' هاپو پوینت هات : <span class="gold">' + Math.round(HopPoint) + '</span><br/>';
-    
-    if (clawLevel > 0) {
-        msg += S.claw + ' پنجه : سطح <span class="gold">' + clawLevel + '</span>';
-    } else {
-        msg += S.claw + ' پنجه : <span class="red">ندارید</span>';
-    }
+    msg += S.hopoCoin + ' هاپو پوینت هات : <span class="gold">' + Math.round(HopPoint) + '</span>';
     
     addBot(msg);
 }
 
 // ================================================================
-// HOP (با ساعت جدید)
+// HOP
 // ================================================================
 function doHop() {
     const now = Date.now();
@@ -1289,7 +1650,7 @@ function doHop() {
     addBot(
         S.paw + ' <span class="' + c1 + '">' + earned + '</span> هاپو پوینت گرفتی' + ' ' + S.sparkle + '<br/>' +
         S.hopoCoin + ' هاپو پوینت هات : ' + '<span class="' + c1 + '">' + Math.round(HopPoint) + '</span>' + '<br/>' +
-        'بعد از ' + Math.floor(cooldown/60) + ':00 میتونی دوباره <span class="hop-text">هاپ هاپ</span> کنی'
+        S.clock + ' بعد از ' + Math.floor(cooldown/60) + ':00 میتونی دوباره <span class="hop-text">هاپ هاپ</span> کنی'
     );
 
     const required = getRequiredForLevel(Level);
@@ -1314,8 +1675,10 @@ function doLevelUp() {
     msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
     msg += '🔓 قابلیت های باز شده ⬇️<br/>';
     if (Level === 2) {
-        msg += '🏹 شکار (نیاز به خرید پنجه)<br/>';
-        msg += '🐾 پنجه (برای خرید و ارتقا)';
+        msg += S.claw + ' پنجه (برای خرید و ارتقا)<br/>';
+    }
+    if (Level === 3) {
+        msg += S.hapo + ' هاپو (قابل خرید با 300 ' + S.hopoCoin + ')<br/>';
     }
     msg += '〰️〰️〰️〰️〰️〰️〰️<br/>';
     msg += S.hopoCoin + ' جایزه ارتقا سطح : <span class="gold">' + reward + '</span> ' + S.hopoCoin + '<br/>';
@@ -1343,7 +1706,7 @@ function adminSetPoint() {
         addBot(S.error + ' شما ادمین نیستید');
         return;
     }
-    addBot('هاپو پوینت جدید را وارد کن:');
+    addBot(S.hopoCoin + ' جدید را وارد کن:');
     waitingForAdminCommand = true;
     adminCommandType = 'setpoint';
 }
@@ -1359,7 +1722,7 @@ function showWelcome() {
     addBot(
         S.game + ' ربات سرگرمی هاپ داگ' + '<br/>' +
         S.dog + ' یه هاپوی بامزه' + '<br/>' +
-        'کافیه <span class="hop-text">هاپ هاپ</span> کنی تا هاپو پوینت بگیری'
+        'کافیه <span class="hop-text">هاپ هاپ</span> کنی تا ' + S.hopoCoin + ' بگیری'
     );
     
     addBot(S.paw + ' اسمت چیه (یک اسم برایه خودت انتخاب کن)؟');
@@ -1367,22 +1730,22 @@ function showWelcome() {
 }
 
 // ================================================================
-// CHANGE NAME
+// CHANGE NAME (User)
 // ================================================================
 function startChangeName() {
     if (HopPoint < 750) {
-        addBot(S.error + ' هاپو پوینت کافی نیست برای تغییر اسم (نیاز به 750 ' + S.hopoCoin + ')');
+        addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست برای تغییر اسم (نیاز به 750 ' + S.hopoCoin + ')');
         return;
     }
     
     changeNamePending = true;
     addBotWithGlassButtons(
         S.namechange + ' <span class="gold">تغییر اسم</span><br/>' +
-        'هزینه : <span class="gold">750</span> ' + S.hopoCoin + '<br/>' +
+        '💰 هزینه : <span class="gold">750</span> ' + S.hopoCoin + '<br/>' +
         'آیا مطمئنی میخوای اسمت رو عوض کنی؟',
         function() {
             if (HopPoint < 750) {
-                addBot(S.error + ' هاپو پوینت کافی نیست (نیاز به 750 ' + S.hopoCoin + ')');
+                addBot(S.error + ' ' + S.hopoCoin + ' کافی نیست (نیاز به 750 ' + S.hopoCoin + ')');
                 changeNamePending = false;
                 return;
             }
@@ -1414,6 +1777,7 @@ function processCommand(cmd) {
     addUser(cmd);
     const t = cmd.trim();
     
+    // Waiting for name (first time)
     if (waitingForName) {
         PlayerName = t;
         waitingForName = false;
@@ -1422,6 +1786,7 @@ function processCommand(cmd) {
         return;
     }
     
+    // Waiting for new name (change user name)
     if (waitingForNewName) {
         if (t.length > 0) {
             const oldName = PlayerName;
@@ -1435,6 +1800,21 @@ function processCommand(cmd) {
         return;
     }
     
+    // Waiting for hapo name change
+    if (waitingForHapoName) {
+        if (t.length > 0) {
+            hapoName = t;
+            waitingForHapoName = false;
+            saveGame();
+            addBot('✅ اسم هاپو به <span class="gold">' + hapoName + '</span> تغییر یافت ' + S.hapo);
+            showHapoMenu();
+        } else {
+            addBot('❌ اسم نمی‌تواند خالی باشد');
+        }
+        return;
+    }
+    
+    // Waiting for admin password
     if (waitingForAdminPassword) {
         if (t === '9061') {
             isAdmin = true;
@@ -1447,6 +1827,7 @@ function processCommand(cmd) {
         return;
     }
     
+    // Waiting for admin command
     if (waitingForAdminCommand) {
         const val = parseInt(t);
         if (isNaN(val) || val < 0) {
@@ -1467,7 +1848,7 @@ function processCommand(cmd) {
         } else if (adminCommandType === 'setpoint') {
             HopPoint = val;
             saveGame();
-            addBot('✅ هاپو پوینت شما به <span class="gold">' + HopPoint + '</span> تغییر یافت');
+            addBot('✅ ' + S.hopoCoin + ' شما به <span class="gold">' + HopPoint + '</span> تغییر یافت');
         }
         
         waitingForAdminCommand = false;
@@ -1477,19 +1858,25 @@ function processCommand(cmd) {
     
     const lower = t.toLowerCase();
     
-    // CLAW COMMAND
+    // ============ HAPO COMMAND ============
+    if (lower === 'هاپو' || lower === 'hapo' || (hapoOwned && lower === hapoName.toLowerCase())) {
+        showHapoMenu();
+        return;
+    }
+    
+    // ============ CLAW COMMAND ============
     if (lower === 'پنجه' || lower === 'claw') {
         showClawMenu();
         return;
     }
     
-    // HUNTING
+    // ============ HUNTING ============
     if (lower === 'شکار' || lower === 'hunt') {
         doHunt();
         return;
     }
     
-    // ADMIN
+    // ============ ADMIN ============
     if (lower === 'setlevel' || lower === 'تعیین سطح') {
         adminSetLevel();
         return;
@@ -1505,20 +1892,20 @@ function processCommand(cmd) {
         return;
     }
     
-    // HOPUI
-    if (lower === 'هاپویی' || lower === 'hapui' || lower === 'وضعیت' || lower === 'status' || lower === 'stats') {
+    // ============ HOPUI ============
+    if (lower === 'هاپویی' || lower === 'hapui' || lower === 'stats') {
         showHopUI();
         return;
     }
     
-    // CHANGE NAME
+    // ============ CHANGE NAME (User) ============
     if (lower === 'اسم هاپویی' || lower === 'change name' || lower === 'changename') {
         startChangeName();
         return;
     }
     
-    // HOP
-    const hopCommands = ['هاپ', 'هاپ هاپ', 'هاپ هوپ', 'هوپ', 'hop', 'hop hop', 'hap'];
+    // ============ HOP ============
+    const hopCommands = ['هاپ', 'هاپ هاپ', 'هاپ هوپ', 'هوپ', 'hop', 'hop hop', 'hap', 'واق', 'واق واق'];
     if (hopCommands.includes(lower)) {
         doHop();
         return;
@@ -1551,6 +1938,14 @@ cmdInput.focus();
 
 setInterval(saveGame, 3000);
 window.addEventListener('beforeunload', saveGame);
+
+// Auto-update hapo production every 10 seconds
+setInterval(function() {
+    if (hapoOwned) {
+        updateHapoProduction();
+        saveGame();
+    }
+}, 10000);
 </script>
 </body>
 </html>
